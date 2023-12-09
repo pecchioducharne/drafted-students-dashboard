@@ -58,7 +58,7 @@ const ProfileDashboard = ({
     return (
       <div className="video-container">
         <iframe
-          src={url || "https://player.vimeo.com/video/866056413"} // Fallback URL if no videoUrl is available
+          src={url || "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/record-drafted.mov?alt=media&token=b2f0b1f4-b3c4-47e2-9a6d-5c26b94dc412"} // Fallback URL if no videoUrl is available
           frameborder="0"
           allow="autoplay; fullscreen"
           allowfullscreen
