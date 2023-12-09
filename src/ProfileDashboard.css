@@ -134,6 +134,13 @@
     border: none;
   }
 
+  .sign-out-button {
+    /* Desktop styles (default) */
+    position: absolute;
+    top: 20px; /* Adjust the top position as needed for desktop */
+    right: 20px; /* Adjust the right position as needed for desktop */
+  }
+
   @media (max-width: 600px) {
     .profile-dashboard {
       padding: 20px;
@@ -166,5 +173,20 @@
     .info-section .profile-field:nth-child(4) {
       grid-column: span 2; /* Make these fields span two columns to move them below */
     }
+
+    /* Adjust the margin-top to push the Sign Out button to the bottom */
+    .sign-out-button-container {
+      margin-top: 20px;
+    }
+
+    .sign-out-button {
+      /* Mobile styles */
+      position: static; /* Reset position to make it part of the document flow */
+      margin-top: 2120px; /* Adjust margin as needed to place it below the last record button */
+      margin-right: 60px;
+      width: auto; /* Allow the button to size itself based on content */
+      text-align: center; /* Center-align the button on mobile */
+      margin-bottom: 30px; /* Add margin at the bottom to separate it from other content */
+    }
   }
-  
+

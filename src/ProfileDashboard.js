@@ -128,7 +128,9 @@ const ProfileDashboard = ({
           </button>
         </div>
       </div>
-      <SignOutButton />
+      <div className="sign-out-button-container">
+        <SignOutButton />
+      </div>
     </div>
   );
 };
