@@ -133,4 +133,38 @@
     height: 100%;
     border: none;
   }
+
+  @media (max-width: 600px) {
+    .profile-dashboard {
+      padding: 20px;
+    }
+  
+    .info-section {
+      grid-template-columns: 1fr;
+    }
+  
+    .profile-field {
+      margin-bottom: 20px;
+    }
+  
+    .record-button {
+      width: 100%;
+    }
+  
+    /* Add the following styles to move Graduation Year and LinkedIn below the others */
+    .profile-field strong {
+      margin-bottom: 0.5em;
+      color: #333;
+      font-weight: 600;
+    }
+  
+    .profile-field p {
+      margin: 0; /* Reset margin to remove extra spacing */
+    }
+  
+    .info-section .profile-field:nth-child(3),
+    .info-section .profile-field:nth-child(4) {
+      grid-column: span 2; /* Make these fields span two columns to move them below */
+    }
+  }
   

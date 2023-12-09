@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
-import { db } from "./firebase"; // Assuming db is your Firestore instance
+import { db } from "./firebase";
 import { doc, getDoc } from "firebase/firestore";
-import "./ProfileDashboard.css"; // Importing CSS
-import SignOutButton from './SignOutButton'; // Import the SignOutButton component
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import "./ProfileDashboard.css";
+import SignOutButton from "./SignOutButton";
+import { useNavigate } from "react-router-dom";
 
 const ProfileDashboard = ({
-  firstName, // Receive firstName
-  lastName, // Receive lastName
+  firstName,
+  lastName,
   university,
   major,
   graduationYear,
   email,
   linkedIn,
 }) => {
-  const [videoUrl, setVideoUrl] = useState(""); // State to hold the video URL
-  const [videoUrl2, setVideoUrl2] = useState(""); // State to hold the video URL
-  const [videoUrl3, setVideoUrl3] = useState(""); // State to hold the video URL
-
+  const [videoUrl, setVideoUrl] = useState("");
+  const [videoUrl2, setVideoUrl2] = useState("");
+  const [videoUrl3, setVideoUrl3] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,9 +26,9 @@ const ProfileDashboard = ({
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
-          setVideoUrl(userData.video1); // Update state with the fetched video URL
-          setVideoUrl2(userData.video2); // Update state with the fetched video URL
-          setVideoUrl3(userData.video3); // Update state with the fetched video URL
+          setVideoUrl(userData.video1);
+          setVideoUrl2(userData.video2);
+          setVideoUrl3(userData.video3);
         } else {
           console.log("No such document!");
         }
@@ -37,28 +36,28 @@ const ProfileDashboard = ({
     };
 
     fetchVideoUrl();
-  }, [email]); // Re-run when email changes
+  }, [email]);
 
   const handleRecordClick = () => {
-    console.log("Navigating to recorder 1");
     navigate("/video-recorder");
-  }
+  };
 
   const handleRecordClick2 = () => {
-    console.log("Navigating to recorder 2");
     navigate("/video-recorder2");
-  }
+  };
 
   const handleRecordClick3 = () => {
-    console.log("Navigating to recorder 3");
     navigate("/video-recorder3");
-  }
+  };
 
   const VimeoEmbed = ({ url }) => {
     return (
       <div className="video-container">
         <iframe
-          src={url || "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/record-drafted.mov?alt=media&token=b2f0b1f4-b3c4-47e2-9a6d-5c26b94dc412"} // Fallback URL if no videoUrl is available
+          src={
+            url ||
+            "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/record-drafted.mov?alt=media&token=b2f0b1f4-b3c4-47e2-9a6d-5c26b94dc412"
+          }
           frameborder="0"
           allow="autoplay; fullscreen"
           allowfullscreen
@@ -71,7 +70,7 @@ const ProfileDashboard = ({
   return (
     <div className="profile-dashboard">
       <div className="header-section">
-        <h1 className="name">{`${firstName} ${lastName}`}</h1>{" "}
+        <h1 className="name">{`${firstName} ${lastName}`}</h1>
         <div className="university">{university}</div>
       </div>
       <div className="info-section">
@@ -92,8 +91,7 @@ const ProfileDashboard = ({
           <p>
             <a href={linkedIn} target="_blank" rel="noopener noreferrer">
               {linkedIn}
-            </a>{" "}
-            {/* Make LinkedIn URL clickable */}
+            </a>
           </p>
         </div>
       </div>
@@ -108,27 +106,26 @@ const ProfileDashboard = ({
       <div className="video-resumes">
         <strong>Video Resume</strong>
         <hr />
-
         <div className="video-section">
           <h3>🗺 Tell us your story</h3>
           <VimeoEmbed url={videoUrl} />
-          <button className="record-button" onClick={handleRecordClick}>Record</button>
+          <button className="record-button" onClick={handleRecordClick}>
+            Record
+          </button>
         </div>
-
         <div className="video-section">
-          <h3>
-            🪄 What makes you stand out amongst other candidates?
-          </h3>
+          <h3>🪄 What makes you stand out amongst other candidates?</h3>
           <VimeoEmbed url={videoUrl2} />
-          <button className="record-button" onClick={handleRecordClick2}>Record</button>
+          <button className="record-button" onClick={handleRecordClick2}>
+            Record
+          </button>
         </div>
-
         <div className="video-section">
-          <h3>
-            🧗 Tell us about a time when you overcame a challenge
-          </h3>
+          <h3>🧗 Tell us about a time when you overcame a challenge</h3>
           <VimeoEmbed url={videoUrl3} />
-          <button className="record-button" onClick={handleRecordClick3}>Record</button>
+          <button className="record-button" onClick={handleRecordClick3}>
+            Record
+          </button>
         </div>
       </div>
       <SignOutButton />
