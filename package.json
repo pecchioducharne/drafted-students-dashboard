@@ -15,7 +15,7 @@
     "react-video-recorder": "^3.5.0",
     "styled-components": "^4.1.1",
     "web-vitals": "^2.1.4"
-  },  
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -41,6 +41,6 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^1.0.6"
-  }  
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+  }
 }
