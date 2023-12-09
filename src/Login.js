@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import "./Login.css"; // Make sure to create this CSS file
-import { auth } from "./firebase"; // Import Firebase auth from your firebase.js file
+import "./Login.css";
+import { auth, db } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,30 +12,28 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      // Sign in with Firebase Authentication
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      ); // Include auth as the first argument
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      // User is signed in, you can redirect to the dashboard or handle it as needed
+
+      // Fetch user profile from Firestore
+      const userProfileRef = doc(db, "drafted-accounts", user.email);
+      const userProfileSnap = await getDoc(userProfileRef);
+
+      if (!userProfileSnap.exists()) {
+        setErrorMessage("Couldn't find account. Please sign up.");
+        return; // Prevent further actions or redirection
+      }
+
+      // Redirect to dashboard logic here...
     } catch (error) {
       console.error("Error signing in:", error);
-
-      // Handle authentication errors and set appropriate error messages
       switch (error.code) {
         case "auth/wrong-password":
-          setErrorMessage(
-            "Wrong email or password. Try again or create an account."
-          );
+          setErrorMessage("Wrong email or password. Try again or create an account.");
           break;
-        case "auth/email-already-in-use":
-          setErrorMessage(
-            "Email is already in use. Please use a different email or reset your password."
-          );
+        case "auth/user-not-found":
+          setErrorMessage("No user found with this email. Please sign up.");
           break;
-        // Add more cases for other error codes and display appropriate messages
         default:
           setErrorMessage("An error occurred during login.");
           break;
