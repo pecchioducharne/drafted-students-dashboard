@@ -50,18 +50,22 @@ const ProfileDashboard = ({
     navigate("/video-recorder3");
   };
 
-  const VimeoEmbed = ({ url }) => {
+  const VideoPlayer = ({ url }) => {
     return (
       <div className="video-container">
         <iframe
           src={
             url ||
-            "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/record-drafted.mov?alt=media&token=b2f0b1f4-b3c4-47e2-9a6d-5c26b94dc412"
+            "https://www.youtube.com/embed/67jbwmPQyxg?autoplay=1&controls=0&showinfo=0&autohide=1&mute=1"
           }
-          frameborder="0"
-          allow="autoplay; fullscreen"
-          allowfullscreen
-          style={{ width: "100%", height: "100%", borderRadius: "8px" }}
+          frameBorder="0"
+          allow="fullscreen"
+          allowFullScreen
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "8px",
+          }}
         ></iframe>
       </div>
     );
@@ -98,8 +102,14 @@ const ProfileDashboard = ({
       <strong>Message from Founders</strong>
       <hr />
       <h3>Hi {firstName}, welcome to Drafted! 😊</h3>
-      <h4>Talk to us as if we were a friend, and we'll land you jobs. Simple as that.</h4>
-      <h4>Our mission is to prove job searching can be fun, and have recruiters come to you.</h4>
+      <h4>
+        Talk to us as if we were a friend, and we'll land you jobs. Simple as
+        that.
+      </h4>
+      <h4>
+        Our mission is to prove job searching can be fun, and have recruiters
+        come to you.
+      </h4>
       <h4>Take a breath, be yourself.</h4>
       <h4>Happy Drafting!</h4>
       <h4>— Andrew and Rodrigo</h4>
@@ -108,21 +118,21 @@ const ProfileDashboard = ({
         <hr />
         <div className="video-section">
           <h3>🗺 Tell us your story</h3>
-          <VimeoEmbed url={videoUrl} />
+          <VideoPlayer url={videoUrl} />
           <button className="record-button" onClick={handleRecordClick}>
             Record
           </button>
         </div>
         <div className="video-section">
           <h3>🪄 What makes you stand out amongst other candidates?</h3>
-          <VimeoEmbed url={videoUrl2} />
+          <VideoPlayer url={videoUrl2} />
           <button className="record-button" onClick={handleRecordClick2}>
             Record
           </button>
         </div>
         <div className="video-section">
           <h3>🧗 Tell us about a time when you overcame a challenge</h3>
-          <VimeoEmbed url={videoUrl3} />
+          <VideoPlayer url={videoUrl3} />
           <button className="record-button" onClick={handleRecordClick3}>
             Record
           </button>

@@ -52,6 +52,7 @@ function App() {
           <Route path="/video-recorder" element={<VideoRecorderPage />} />
           <Route path="/video-recorder2" element={<VideoRecorderPage2 />} />
           <Route path="/video-recorder3" element={<VideoRecorderPage3 />} />
+          <Route path="/dashboard" element={<ProfileDashboard {...userProfile} />} />
           <Route 
             path="/" 
             element={
