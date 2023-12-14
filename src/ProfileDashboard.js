@@ -101,18 +101,18 @@ const ProfileDashboard = ({
       </div>
       <strong>Message from Founders</strong>
       <hr />
-      <h3>Hi {firstName}, welcome to Drafted! 😊</h3>
-      <h4>
+      <p>Hi {firstName}, welcome to Drafted! 😊</p>
+      <p>
         Talk to us as if we were a friend, and we'll land you jobs. Simple as
         that.
-      </h4>
-      <h4>
+      </p>
+      <p>
         Our mission is to prove job searching can be fun, and have recruiters
         come to you.
-      </h4>
-      <h4>Take a breath, be yourself.</h4>
-      <h4>Happy Drafting!</h4>
-      <h4>— Andrew and Rodrigo</h4>
+      </p>
+      <p>Take a breath, be yourself.</p>
+      <p>Happy Drafting!</p>
+      <p><i>— Andrew and Rodrigo</i></p>
       <div className="video-resumes">
         <strong>Video Resume</strong>
         <hr />
