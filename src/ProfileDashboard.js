@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +18,46 @@ const ProfileDashboard = ({
   const [videoUrl2, setVideoUrl2] = useState("");
   const [videoUrl3, setVideoUrl3] = useState("");
   const navigate = useNavigate();
+
+  // To edit profile fields
+  const [editMode, setEditMode] = useState({
+    university: false,
+    major: false,
+    graduationYear: false,
+    email: false,
+    linkedIn: false,
+  });
+
+  const [editMajor, setMajor] = useState(major);
+  const [editEmail, setEmail] = useState(email);
+  const [editLinkedIn, setLinkedIn] = useState(linkedIn);
+
+  // Handler to toggle edit mode
+  const toggleEditMode = (field) => {
+    setEditMode({ ...editMode, [field]: !editMode[field] });
+  };
+
+  // Update fields in Firebase and local state
+  const updateField = async (field, newValue) => {
+    if (field !== "email") {
+      // Prevent updating email
+      const userDocRef = doc(db, "drafted-accounts", email);
+      await updateDoc(userDocRef, { [field]: newValue });
+
+      // Update local state
+      switch (field) {
+        case "major":
+          setMajor(newValue);
+          break;
+        case "linkedIn":
+          setLinkedIn(newValue);
+          break;
+        // ... handle other fields if necessary
+      }
+
+      toggleEditMode(field);
+    }
+  };
 
   useEffect(() => {
     const fetchVideoUrl = async () => {
@@ -79,26 +119,58 @@ const ProfileDashboard = ({
       </div>
       <div className="info-section">
         <div className="profile-field">
-          <strong>Major</strong>
-          <p>{major}</p>
-        </div>
-        <div className="profile-field">
-          <strong>Graduation Year</strong>
-          <p>{graduationYear}</p>
+          <div className="field-label">
+            <strong>Major</strong>
+            <button
+              className="edit-button"
+              onClick={() => toggleEditMode("major")}
+            >
+              {editMode.major ? "Save" : "Edit"}
+            </button>
+          </div>
+          {editMode.major ? (
+            <input
+              type="text"
+              value={editMajor}
+              onChange={(e) => setMajor(e.target.value)}
+              onBlur={() => updateField("major", editMajor)}
+            />
+          ) : (
+            <p>{editMajor}</p>
+          )}
         </div>
         <div className="profile-field">
           <strong>Email</strong>
+          <br></br>
           <p>{email}</p>
         </div>
         <div className="profile-field">
-          <strong>LinkedIn</strong>
-          <p>
-            <a href={linkedIn} target="_blank" rel="noopener noreferrer">
-              {linkedIn}
-            </a>
-          </p>
+          <div className="field-label">
+            <strong>LinkedIn</strong>
+            <button
+              className="edit-button"
+              onClick={() => toggleEditMode("linkedIn")}
+            >
+              {editMode.linkedIn ? "Save" : "Edit"}
+            </button>
+          </div>
+          {editMode.linkedIn ? (
+            <input
+              type="text"
+              value={editLinkedIn}
+              onChange={(e) => setLinkedIn(e.target.value)}
+              onBlur={() => updateField("linkedIn", editLinkedIn)}
+            />
+          ) : (
+            <p>
+              <a href={editLinkedIn} target="_blank" rel="noopener noreferrer">
+                {editLinkedIn}
+              </a>
+            </p>
+          )}
         </div>
       </div>
+      <br></br>
       <strong>Message from Founders</strong>
       <hr />
       <p>Hi {firstName}, welcome to Drafted! 😊</p>
@@ -112,12 +184,15 @@ const ProfileDashboard = ({
       </p>
       <p>Take a breath, be yourself.</p>
       <p>Happy Drafting!</p>
-      <p><i>— Andrew and Rodrigo</i></p>
+      <p>
+        <i>— Andrew and Rodrigo</i>
+      </p>
       <div className="video-resumes">
         <strong>Video Resume</strong>
         <hr />
         <div className="video-section">
           <h3>🗺 Tell us your story</h3>
+          <br></br>
           <VideoPlayer url={videoUrl} />
           <button className="record-button" onClick={handleRecordClick}>
             Record
@@ -125,6 +200,7 @@ const ProfileDashboard = ({
         </div>
         <div className="video-section">
           <h3>🪄 What makes you stand out amongst other candidates?</h3>
+          <br></br>
           <VideoPlayer url={videoUrl2} />
           <button className="record-button" onClick={handleRecordClick2}>
             Record
@@ -132,6 +208,7 @@ const ProfileDashboard = ({
         </div>
         <div className="video-section">
           <h3>🧗 Tell us about a time when you overcame a challenge</h3>
+          <br></br>
           <VideoPlayer url={videoUrl3} />
           <button className="record-button" onClick={handleRecordClick3}>
             Record
