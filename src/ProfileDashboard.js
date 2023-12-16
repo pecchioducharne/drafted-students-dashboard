@@ -163,16 +163,7 @@ const ProfileDashboard = ({
             />
           ) : (
             <p>
-              <a
-                href={
-                  editLinkedIn.startsWith("http://") ||
-                  editLinkedIn.startsWith("https://")
-                    ? editLinkedIn
-                    : `https://${editLinkedIn}`
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-              >
+              <a href={editLinkedIn} target="_blank" rel="noopener noreferrer">
                 {editLinkedIn}
               </a>
             </p>
