@@ -4,6 +4,7 @@ import { doc, getDoc, updateDoc } from "firebase/firestore";
 import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
 import { useNavigate } from "react-router-dom";
+import recordGif from './record.gif'; // Adjust the path if necessary
 
 const ProfileDashboard = ({
   firstName,
@@ -91,22 +92,37 @@ const ProfileDashboard = ({
   };
 
   const VideoPlayer = ({ url }) => {
+    const containerClass = url ? 'video-container iframe-container' : 'video-container';
+  
     return (
-      <div className="video-container">
-        <iframe
-          src={
-            url ||
-            "https://www.youtube.com/embed/67jbwmPQyxg?autoplay=1&controls=0&showinfo=0&autohide=1&mute=1"
-          }
-          frameBorder="0"
-          allow="fullscreen"
-          allowFullScreen
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: "8px",
-          }}
-        ></iframe>
+      <div className={containerClass}>
+        {url ? (
+          <iframe
+            src={url}
+            frameBorder="0"
+            allow="fullscreen"
+            allowFullScreen
+            style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '100%',
+              height: '100%',
+              borderRadius: '8px',
+            }}
+          ></iframe>
+        ) : (
+          <img
+            src={recordGif}
+            alt="Default GIF"
+            style={{
+              width: '100%',
+              height: 'auto', // Adjust height automatically
+              borderRadius: '8px',
+            }}
+          />
+        )}
       </div>
     );
   };
