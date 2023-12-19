@@ -63,6 +63,14 @@
     /* Flex adjustments if needed */
     flex-shrink: 0; /* Prevents the button from shrinking */
   }
+
+  .edit-resume-container {
+    text-align: left; /* Aligns the content of the container to the left */
+    margin-top: 10px; /* Spacing above the button */
+  }
+  
+  /* Existing styles for .view-resume-link and .edit-button remain the same */
+  
   
   .profile-field p, .profile-field a {
     margin: 0; /* Resetting margin to align with the button */
@@ -71,8 +79,8 @@
   
   /* ... existing styles ... */
 
-.video-resumes {
-    margin-top: 30px;
+  .video-resumes {
+    margin-top: 50px;
   }
   
   .video-resumes strong {
@@ -119,7 +127,7 @@
   .video-container img {
     width: 100%;
     height: auto; /* Adjust height automatically based on the width */
-  }
+  } 
   
   .video-container iframe {
     position: absolute;
@@ -235,3 +243,37 @@
     }
   }
 
+  .resume-section {
+    margin-bottom: 20px;
+  }
+  
+  .resume-section strong {
+    display: block;
+    margin-bottom: 10px;
+  }
+  
+  .resume-actions {
+    text-align: left; /* Aligns content to the left */
+  }
+  
+  .view-resume-link {
+    display: block;
+    color: #00BF63;
+    margin-bottom: 10px; /* Spacing between link and button */
+    text-decoration: underline;
+  }
+  
+  .view-resume-link:hover {
+    text-decoration: none;
+  }
+  
+  .view-resume-link {
+    display: block; /* Make the link a block element */
+    color: #00BF63; /* Match the color with the edit button */
+    margin-top: 10px; /* Spacing above the link */
+    text-decoration: underline; /* Underline to indicate it's a link */
+  }
+  
+  .view-resume-link:hover {
+    text-decoration: none; /* Remove underline on hover for a subtle effect */
+  }

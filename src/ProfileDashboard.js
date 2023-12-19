@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { db } from "./firebase";
+import { db, storage } from "./firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
 import { useNavigate } from "react-router-dom";
-import recordGif from './record.gif'; // Adjust the path if necessary
+import recordGif from "./record.gif"; // Adjust the path if necessary
 
 const ProfileDashboard = ({
   firstName,
@@ -18,6 +19,7 @@ const ProfileDashboard = ({
   const [videoUrl, setVideoUrl] = useState("");
   const [videoUrl2, setVideoUrl2] = useState("");
   const [videoUrl3, setVideoUrl3] = useState("");
+  const [resumeUrl, setResumeUrl] = useState(""); // State to store the URL of the resume
   const navigate = useNavigate();
 
   // To edit profile fields
@@ -60,6 +62,25 @@ const ProfileDashboard = ({
     }
   };
 
+  const handleResumeUpload = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      try {
+        const storageRef = ref(storage, `resumes/${email}/${file.name}`);
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        const userDocRef = doc(db, "drafted-accounts", email);
+        await updateDoc(userDocRef, { resume: downloadURL });
+
+        setResumeUrl(downloadURL); // Update state with new resume URL
+        console.log("Resume uploaded and Firestore updated.");
+      } catch (error) {
+        console.error("Error uploading resume:", error);
+      }
+    }
+  };
+
   useEffect(() => {
     const fetchVideoUrl = async () => {
       if (email) {
@@ -76,7 +97,18 @@ const ProfileDashboard = ({
       }
     };
 
+    const fetchResumeUrl = async () => {
+      if (email) {
+        const userDocRef = doc(db, "drafted-accounts", email);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists() && docSnap.data().resume) {
+          setResumeUrl(docSnap.data().resume);
+        }
+      }
+    };
+
     fetchVideoUrl();
+    fetchResumeUrl();
   }, [email]);
 
   const handleRecordClick = () => {
@@ -92,8 +124,10 @@ const ProfileDashboard = ({
   };
 
   const VideoPlayer = ({ url }) => {
-    const containerClass = url ? 'video-container iframe-container' : 'video-container';
-  
+    const containerClass = url
+      ? "video-container iframe-container"
+      : "video-container";
+
     return (
       <div className={containerClass}>
         {url ? (
@@ -103,13 +137,13 @@ const ProfileDashboard = ({
             allow="fullscreen"
             allowFullScreen
             style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: '100%',
-              height: '100%',
-              borderRadius: '8px',
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              borderRadius: "8px",
             }}
           ></iframe>
         ) : (
@@ -117,9 +151,9 @@ const ProfileDashboard = ({
             src={recordGif}
             alt="Default GIF"
             style={{
-              width: '100%',
-              height: 'auto', // Adjust height automatically
-              borderRadius: '8px',
+              width: "100%",
+              height: "auto", // Adjust height automatically
+              borderRadius: "8px",
             }}
           />
         )}
@@ -187,6 +221,31 @@ const ProfileDashboard = ({
         </div>
       </div>
       <br></br>
+      <div className="resume-section">
+        <strong>Resume</strong>
+        <div className="resume-actions">
+          <a
+            href={resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="view-resume-link"
+          >
+            View Resume
+          </a>
+          <input
+            type="file"
+            id="resume-upload"
+            style={{ display: "none" }}
+            onChange={handleResumeUpload}
+          />
+          <button
+            onClick={() => document.getElementById("resume-upload").click()}
+            className="edit-button"
+          >
+            Edit Resume
+          </button>
+        </div>
+      </div>
       <strong>Message from Founders</strong>
       <hr />
       <p>Hi {firstName}, welcome to Drafted! 😊</p>
@@ -208,6 +267,9 @@ const ProfileDashboard = ({
         <hr />
         <div className="video-section">
           <h3>🗺 Tell us your story</h3>
+          <div>
+            <br></br>
+          </div>
           <br></br>
           <VideoPlayer url={videoUrl} />
           <button className="record-button" onClick={handleRecordClick}>
@@ -217,6 +279,9 @@ const ProfileDashboard = ({
         <div className="video-section">
           <h3>🪄 What makes you stand out amongst other candidates?</h3>
           <br></br>
+          <div>
+            <br></br>
+          </div>
           <VideoPlayer url={videoUrl2} />
           <button className="record-button" onClick={handleRecordClick2}>
             Record
@@ -225,6 +290,9 @@ const ProfileDashboard = ({
         <div className="video-section">
           <h3>🧗 Tell us about a time when you overcame a challenge</h3>
           <br></br>
+          <div>
+            <br></br>
+          </div>
           <VideoPlayer url={videoUrl3} />
           <button className="record-button" onClick={handleRecordClick3}>
             Record
