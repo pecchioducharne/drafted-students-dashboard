@@ -81,6 +81,14 @@ const ProfileDashboard = ({
     }
   };
 
+  const handleViewResumeClick = (event) => {
+    if (!resumeUrl) {
+      // If resumeUrl is empty, display the message and prevent the default behavior
+      event.preventDefault();
+      alert("Upload resume first to view");
+    }
+  };
+
   useEffect(() => {
     const fetchVideoUrl = async () => {
       if (email) {
@@ -225,12 +233,13 @@ const ProfileDashboard = ({
         <strong>Resume</strong>
         <div className="resume-actions">
           <a
-            href={resumeUrl}
+            href={resumeUrl || "#"} // Use "#" if resumeUrl is empty
             target="_blank"
             rel="noopener noreferrer"
             className="view-resume-link"
+            onClick={handleViewResumeClick} // Attach the click handler
           >
-            View Resume
+            View Resume {/* Always keep the link text as "View Resume" */}
           </a>
           <input
             type="file"
@@ -242,7 +251,8 @@ const ProfileDashboard = ({
             onClick={() => document.getElementById("resume-upload").click()}
             className="edit-button"
           >
-            Edit Resume
+            {resumeUrl ? "Edit Resume" : "Upload Resume"}{" "}
+            {/* Conditional button label */}
           </button>
         </div>
       </div>
