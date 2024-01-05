@@ -29,6 +29,16 @@ const VideoRecorderPage = () => {
     if (recordedVideo && auth.currentUser) {
       try {
         setIsUploading(true); // Start uploading
+
+        // Add TikTok tracking
+        if(window.ttq) {
+          window.ttq.track('SaveVideoClick', {
+            content_type: 'video',
+            content_id: 'user_recorded_video',
+            // Add other relevant parameters here
+          });
+        }
+
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
