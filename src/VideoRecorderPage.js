@@ -33,7 +33,6 @@ const VideoRecorderPage = () => {
         // Add TikTok tracking
         if(window.ttq) {
           window.ttq.track('CompleteRegistration', {
-            content_type: 'video',
             content_id: 'user_recorded_video',
             email: auth.currentUser.email
             // Add other relevant parameters here

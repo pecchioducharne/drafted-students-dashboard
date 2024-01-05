@@ -33,13 +33,12 @@ const VideoRecorderPage3 = () => {
         // Add TikTok tracking
         if(window.ttq) {
           window.ttq.track('CompleteRegistration', {
-            content_type: 'video',
             content_id: 'user_recorded_video',
             email: auth.currentUser.email
             // Add other relevant parameters here
           });
         }
-        
+
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
