@@ -87,7 +87,7 @@ const VideoRecorderPage3 = () => {
 
   return (
     <div className="video-recorder-container">
-      <h1>🗺️ Tell us your story</h1>
+      <h1>🧗 Tell us about a time when you overcame a challenge</h1>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}
