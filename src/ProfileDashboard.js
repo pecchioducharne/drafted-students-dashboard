@@ -6,6 +6,12 @@ import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
 import { useNavigate } from "react-router-dom";
 import recordGif from "./record.gif"; // Adjust the path if necessary
+import {
+  BarLoader,
+  DoubleBubble,
+  SlidingPebbles,
+  DoubleOrbit
+} from "react-spinner-animated";
 
 const ProfileDashboard = ({
   firstName,
@@ -168,7 +174,23 @@ const ProfileDashboard = ({
       </div>
     );
   };
-
+  console.log(firstName);
+  if(firstName == undefined || lastName == undefined){
+   
+      return (
+        <div>
+          <DoubleOrbit
+            text={"Loading..."}
+            bgColor={"#fff"}
+            
+            center={true}
+            width={"150px"}
+            height={"150px"}
+          />
+        </div>
+      );
+    
+  }
   return (
     <div className="profile-dashboard">
       <div className="header-section">

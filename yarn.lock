@@ -8627,6 +8627,11 @@ react-scripts@5.0.1:
   optionalDependencies:
     fsevents "^2.3.2"
 
+react-spinner-animated@^3.1.1:
+  version "3.1.1"
+  resolved "https://registry.npmjs.org/react-spinner-animated/-/react-spinner-animated-3.1.1.tgz"
+  integrity sha512-bv4YRVAKjAMahHmeQfLp9qD+Y4v/ZkV9L/kYzVeAOSvvjjVknqdTn9iNT0CBqsW4AU3oFZ/xTle/5C8qzOvvsg==
+
 react-svg-inline@^2.1.0:
   version "2.1.1"
   resolved "https://registry.npmjs.org/react-svg-inline/-/react-svg-inline-2.1.1.tgz"
@@ -8644,7 +8649,7 @@ react-video-recorder@^3.5.0:
     lodash.merge "^4.5.0"
     react-svg-inline "^2.1.0"
 
-react@*, "react@^0.14.9 || ^15.3.0 || ^16.0.0", react@^16.14.0, react@^16.8.3, "react@^16.8.3 || ^17.0.0", "react@>= 16", "react@>= 16.3.0", react@>=16.8:
+react@*, "react@^0.14.9 || ^15.3.0 || ^16.0.0", react@^16.14.0, react@^16.8.3, "react@^16.8.3 || ^17.0.0", "react@>= 16", "react@>= 16.3.0", react@>=16, react@>=16.8:
   version "16.14.0"
   resolved "https://registry.npmjs.org/react/-/react-16.14.0.tgz"
   integrity sha512-0X2CImDkJGApiAlcf0ODKIneSwBPhqJawOa5wCtKbu7ZECrmS26NvtSILynQ66cgkT/RJ4LidJOc3bUESwmU8g==
