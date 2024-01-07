@@ -194,6 +194,10 @@
     right: 20px; /* Adjust the right position as needed for desktop */
   }
 
+  .loading-dot {
+    background-color: #00BF63 !important;
+  }
+
   @media (max-width: 600px) {
     .profile-dashboard {
       padding: 20px;
