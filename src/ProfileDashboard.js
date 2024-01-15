@@ -10,7 +10,7 @@ import {
   BarLoader,
   DoubleBubble,
   SlidingPebbles,
-  DoubleOrbit
+  DoubleOrbit,
 } from "react-spinner-animated";
 
 const ProfileDashboard = ({
@@ -26,7 +26,23 @@ const ProfileDashboard = ({
   const [videoUrl2, setVideoUrl2] = useState("");
   const [videoUrl3, setVideoUrl3] = useState("");
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the URL of the resume
+  const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
+
+  const PopupModal = ({ show, onClose }) => {
+    if (!show) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <button onClick={onClose}>Close</button>
+          <h2>✨ Let's complete your profile</h2>
+          <h3>Get connected to startups and brand-name companies</h3>
+          {/* Rest of your popup content */}
+        </div>
+      </div>
+    );
+  };
 
   // To edit profile fields
   const [editMode, setEditMode] = useState({
@@ -36,6 +52,10 @@ const ProfileDashboard = ({
     email: false,
     linkedIn: false,
   });
+
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
 
   const [editMajor, setMajor] = useState(major);
   const [editEmail, setEmail] = useState(email);
@@ -175,21 +195,18 @@ const ProfileDashboard = ({
     );
   };
   console.log(firstName);
-  if(firstName == undefined || lastName == undefined){
-   
-      return (
-        <div>
-          <DoubleOrbit
-            text={"Loading..."}
-            bgColor={"#fff"}
-            
-            center={true}
-            width={"150px"}
-            height={"150px"}
-          />
-        </div>
-      );
-    
+  if (firstName == undefined || lastName == undefined) {
+    return (
+      <div>
+        <DoubleOrbit
+          text={"Loading..."}
+          bgColor={"#fff"}
+          center={true}
+          width={"150px"}
+          height={"150px"}
+        />
+      </div>
+    );
   }
   return (
     <div className="profile-dashboard">
@@ -331,6 +348,7 @@ const ProfileDashboard = ({
           </button>
         </div>
       </div>
+      <PopupModal />
       <div className="sign-out-button-container">
         <SignOutButton />
       </div>
