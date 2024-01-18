@@ -324,30 +324,34 @@ const ProfileDashboard = ({
           <p>{email}</p>
         </div>
         <div className="profile-field">
-      <div className="field-label">
-        <strong>LinkedIn</strong>
-        <button
-          className="edit-button"
-          onClick={() => toggleEditMode("linkedInURL")}
-        >
-          {editMode.linkedIn ? "Save" : "Edit"}
-        </button>
-      </div>
-      {editMode.linkedIn ? (
-        <input
-          type="text"
-          value={editLinkedInURL}
-          onChange={(e) => setLinkedInURL(e.target.value)}
-          onBlur={() => updateField("linkedInURL", editLinkedInURL)}
-        />
-      ) : (
-        <p>
-          <a href={editLinkedInURL} target="_blank" rel="noopener noreferrer">
-            {editLinkedInURL}
-          </a>
-        </p>
-      )}
-    </div>
+          <div className="field-label">
+            <strong>LinkedIn</strong>
+            <button
+              className="edit-button"
+              onClick={() => toggleEditMode("linkedInURL")}
+            >
+              {editMode.linkedIn ? "Save" : "Edit"}
+            </button>
+          </div>
+          {editMode.linkedIn ? (
+            <input
+              type="text"
+              value={editLinkedInURL}
+              onChange={(e) => setLinkedInURL(e.target.value)}
+              onBlur={() => updateField("linkedInURL", editLinkedInURL)}
+            />
+          ) : (
+            <p>
+              <a
+                href={editLinkedInURL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {editLinkedInURL}
+              </a>
+            </p>
+          )}
+        </div>
       </div>
       <br></br>
       <div className="resume-section">
