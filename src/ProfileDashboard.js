@@ -6,6 +6,11 @@ import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
 import { useNavigate } from "react-router-dom";
 import recordGif from "./record.gif"; // Adjust the path if necessary
+import logoAmazon from "./logo-amazon.png";
+import logoGotu from "./logo-gotu.png";
+import logoJPMorgan from "./logo-jpmorgan.png";
+import logoLula from "./logo-lula.png";
+import getDraftedScreenshot from "./get-drafted.png";
 import {
   BarLoader,
   DoubleBubble,
@@ -20,7 +25,7 @@ const ProfileDashboard = ({
   major,
   graduationYear,
   email,
-  linkedIn,
+  linkedInURL,
 }) => {
   const [videoUrl, setVideoUrl] = useState("");
   const [videoUrl2, setVideoUrl2] = useState("");
@@ -29,16 +34,76 @@ const ProfileDashboard = ({
   const [showPopup, setShowPopup] = useState(false);
   const navigate = useNavigate();
 
-  const PopupModal = ({ show, onClose }) => {
-    if (!show) return null;
+  // Popup Modal Component
+  const PopupModal = () => {
+    if (!showPopup) return null;
 
     return (
       <div className="modal-overlay">
         <div className="modal-content">
-          <button onClick={onClose}>Close</button>
-          <h2>✨ Let's complete your profile</h2>
+          <button onClick={() => setShowPopup(false)}>Close</button>
+          <h2>✨ Why Video Resumes?</h2>
           <h3>Get connected to startups and brand-name companies</h3>
-          {/* Rest of your popup content */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-evenly",
+              alignItems: "center",
+              marginBottom: "20px",
+            }}
+          >
+            <img
+              src={logoLula}
+              alt="Lula"
+              style={{ maxWidth: "100px", height: "auto" }}
+            />
+            {/* <img
+                      src={logoAmazon}
+                      alt="Amazon"
+                      style={{ maxWidth: "100px", height: "auto" }}
+                    /> */}
+            <img
+              src={logoGotu}
+              alt="Gotu"
+              style={{ maxWidth: "100px", height: "auto" }}
+            />
+            <img
+              src={logoJPMorgan}
+              alt="JPMorgan"
+              style={{ maxWidth: "100px", height: "auto" }}
+            />
+          </div>
+          <h3>
+            With a single video resume, you'll be visible to every employer on
+            Drafted
+          </h3>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+            }}
+          >
+            <img
+              src={getDraftedScreenshot}
+              alt="Lula"
+              style={{ maxWidth: "200px", height: "auto" }}
+            />
+          </div>
+
+          <p>
+            In three quick questions, you can create your video resume and grab
+            the attention of employers.<br></br>
+            <br></br>
+            Each question gives you up to a minute to show off your skills and
+            personality.<br></br>
+            <br></br>
+            Don't fret about the pressure – you can redo each answer until you
+            feel confident in your responses.
+          </p>
+
+          <br />
         </div>
       </div>
     );
@@ -59,7 +124,7 @@ const ProfileDashboard = ({
 
   const [editMajor, setMajor] = useState(major);
   const [editEmail, setEmail] = useState(email);
-  const [editLinkedIn, setLinkedIn] = useState(linkedIn);
+  const [editLinkedInURL, setLinkedInURL] = useState(linkedInURL);
 
   // Handler to toggle edit mode
   const toggleEditMode = (field) => {
@@ -78,8 +143,8 @@ const ProfileDashboard = ({
         case "major":
           setMajor(newValue);
           break;
-        case "linkedIn":
-          setLinkedIn(newValue);
+        case "linkedInURL":
+          setLinkedInURL(newValue);
           break;
         // ... handle other fields if necessary
       }
@@ -141,9 +206,26 @@ const ProfileDashboard = ({
       }
     };
 
+    const fetchData = async () => {
+      if (email) {
+        const userDocRef = doc(db, "drafted-accounts", email);
+        const docSnap = await getDoc(userDocRef);
+
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          setMajor(userData.major || major); // Set major from DB or prop
+          setLinkedInURL(userData.linkedInURL || ""); // Set LinkedIn URL from DB or prop
+          // ... set other user data ...
+        } else {
+          console.log("No such document!");
+        }
+      }
+    };
+
+    fetchData();
     fetchVideoUrl();
     fetchResumeUrl();
-  }, [email]);
+  }, [email, major, linkedInURL]);
 
   const handleRecordClick = () => {
     navigate("/video-recorder");
@@ -242,30 +324,30 @@ const ProfileDashboard = ({
           <p>{email}</p>
         </div>
         <div className="profile-field">
-          <div className="field-label">
-            <strong>LinkedIn</strong>
-            <button
-              className="edit-button"
-              onClick={() => toggleEditMode("linkedIn")}
-            >
-              {editMode.linkedIn ? "Save" : "Edit"}
-            </button>
-          </div>
-          {editMode.linkedIn ? (
-            <input
-              type="text"
-              value={editLinkedIn}
-              onChange={(e) => setLinkedIn(e.target.value)}
-              onBlur={() => updateField("linkedIn", editLinkedIn)}
-            />
-          ) : (
-            <p>
-              <a href={editLinkedIn} target="_blank" rel="noopener noreferrer">
-                {editLinkedIn}
-              </a>
-            </p>
-          )}
-        </div>
+      <div className="field-label">
+        <strong>LinkedIn</strong>
+        <button
+          className="edit-button"
+          onClick={() => toggleEditMode("linkedInURL")}
+        >
+          {editMode.linkedIn ? "Save" : "Edit"}
+        </button>
+      </div>
+      {editMode.linkedIn ? (
+        <input
+          type="text"
+          value={editLinkedInURL}
+          onChange={(e) => setLinkedInURL(e.target.value)}
+          onBlur={() => updateField("linkedInURL", editLinkedInURL)}
+        />
+      ) : (
+        <p>
+          <a href={editLinkedInURL} target="_blank" rel="noopener noreferrer">
+            {editLinkedInURL}
+          </a>
+        </p>
+      )}
+    </div>
       </div>
       <br></br>
       <div className="resume-section">
@@ -313,6 +395,19 @@ const ProfileDashboard = ({
       </p>
       <div className="video-resumes">
         <strong>Video Resume</strong>
+        <span style={{}}>
+          <a
+            href="#"
+            onClick={() => setShowPopup(true)}
+            style={{
+              color: "#00BF63",
+              textDecoration: "underline",
+              fontWeight: "bold",
+            }}
+          >
+            Why Record Video Resumes?
+          </a>
+        </span>
         <hr />
         <div className="video-section">
           <h3>🗺 Tell us your story</h3>
