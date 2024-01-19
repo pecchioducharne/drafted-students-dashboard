@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { db, storage } from "./firebase";
+import { db, storage, auth } from "./firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./ProfileDashboard.css";
 import SignOutButton from "./SignOutButton";
+import { signOut } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import recordGif from "./record.gif"; // Adjust the path if necessary
 import logoAmazon from "./logo-amazon.png";
@@ -178,6 +179,21 @@ const ProfileDashboard = ({
       event.preventDefault();
       alert("Upload resume first to view");
     }
+  };
+
+  const handleSignOut = () => {
+    // Perform Firebase sign out logic
+    signOut(auth)
+      .then(() => {
+        console.log("Signed out");
+        // Redirect to the Login page
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error signing out:", error);
+        // Handle any sign out errors here
+        navigate("/login");
+      });
   };
 
   useEffect(() => {
@@ -449,7 +465,7 @@ const ProfileDashboard = ({
       </div>
       <PopupModal />
       <div className="sign-out-button-container">
-        <SignOutButton />
+        <SignOutButton signOutFunction={handleSignOut} />
       </div>
     </div>
   );
