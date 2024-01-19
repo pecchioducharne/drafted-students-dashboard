@@ -33,6 +33,7 @@ const ProfileDashboard = ({
   const [videoUrl3, setVideoUrl3] = useState("");
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the URL of the resume
   const [showPopup, setShowPopup] = useState(false);
+  const [isSigningOut, setIsSigningOut] = useState(false); // Add a state for sign out loading
   const navigate = useNavigate();
 
   // Popup Modal Component
@@ -182,6 +183,7 @@ const ProfileDashboard = ({
   };
 
   const handleSignOut = () => {
+    setIsSigningOut(true);
     // Perform Firebase sign out logic
     signOut(auth)
       .then(() => {
@@ -466,7 +468,22 @@ const ProfileDashboard = ({
       </div>
       <PopupModal />
       <div className="sign-out-button-container">
-        <SignOutButton signOutFunction={handleSignOut} />
+        <button onClick={handleSignOut} className="sign-out-button">
+          {isSigningOut ? (
+            <>
+              <DoubleOrbit
+                text={"Signing out..."}
+                bgColor={"#fff"}
+                center={true}
+                width={"18px"}
+                height={"18px"}
+              />
+              Signing out...
+            </>
+          ) : (
+            "Sign Out"
+          )}
+        </button>
       </div>
     </div>
   );

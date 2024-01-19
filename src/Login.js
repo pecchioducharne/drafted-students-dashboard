@@ -4,13 +4,20 @@ import { auth, db } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import { DoubleOrbit } from "react-spinner-animated";
+import {
+  BarLoader,
+  DoubleBubble,
+  SlidingPebbles,
+  DoubleOrbit,
+} from "react-spinner-animated";
+
+import "react-spinner-animated/dist/index.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Set isLoading to false initially
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   // Function to get URL parameters
@@ -21,7 +28,7 @@ const Login = () => {
 
   // Login Component
   useEffect(() => {
-    setIsLoading(true);
+    // setIsLoading(true);
     const emailParam = getUrlParam("email");
     const passwordParam = getUrlParam("password");
 
@@ -30,6 +37,7 @@ const Login = () => {
     setPassword(passwordParam || "");
 
     if (emailParam && passwordParam) {
+      setIsLoading(true);
       signInWithEmailAndPassword(auth, emailParam, passwordParam)
         .then((userCredential) => {
           navigate("/dashboard"); // Redirect to the dashboard
@@ -39,9 +47,12 @@ const Login = () => {
           console.error("Error signing in:", error);
           setErrorMessage("Failed to log in automatically.");
           setIsLoading(false);
+        })
+        .finally(() => {
+          setIsLoading(false);
         });
     } else {
-      setIsLoading(false); // Set isLoading to false if no auto-login parameters
+      setIsLoading(false);
     }
   }, [auth, navigate]);
 
@@ -63,13 +74,11 @@ const Login = () => {
       const userProfileSnap = await getDoc(userProfileRef);
 
       if (!userProfileSnap.exists()) {
-        setIsLoading(false); // Set isLoading to false on error
         setErrorMessage("Couldn't find account. Please sign up.");
-        return; // Prevent further actions or redirection
+      } else {
+        // Redirect to the dashboard if login is successful
+        navigate("/dashboard");
       }
-
-      // Redirect to the dashboard after successful login
-      navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
       setIsLoading(false); // Set isLoading to false on error
@@ -103,7 +112,6 @@ const Login = () => {
       </div>
     );
   }
-
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
