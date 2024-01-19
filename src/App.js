@@ -6,7 +6,7 @@ import Login from "./Login";
 import VideoRecorderPage from "./VideoRecorderPage";
 import VideoRecorderPage2 from "./VideoRecorderPage2";
 import VideoRecorderPage3 from "./VideoRecorderPage3";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,30 +44,30 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1 style={{ fontWeight: "2500", paddingLeft: "50px", marginLeft: "10px" }}>
-          drafted<span style={{ color: "#53ad7a" }}> beta</span><span style={{ color: "black" }}>.</span>
+        <h1
+          style={{
+            fontWeight: "2500",
+            paddingLeft: "50px",
+            marginLeft: "10px",
+          }}
+        >
+          drafted<span style={{ color: "#53ad7a" }}> beta</span>
+          <span style={{ color: "black" }}>.</span>
         </h1>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/video-recorder" element={<VideoRecorderPage />} />
           <Route path="/video-recorder2" element={<VideoRecorderPage2 />} />
           <Route path="/video-recorder3" element={<VideoRecorderPage3 />} />
-          <Route path="/dashboard" element={<ProfileDashboard {...userProfile} />} />
-          <Route 
-            path="/" 
-            element={
-              isLoggedIn ? (
-                userProfile ? (
-                  <ProfileDashboard {...userProfile} />
-                ) : (
-                  <Login />
-                )
-              ) : (
-                <Login />
-              )
-            } 
+          <Route
+            path="/dashboard"
+            element={<ProfileDashboard {...userProfile} />}
           />
+          <Route path="*" element={<Login />} />{" "}
+          {/* This will match any other URL */}
         </Routes>
+        {!isLoggedIn && <Navigate to="/login" />}{" "}
+        {/* Redirect if not logged in */}
       </div>
     </Router>
   );

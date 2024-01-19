@@ -149,7 +149,7 @@ const VideoRecorderPage2 = () => {
             </div>
           </>
         )}
-        <button onClick={() => navigate("/")}>Back to Profile</button>
+        <button onClick={() => navigate("/dashboard")}>Back to Profile</button>
       </div>
       {/* Add your tips and 'Click to watch question 1 explained' link here */}
     </div>

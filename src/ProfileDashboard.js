@@ -296,12 +296,13 @@ const ProfileDashboard = ({
   if (firstName == undefined || lastName == undefined) {
     return (
       <div>
-        <DoubleOrbit
+        <DoubleBubble
           text={"Loading..."}
           bgColor={"#fff"}
           center={true}
           width={"150px"}
           height={"150px"}
+          color="#53ad7a" // Adjust color as needed
         />
       </div>
     );

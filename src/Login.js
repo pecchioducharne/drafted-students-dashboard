@@ -4,20 +4,13 @@ import { auth, db } from "./firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import {
-  BarLoader,
-  DoubleBubble,
-  SlidingPebbles,
-  DoubleOrbit
-} from "react-spinner-animated";
-
-import "react-spinner-animated/dist/index.css";
+import { DoubleOrbit } from "react-spinner-animated";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Set isLoading to false initially
   const navigate = useNavigate();
 
   // Function to get URL parameters
@@ -47,13 +40,17 @@ const Login = () => {
           setErrorMessage("Failed to log in automatically.");
           setIsLoading(false);
         });
+    } else {
+      setIsLoading(false); // Set isLoading to false if no auto-login parameters
     }
   }, [auth, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true); // Set isLoading to true while attempting login
+
     try {
-      // Simply attempt to sign in with the provided email and password
+      // Attempt to sign in with the provided email and password
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -66,13 +63,17 @@ const Login = () => {
       const userProfileSnap = await getDoc(userProfileRef);
 
       if (!userProfileSnap.exists()) {
+        setIsLoading(false); // Set isLoading to false on error
         setErrorMessage("Couldn't find account. Please sign up.");
         return; // Prevent further actions or redirection
       }
 
-      // Redirect to dashboard logic here...
+      // Redirect to the dashboard after successful login
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
+      setIsLoading(false); // Set isLoading to false on error
+
       switch (error.code) {
         case "auth/wrong-password":
           setErrorMessage(
@@ -95,7 +96,6 @@ const Login = () => {
         <DoubleOrbit
           text={"Loading..."}
           bgColor={"#fff"}
-          
           center={true}
           width={"150px"}
           height={"150px"}
@@ -103,6 +103,7 @@ const Login = () => {
       </div>
     );
   }
+
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
