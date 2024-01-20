@@ -232,7 +232,7 @@ const ProfileDashboard = ({
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setMajor(userData.major || major); // Set major from DB or prop
-          setLinkedInURL(userData.linkedInURL || ""); // Set LinkedIn URL from DB or prop
+          setLinkedInURL(userData.linkedInURL || linkedInURL); // Set LinkedIn URL from DB or prop
           // ... set other user data ...
         } else {
           console.log("No such document!");
@@ -347,7 +347,7 @@ const ProfileDashboard = ({
             <strong>LinkedIn</strong>
             <button
               className="edit-button"
-              onClick={() => toggleEditMode("linkedInURL")}
+              onClick={() => toggleEditMode("linkedIn")}
             >
               {editMode.linkedIn ? "Save" : "Edit"}
             </button>
