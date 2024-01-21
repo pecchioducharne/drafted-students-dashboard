@@ -61,7 +61,7 @@ const VideoRecorderPage = () => {
           label: "Record Video 1"
         });
 
-        navigate("/"); // Redirect to ProfileDashboard
+        navigate("/dashboard"); // Redirect to ProfileDashboard
       } catch (error) {
         console.error("Video upload failed:", error);
       } finally {
@@ -115,7 +115,7 @@ const VideoRecorderPage = () => {
       </div>
       <div className="button-group">
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
-          {isUploading ? "Updating Video" : "Save Video"}
+          {isUploading ? "Saving Video" : "Save Video"}
         </button>
         <button
           onClick={toggleProTips}

@@ -289,34 +289,30 @@ const ProfileDashboard = ({
 
   const VideoPlayer = ({ url }) => {
     const containerClass = url
-      ? "video-container iframe-container"
-      : "video-container";
-
+      ? "video-container"
+      : "video-container default-video";
+  
     return (
       <div className={containerClass}>
         {url ? (
-          <iframe
+          <video
             src={url}
-            frameBorder="0"
-            allow="fullscreen"
-            allowFullScreen
+            controls
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
               width: "100%",
-              height: "100%",
+              height: "auto",
               borderRadius: "8px",
             }}
-          ></iframe>
+          >
+            Your browser does not support the video tag.
+          </video>
         ) : (
           <img
             src={recordGif}
             alt="Default GIF"
             style={{
               width: "100%",
-              height: "auto", // Adjust height automatically
+              height: "auto",
               borderRadius: "8px",
             }}
           />
@@ -324,6 +320,7 @@ const ProfileDashboard = ({
       </div>
     );
   };
+  
   console.log(firstName);
   if (firstName == undefined || lastName == undefined) {
     return (
@@ -525,7 +522,7 @@ const ProfileDashboard = ({
         <button onClick={handleSignOut} className="sign-out-button">
           {isSigningOut ? (
             <>
-              <DoubleOrbit
+              <DoubleBubble
                 text={"Signing out..."}
                 bgColor={"#fff"}
                 center={true}
