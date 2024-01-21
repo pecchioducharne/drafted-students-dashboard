@@ -18,13 +18,14 @@ import {
   SlidingPebbles,
   DoubleOrbit,
 } from "react-spinner-animated";
-import ReactGA4 from 'react-ga4';
+import ReactGA4 from "react-ga4";
 
 const ProfileDashboard = ({
   firstName,
   lastName,
   university,
   major,
+  graduationMonth,
   graduationYear,
   email,
   linkedInURL,
@@ -36,7 +37,7 @@ const ProfileDashboard = ({
   const [showPopup, setShowPopup] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false); // Add a state for sign out loading
   const navigate = useNavigate();
-  ReactGA4.initialize('G-3M4KL5NDYG');
+  ReactGA4.initialize("G-3M4KL5NDYG");
 
   // Popup Modal Component
   const PopupModal = () => {
@@ -129,9 +130,17 @@ const ProfileDashboard = ({
   const [editMajor, setMajor] = useState(major);
   const [editEmail, setEmail] = useState(email);
   const [editLinkedInURL, setLinkedInURL] = useState(linkedInURL);
+  const [editGraduationMonth, setGraduationMonth] = useState(graduationMonth); // State for graduationMonth
+  const [editGraduationYear, setGraduationYear] = useState(graduationYear); // State for graduationYear
 
   // Handler to toggle edit mode
   const toggleEditMode = (field) => {
+    if (field === "graduationYear" && editGraduationYear !== graduationYear) {
+      // Update Firebase graduationYear
+      const userDocRef = doc(db, "drafted-accounts", email);
+      updateDoc(userDocRef, { graduationYear: editGraduationYear });
+    }
+
     setEditMode({ ...editMode, [field]: !editMode[field] });
   };
 
@@ -149,6 +158,9 @@ const ProfileDashboard = ({
           break;
         case "linkedInURL":
           setLinkedInURL(newValue);
+          break;
+        case "graduationYear": // Update editGraduationYear state
+          setGraduationYear(newValue);
           break;
         // ... handle other fields if necessary
       }
@@ -235,6 +247,7 @@ const ProfileDashboard = ({
           const userData = docSnap.data();
           setMajor(userData.major || major); // Set major from DB or prop
           setLinkedInURL(userData.linkedInURL || linkedInURL); // Set LinkedIn URL from DB or prop
+          setGraduationYear(userData.graduationYear || graduationYear); // Set editGraduationYear from DB or prop
           // ... set other user data ...
         } else {
           console.log("No such document!");
@@ -251,7 +264,7 @@ const ProfileDashboard = ({
     ReactGA4.event({
       category: "Video Resume",
       action: "Clicked to Record Video 1",
-      label: "Record Video 1"
+      label: "Record Video 1",
     });
     navigate("/video-recorder");
   };
@@ -260,7 +273,7 @@ const ProfileDashboard = ({
     ReactGA4.event({
       category: "Video Resume",
       action: "Clicked to Record Video 2",
-      label: "Record Video 2"
+      label: "Record Video 2",
     });
     navigate("/video-recorder2");
   };
@@ -269,7 +282,7 @@ const ProfileDashboard = ({
     ReactGA4.event({
       category: "Video Resume",
       action: "Clicked to Record Video 3",
-      label: "Record Video 3"
+      label: "Record Video 3",
     });
     navigate("/video-recorder3");
   };
@@ -386,6 +399,30 @@ const ProfileDashboard = ({
                 {editLinkedInURL}
               </a>
             </p>
+          )}
+        </div>
+        <div className="profile-field">
+          <div className="field-label">
+            <strong>Graduation</strong>
+            <button
+              className="edit-button"
+              onClick={() => toggleEditMode("graduationYear")}
+            >
+              {editMode.graduationYear ? "Save" : "Edit"}
+            </button>
+          </div>
+          {editMode.graduationYear ? (
+            <div>
+              <input
+                type="text"
+                placeholder="Year"
+                value={editGraduationYear}
+                onChange={(e) => setGraduationYear(e.target.value)}
+                onBlur={() => updateField("graduationYear", editGraduationYear)}
+              />
+            </div>
+          ) : (
+            <p>{graduationYear}</p>
           )}
         </div>
       </div>

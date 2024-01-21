@@ -39,12 +39,20 @@
   .profile-field {
     margin-bottom: 0;
   }
+
+  .profile-field .edit-button {
+    padding: 4px 8px; /* Reduce padding to make the buttons smaller */
+    margin-left: 4px; /* Add some margin to the left for spacing */
+    margin-top: 2px;
+    font-size: 9px;
+    background-color: gray;
+  }
   
   .profile-field strong {
     margin-bottom: 0.5em;
     color: #333;
     font-weight: 600;
-    /* Remove 'display: block;' if present */
+    margin-right: 4px; /* Add margin to the right for spacing */
   }
   
   .field-label {
