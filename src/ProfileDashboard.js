@@ -18,6 +18,7 @@ import {
   SlidingPebbles,
   DoubleOrbit,
 } from "react-spinner-animated";
+import ReactGA4 from 'react-ga4';
 
 const ProfileDashboard = ({
   firstName,
@@ -35,6 +36,7 @@ const ProfileDashboard = ({
   const [showPopup, setShowPopup] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false); // Add a state for sign out loading
   const navigate = useNavigate();
+  ReactGA4.initialize('G-3M4KL5NDYG');
 
   // Popup Modal Component
   const PopupModal = () => {
@@ -246,14 +248,29 @@ const ProfileDashboard = ({
   }, [email, major, linkedInURL]);
 
   const handleRecordClick = () => {
+    ReactGA4.event({
+      category: "Video Resume",
+      action: "Clicked to Record Video 1",
+      label: "Record Video 1"
+    });
     navigate("/video-recorder");
   };
 
   const handleRecordClick2 = () => {
+    ReactGA4.event({
+      category: "Video Resume",
+      action: "Clicked to Record Video 2",
+      label: "Record Video 2"
+    });
     navigate("/video-recorder2");
   };
 
   const handleRecordClick3 = () => {
+    ReactGA4.event({
+      category: "Video Resume",
+      action: "Clicked to Record Video 3",
+      label: "Record Video 3"
+    });
     navigate("/video-recorder3");
   };
 

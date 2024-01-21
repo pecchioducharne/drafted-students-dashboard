@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
+import ReactGA4 from 'react-ga4';
 
 const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -12,6 +13,7 @@ const VideoRecorderPage3 = () => {
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const navigate = useNavigate();
+  ReactGA4.initialize('G-3M4KL5NDYG');
 
   const handleVideoRecording = (videoBlobOrFile) => {
     setRecordedVideo(videoBlobOrFile);
@@ -52,6 +54,13 @@ const VideoRecorderPage3 = () => {
         });
 
         console.log("Video uploaded successfully and Firestore updated");
+
+        ReactGA4.event({
+          category: "Video Recording",
+          action: "Saved Video",
+          label: "Record Video 3"
+        });
+
         navigate("/"); // Redirect to ProfileDashboard
       } catch (error) {
         console.error("Video upload failed:", error);
@@ -82,6 +91,13 @@ const VideoRecorderPage3 = () => {
   }
 
   const toggleProTips = () => {
+
+    ReactGA4.event({
+      category: "Video Recording",
+      action: "See Pro Tips",
+      label: "Record Video 3"
+    });
+
     setShowProTips(!showProTips); // Toggle visibility of pro tips
   };
 
