@@ -291,7 +291,7 @@ const ProfileDashboard = ({
     const containerClass = url
       ? "video-container"
       : "video-container default-video";
-  
+
     return (
       <div className={containerClass}>
         {url ? (
@@ -320,7 +320,7 @@ const ProfileDashboard = ({
       </div>
     );
   };
-  
+
   console.log(firstName);
   if (firstName == undefined || lastName == undefined) {
     return (
@@ -491,7 +491,7 @@ const ProfileDashboard = ({
           <br></br>
           <VideoPlayer url={videoUrl} />
           <button className="record-button" onClick={handleRecordClick}>
-            Record
+            {videoUrl ? "Re-record" : "Record"}
           </button>
         </div>
         <div className="video-section">
@@ -501,8 +501,8 @@ const ProfileDashboard = ({
             <br></br>
           </div>
           <VideoPlayer url={videoUrl2} />
-          <button className="record-button" onClick={handleRecordClick2}>
-            Record
+          <button className="record-button" onClick={handleRecordClick}>
+            {videoUrl2 ? "Re-record" : "Record"}
           </button>
         </div>
         <div className="video-section">
@@ -512,8 +512,8 @@ const ProfileDashboard = ({
             <br></br>
           </div>
           <VideoPlayer url={videoUrl3} />
-          <button className="record-button" onClick={handleRecordClick3}>
-            Record
+          <button className="record-button" onClick={handleRecordClick}>
+            {videoUrl3 ? "Re-record" : "Record"}
           </button>
         </div>
       </div>
