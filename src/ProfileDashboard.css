@@ -36,6 +36,15 @@
     gap: 20px 40px;
   }
 
+  .icon {
+    width: 1em; /* Sets the icon size to match the current font size */
+    height: auto; /* Maintains the aspect ratio of the icon */
+    vertical-align: middle; /* Aligns the icon with the middle of the text */
+    margin-right: 4px; /* Adds some space between the icon and the text */
+    margin-bottom: 13px;
+  }
+  
+
   .founders-message-header {
     display: flex;
     align-items: center;
@@ -99,14 +108,16 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  
   .edit-button {
     padding: 4px 8px; /* Example padding, adjust as needed */
     background-color: #00BF63;
     color: white;
     border: none;
     border-radius: 8px;
+    margin: 0;
     cursor: pointer;
+    font-size: 0.7em;
+    margin-top: -9px;
     /* Flex adjustments if needed */
     flex-shrink: 0; /* Prevents the button from shrinking */
   }
@@ -114,6 +125,12 @@
   .edit-resume-container {
     text-align: left; /* Aligns the content of the container to the left */
     margin-top: 10px; /* Spacing above the button */
+  }
+
+  .resume-header {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Adjust as needed */
   }
   
   /* Existing styles for .view-resume-link and .edit-button remain the same */
@@ -136,7 +153,22 @@
     font-weight: 600;
     font-size: 1.4em;
   }
-  
+
+  .video-resume-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .lottie-inline-icon {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  .video-resume-title {
+    margin-left: 8px;
+    vertical-align: middle;
+  }
+
   hr {
     border: none;
     height: 2px;
@@ -241,6 +273,13 @@
     right: 20px; /* Adjust the right position as needed for desktop */
   }
 
+  .profile-gif {
+    width: 5em; /* Adjust the size to match the emoji size */
+    height: auto;
+    vertical-align: middle; /* Align it with the text */
+    margin-right: 4px; /* Space between the image and the title */
+  }
+
   .loading-dot {
     background-color: #00BF63 !important;
   }
@@ -308,13 +347,15 @@
   }
   
   .resume-actions {
-    text-align: left; /* Aligns content to the left */
-  }
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Align items to the start of the container */
+  }  
   
   .view-resume-link {
     display: block;
     color: #00BF63;
-    margin-bottom: 10px; /* Spacing between link and button */
+    margin-top: 10px; /* Spacing above the link */
     text-decoration: underline;
   }
   

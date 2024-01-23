@@ -13,6 +13,8 @@ import logoJPMorgan from "./logo-jpmorgan.png";
 import logoLula from "./logo-lula.png";
 import getDraftedScreenshot from "./get-drafted.png";
 import speechBubble from "./speech-bubble.png";
+import linkedInIcon from "./linkedin.svg";
+import profileGif from "./profile.gif";
 import {
   BarLoader,
   DoubleBubble,
@@ -20,6 +22,11 @@ import {
   DoubleOrbit,
 } from "react-spinner-animated";
 import ReactGA4 from "react-ga4";
+import Lottie from "react-lottie";
+import animationData from "./profile-lottie.json"; // Adjust the path as necessary
+import fireAnimationData from "./fire.json"; // Adjust the path as necessary
+import bottleAnimationData from "./bottle.json"; // Adjust the path as necessary
+import challengeAnimationData from "./challenge.json"; // Adjust the path as necessary
 
 const ProfileDashboard = ({
   firstName,
@@ -50,7 +57,9 @@ const ProfileDashboard = ({
       <div className="modal-overlay">
         <div className="modal-content">
           <button onClick={() => setShowPopup(false)}>Close</button>
-          <h2>✨ Why Video Resumes?</h2>
+          <h2>🚀 Why Record Video Resumes?</h2>
+          <h3>In three quick questions, you can create your video resume and grab
+            the attention of employers.</h3>
           <h3>Get connected to startups and brand-name companies</h3>
           <div
             style={{
@@ -100,14 +109,10 @@ const ProfileDashboard = ({
             />
           </div>
           <p>
-            In three quick questions, you can create your video resume and grab
-            the attention of employers.<br></br>
-            <br></br>
-            Each question gives you up to a minute to show off your skills and
-            personality.<br></br>
-            <br></br>
-            Don't fret about the pressure – you can redo each answer until you
-            feel confident in your responses.
+            <h4>Each question gives you up to a minute to show off your skills and
+            personality.</h4>
+            <h4>Don't fret about the pressure – you can redo each answer until you
+            feel confident in your responses.</h4>
           </p>
           <br />
         </div>
@@ -149,6 +154,42 @@ const ProfileDashboard = ({
         </div>
       </div>
     );
+  };
+
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const fireDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: fireAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const bottleDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: bottleAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const challengeDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: challengeAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
   };
 
   // To edit profile fields
@@ -386,7 +427,7 @@ const ProfileDashboard = ({
       <div className="info-section">
         <div className="profile-field">
           <div className="field-label">
-            <strong>Major</strong>
+            <strong>🎒 Major</strong>
             <button
               className="edit-button"
               onClick={() => toggleEditMode("major")}
@@ -406,12 +447,14 @@ const ProfileDashboard = ({
           )}
         </div>
         <div className="profile-field">
-          <strong>Email</strong>
+          <strong>📧 Email</strong>
           <br></br>
           <p>{email}</p>
         </div>
         <div className="profile-field">
           <div className="field-label">
+            <img src={linkedInIcon} alt="LinkedIn" className="icon" />{" "}
+            {/* LinkedIn icon */}
             <strong>LinkedIn</strong>
             <button
               className="edit-button"
@@ -441,7 +484,7 @@ const ProfileDashboard = ({
         </div>
         <div className="profile-field">
           <div className="field-label">
-            <strong>Graduation</strong>
+            <strong>🎓 Graduation</strong>
             <button
               className="edit-button"
               onClick={() => toggleEditMode("graduationYear")}
@@ -466,31 +509,30 @@ const ProfileDashboard = ({
       </div>
       <br></br>
       <div className="resume-section">
-        <strong>Resume</strong>
-        <div className="resume-actions">
-          <a
-            href={resumeUrl || "#"} // Use "#" if resumeUrl is empty
-            target="_blank"
-            rel="noopener noreferrer"
-            className="view-resume-link"
-            onClick={handleViewResumeClick} // Attach the click handler
+        <div className="resume-header">
+          <strong>📄 Resume</strong>
+          <button
+            onClick={() => document.getElementById("resume-upload").click()}
+            className="edit-button"
           >
-            View Resume {/* Always keep the link text as "View Resume" */}
-          </a>
+            {resumeUrl ? "Re-upload Resume" : "Upload Resume"}
+          </button>
           <input
             type="file"
             id="resume-upload"
             style={{ display: "none" }}
             onChange={handleResumeUpload}
           />
-          <button
-            onClick={() => document.getElementById("resume-upload").click()}
-            className="edit-button"
-          >
-            {resumeUrl ? "Edit Resume" : "Upload Resume"}{" "}
-            {/* Conditional button label */}
-          </button>
         </div>
+        <a
+          href={resumeUrl || "#"}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="view-resume-link"
+          onClick={handleViewResumeClick}
+        >
+          <strong>View Resume</strong>
+        </a>
       </div>
 
       <div className="profile-dashboard">
@@ -500,41 +542,21 @@ const ProfileDashboard = ({
             className="speech-bubble-button"
             onClick={() => setShowFoundersPopup(true)}
           >
-            <img src={speechBubble} alt="Speech Bubble" />
+            💬
           </button>
         </div>
         <hr />
-        {/* {showFoundersMessage && (
-          <div className="founders-message-content">
-            <h1>Hey {firstName}, welcome to Drafted! 😊</h1>
-            <p>
-              <strong>Our mission is to prove job searching can be fun,</strong>{" "}
-              and much like the draft for a professional sports league, we
-              believe top employers should compete for the best graduates of
-              each class. Rather than having job seekers apply to roles for
-              months on end.
-            </p>
-            <p>
-              <strong>
-                Create your video resume by completing the questions below to
-                get seen by all employers hiring for your dream job.
-              </strong>{" "}
-              This isn’t your normal job application for one position, this
-              equals hundreds of job applications, instantly.
-            </p>
-            <p>
-              Just be yourself, showcase your skills, and watch recruiters come
-              to YOU.
-            </p>
-            <p>Let’s get you Drafted!</p>
-            <p>
-              <i>— Andrew and Rodrigo</i>
-            </p>
-          </div>
-        )} */}
       </div>
       <div className="video-resumes">
-        <strong>Video Resume</strong>
+        <Lottie
+          options={defaultOptions}
+          height={40} // Adjust size as necessary
+          width={40} // Adjust size as necessary
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+        />
+        <strong style={{ verticalAlign: "middle", marginLeft: "0px" }}>
+          Let's Create Your Video Resume
+        </strong>
         <span style={{}}>
           <a
             href="#"
@@ -545,12 +567,13 @@ const ProfileDashboard = ({
               fontWeight: "bold",
             }}
           >
-            Why Record Video Resumes?
+            Why Video Resume?
           </a>
         </span>
         <hr />
         <div className="video-section">
-          <h3>🗺 Tell us your story</h3>
+          <Lottie options={fireDefaultOptions} height={60} width={60} />
+          <h3 style={{ textAlign: 'center' }}>Tell us your story</h3>
           <div>
             <br></br>
           </div>
@@ -561,7 +584,8 @@ const ProfileDashboard = ({
           </button>
         </div>
         <div className="video-section">
-          <h3>🪄 What makes you stand out amongst other candidates?</h3>
+          <Lottie options={bottleDefaultOptions} height={60} width={60} />
+          <h3 style={{ textAlign: 'center' }}>What makes you stand out amongst other candidates?</h3>
           <br></br>
           <div>
             <br></br>
@@ -572,7 +596,8 @@ const ProfileDashboard = ({
           </button>
         </div>
         <div className="video-section">
-          <h3>🧗 Tell us about a time when you overcame a challenge</h3>
+          <Lottie options={challengeDefaultOptions} height={60} width={60} />
+          <h3 style={{ textAlign: 'center' }}>Tell us about a time when you overcame a challenge</h3>
           <br></br>
           <div>
             <br></br>
