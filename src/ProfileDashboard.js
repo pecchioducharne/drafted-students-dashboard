@@ -12,6 +12,7 @@ import logoGotu from "./logo-gotu.png";
 import logoJPMorgan from "./logo-jpmorgan.png";
 import logoLula from "./logo-lula.png";
 import getDraftedScreenshot from "./get-drafted.png";
+import speechBubble from "./speech-bubble.png";
 import {
   BarLoader,
   DoubleBubble,
@@ -36,6 +37,8 @@ const ProfileDashboard = ({
   const [resumeUrl, setResumeUrl] = useState(""); // State to store the URL of the resume
   const [showPopup, setShowPopup] = useState(false);
   const [isSigningOut, setIsSigningOut] = useState(false); // Add a state for sign out loading
+  const [showFoundersMessage, setShowFoundersMessage] = useState(false); // State to control the visibility of the founders' message
+  const [showFoundersPopup, setShowFoundersPopup] = useState(false); // State for founders' popup
   const navigate = useNavigate();
   ReactGA4.initialize("G-3M4KL5NDYG");
 
@@ -96,7 +99,6 @@ const ProfileDashboard = ({
               style={{ maxWidth: "200px", height: "auto" }}
             />
           </div>
-
           <p>
             In three quick questions, you can create your video resume and grab
             the attention of employers.<br></br>
@@ -107,8 +109,43 @@ const ProfileDashboard = ({
             Don't fret about the pressure – you can redo each answer until you
             feel confident in your responses.
           </p>
-
           <br />
+        </div>
+      </div>
+    );
+  };
+
+  // Founders Message Popup Modal Component
+  const FoundersMessagePopup = () => {
+    if (!showFoundersPopup) return null;
+
+    return (
+      <div className="modal-overlay">
+        <div className="modal-content">
+          <button onClick={() => setShowFoundersPopup(false)}>Close</button>
+          <h1>Hey {firstName}, welcome to Drafted! 😊</h1>
+          <p>
+            <strong>Our mission is to prove job searching can be fun,</strong>{" "}
+            and much like the draft for a professional sports league, we believe
+            top employers should compete for the best graduates of each class.
+            Rather than having job seekers apply to roles for months on end.
+          </p>
+          <p>
+            <strong>
+              Create your video resume by completing the questions below to get
+              seen by all employers hiring for your dream job.
+            </strong>{" "}
+            This isn’t your normal job application for one position, this equals
+            hundreds of job applications, instantly.
+          </p>
+          <p>
+            Just be yourself, showcase your skills, and watch recruiters come to
+            YOU.
+          </p>
+          <p>Let’s get you Drafted!</p>
+          <p>
+            <i>— Andrew and Rodrigo</i>
+          </p>
         </div>
       </div>
     );
@@ -125,6 +162,10 @@ const ProfileDashboard = ({
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
+  };
+
+  const toggleFoundersMessage = () => {
+    setShowFoundersMessage(!showFoundersMessage);
   };
 
   const [editMajor, setMajor] = useState(major);
@@ -451,22 +492,47 @@ const ProfileDashboard = ({
           </button>
         </div>
       </div>
-      <strong>Message from Founders</strong>
-      <hr />
-      <p>Hi {firstName}, welcome to Drafted! 😊</p>
-      <p>
-        Talk to us as if we were a friend, and we'll land you jobs. Simple as
-        that.
-      </p>
-      <p>
-        Our mission is to prove job searching can be fun, and have recruiters
-        come to you.
-      </p>
-      <p>Take a breath, be yourself.</p>
-      <p>Happy Drafting!</p>
-      <p>
-        <i>— Andrew and Rodrigo</i>
-      </p>
+
+      <div className="profile-dashboard">
+        <div className="founders-message-header">
+          <strong>Message from Founders</strong>
+          <button
+            className="speech-bubble-button"
+            onClick={() => setShowFoundersPopup(true)}
+          >
+            <img src={speechBubble} alt="Speech Bubble" />
+          </button>
+        </div>
+        <hr />
+        {/* {showFoundersMessage && (
+          <div className="founders-message-content">
+            <h1>Hey {firstName}, welcome to Drafted! 😊</h1>
+            <p>
+              <strong>Our mission is to prove job searching can be fun,</strong>{" "}
+              and much like the draft for a professional sports league, we
+              believe top employers should compete for the best graduates of
+              each class. Rather than having job seekers apply to roles for
+              months on end.
+            </p>
+            <p>
+              <strong>
+                Create your video resume by completing the questions below to
+                get seen by all employers hiring for your dream job.
+              </strong>{" "}
+              This isn’t your normal job application for one position, this
+              equals hundreds of job applications, instantly.
+            </p>
+            <p>
+              Just be yourself, showcase your skills, and watch recruiters come
+              to YOU.
+            </p>
+            <p>Let’s get you Drafted!</p>
+            <p>
+              <i>— Andrew and Rodrigo</i>
+            </p>
+          </div>
+        )} */}
+      </div>
       <div className="video-resumes">
         <strong>Video Resume</strong>
         <span style={{}}>
@@ -517,6 +583,7 @@ const ProfileDashboard = ({
           </button>
         </div>
       </div>
+      <FoundersMessagePopup />
       <PopupModal />
       <div className="sign-out-button-container">
         <button onClick={handleSignOut} className="sign-out-button">

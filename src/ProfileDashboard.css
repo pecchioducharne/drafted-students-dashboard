@@ -35,6 +35,24 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 20px 40px;
   }
+
+  .founders-message-header {
+    display: flex;
+    align-items: center;
+  }
+  
+  .speech-bubble-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+  }
+
+  .speech-bubble-button img {
+    width: 20px; /* Adjust the width as desired */
+    height: auto; /* Maintain aspect ratio */
+  }
+  
   
   .profile-field {
     margin-bottom: 0;
