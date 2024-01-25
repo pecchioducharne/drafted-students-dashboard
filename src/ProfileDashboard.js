@@ -308,52 +308,37 @@ const ProfileDashboard = ({
   };
 
   useEffect(() => {
-    const fetchVideoUrl = async () => {
-      if (email) {
-        const userDocRef = doc(db, "drafted-accounts", email);
+    // Function to check user's authentication state and fetch data
+    const checkAuthAndFetchData = async () => {
+      const user = auth.currentUser;
+      if (user) {
+        // User is authenticated, proceed with data fetching
+        const userDocRef = doc(db, "drafted-accounts", user.email);
+
+        // Fetch video URLs
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
           setVideoUrl(userData.video1);
           setVideoUrl2(userData.video2);
           setVideoUrl3(userData.video3);
-        } else {
-          console.log("No such document!");
-        }
-      }
-    };
-
-    const fetchResumeUrl = async () => {
-      if (email) {
-        const userDocRef = doc(db, "drafted-accounts", email);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists() && docSnap.data().resume) {
-          setResumeUrl(docSnap.data().resume);
-        }
-      }
-    };
-
-    const fetchData = async () => {
-      if (email) {
-        const userDocRef = doc(db, "drafted-accounts", email);
-        const docSnap = await getDoc(userDocRef);
-
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
           setMajor(userData.major || major); // Set major from DB or prop
           setLinkedInURL(userData.linkedInURL || linkedInURL); // Set LinkedIn URL from DB or prop
-          setGraduationYear(userData.graduationYear || graduationYear); // Set editGraduationYear from DB or prop
-          // ... set other user data ...
+          setGraduationYear(userData.graduationYear || graduationYear); // Set graduationYear from DB or prop
+          if (userData.resume) {
+            setResumeUrl(userData.resume);
+          }
         } else {
           console.log("No such document!");
         }
+      } else {
+        // No user is signed in, redirect to login
+        navigate("/login");
       }
     };
 
-    fetchData();
-    fetchVideoUrl();
-    fetchResumeUrl();
-  }, [email, major, linkedInURL]);
+    checkAuthAndFetchData();
+  }, [navigate, major, linkedInURL, auth]);
 
   const handleRecordClick = () => {
     ReactGA4.event({

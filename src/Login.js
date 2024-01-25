@@ -6,6 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Lottie from "react-lottie";
 import step5Animation from "./step-5.json";
+import astronautAnimation from "./astronaut.json";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +19,12 @@ const Login = () => {
     loop: true,
     autoplay: true,
     animationData: step5Animation,
+  };
+
+  const welcomeBack = {
+    loop: false,
+    autoplay: true,
+    animationData: astronautAnimation,
   };
 
   // Function to get URL parameters
@@ -107,7 +114,8 @@ const Login = () => {
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+        <h2>Welcome back.</h2>
+        <Lottie options={welcomeBack} height={100} width={100} />
         {errorMessage && <p className="error-message">{errorMessage}</p>}
         <div className="input-field">
           <label>Email</label>
