@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
 .profile-dashboard {
     font-family: 'Poppins', sans-serif;
     background-color: white;
@@ -55,6 +57,7 @@
     border: none;
     cursor: pointer;
     margin-left: 10px;
+    font-family: 'Roboto', sans-serif;
   }
 
   .speech-bubble-button img {
@@ -73,6 +76,7 @@
     margin-top: 2px;
     font-size: 9px;
     background-color: gray;
+    font-family: 'Roboto', sans-serif;
   }
   
   .profile-field strong {
@@ -80,12 +84,14 @@
     color: #333;
     font-weight: 600;
     margin-right: 4px; /* Add margin to the right for spacing */
+    font-family: 'Roboto', sans-serif;
   }
   
   .field-label {
     display: flex;
     align-items: center; /* Ensures vertical alignment */
     gap: 0; /* No space between label and button */
+    font-family: 'Roboto', sans-serif;
   }
 
   .modal-overlay {
@@ -120,6 +126,7 @@
     margin-top: -9px;
     /* Flex adjustments if needed */
     flex-shrink: 0; /* Prevents the button from shrinking */
+    font-family: 'Roboto', sans-serif;
   }
 
   .edit-resume-container {
@@ -139,6 +146,7 @@
   .profile-field p, .profile-field a {
     margin: 0; /* Resetting margin to align with the button */
     display: inline-block; /* Aligns text with the button */
+    font-family: 'Roboto', sans-serif;
   }
   
   /* ... existing styles ... */
@@ -271,6 +279,7 @@
     position: absolute;
     top: 20px; /* Adjust the top position as needed for desktop */
     right: 20px; /* Adjust the right position as needed for desktop */
+    font-family: 'Roboto', sans-serif;
   }
 
   .profile-gif {
@@ -334,6 +343,7 @@
       width: auto; /* Allow the button to size itself based on content */
       text-align: center; /* Center-align the button on mobile */
       margin-bottom: 30px; /* Add margin at the bottom to separate it from other content */
+      font-family: 'Roboto', sans-serif;
     }
   }
 
