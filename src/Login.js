@@ -1,17 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { auth, db } from "./firebase";
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
-import {
-  BarLoader,
-  DoubleBubble,
-  SlidingPebbles,
-  DoubleOrbit,
-} from "react-spinner-animated";
-
-import "react-spinner-animated/dist/index.css";
+import Lottie from "react-lottie";
+import step5Animation from "./step-5.json";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,6 +13,12 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
+
+  const defaultOptions5 = {
+    loop: true,
+    autoplay: true,
+    animationData: step5Animation,
+  };
 
   // Function to get URL parameters
   const getUrlParam = (name) => {
@@ -28,40 +28,39 @@ const Login = () => {
 
   // Login Component
   useEffect(() => {
-    // setIsLoading(true);
     const emailParam = getUrlParam("email");
     const passwordParam = getUrlParam("password");
 
-    // Optionally set the email and password in the form fields
     setEmail(emailParam || "");
     setPassword(passwordParam || "");
 
-    if (emailParam && passwordParam) {
-      setIsLoading(true);
-      signInWithEmailAndPassword(auth, emailParam, passwordParam)
-        .then((userCredential) => {
+    const signOutAndSignIn = async () => {
+      if (emailParam && passwordParam) {
+        setIsLoading(true);
+        try {
+          await signOut(auth); // Explicitly sign out before signing in
+          await signInWithEmailAndPassword(auth, emailParam, passwordParam);
           navigate("/dashboard"); // Redirect to the dashboard
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error("Error signing in:", error);
+        } catch (error) {
+          console.error("Error during sign in:", error);
           setErrorMessage("Failed to log in automatically.");
+        } finally {
           setIsLoading(false);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else {
-      setIsLoading(false);
-    }
+        }
+      } else {
+        setIsLoading(false);
+      }
+    };
+
+    signOutAndSignIn();
   }, [auth, navigate]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setIsLoading(true); // Set isLoading to true while attempting login
+    setIsLoading(true);
 
     try {
-      // Attempt to sign in with the provided email and password
+      await signOut(auth); // Explicitly sign out before signing in
       const userCredential = await signInWithEmailAndPassword(
         auth,
         email,
@@ -69,19 +68,17 @@ const Login = () => {
       );
       const user = userCredential.user;
 
-      // Fetch user profile from Firestore
       const userProfileRef = doc(db, "drafted-accounts", user.email);
       const userProfileSnap = await getDoc(userProfileRef);
 
       if (!userProfileSnap.exists()) {
         setErrorMessage("Couldn't find account. Please sign up.");
       } else {
-        // Redirect to the dashboard if login is successful
         navigate("/dashboard");
       }
     } catch (error) {
       console.error("Error signing in:", error);
-      setIsLoading(false); // Set isLoading to false on error
+      setIsLoading(false);
 
       switch (error.code) {
         case "auth/wrong-password":
@@ -102,16 +99,11 @@ const Login = () => {
   if (isLoading) {
     return (
       <div>
-        <DoubleOrbit
-          text={"Loading..."}
-          bgColor={"#fff"}
-          center={true}
-          width={"150px"}
-          height={"150px"}
-        />
+        <Lottie options={defaultOptions5} height={100} width={100} />
       </div>
     );
   }
+
   return (
     <div className="login-container">
       <form onSubmit={handleSubmit}>

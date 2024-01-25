@@ -27,6 +27,7 @@ import animationData from "./profile-lottie.json"; // Adjust the path as necessa
 import fireAnimationData from "./fire.json"; // Adjust the path as necessary
 import bottleAnimationData from "./bottle.json"; // Adjust the path as necessary
 import challengeAnimationData from "./challenge.json"; // Adjust the path as necessary
+import step5Animation from "./step-5.json";
 
 const ProfileDashboard = ({
   firstName,
@@ -58,8 +59,10 @@ const ProfileDashboard = ({
         <div className="modal-content">
           <button onClick={() => setShowPopup(false)}>Close</button>
           <h2>🚀 Why Record Video Resumes?</h2>
-          <h3>In three quick questions, you can create your video resume and grab
-            the attention of employers.</h3>
+          <h3>
+            In three quick questions, you can create your video resume and grab
+            the attention of employers.
+          </h3>
           <h3>Get connected to startups and brand-name companies</h3>
           <div
             style={{
@@ -109,10 +112,14 @@ const ProfileDashboard = ({
             />
           </div>
           <p>
-            <h4>Each question gives you up to a minute to show off your skills and
-            personality.</h4>
-            <h4>Don't fret about the pressure – you can redo each answer until you
-            feel confident in your responses.</h4>
+            <h4>
+              Each question gives you up to a minute to show off your skills and
+              personality.
+            </h4>
+            <h4>
+              Don't fret about the pressure – you can redo each answer until you
+              feel confident in your responses.
+            </h4>
           </p>
           <br />
         </div>
@@ -190,6 +197,12 @@ const ProfileDashboard = ({
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
+  };
+
+  const defaultOptions5 = {
+    loop: true, // Set to true if you want the animation to loop
+    autoplay: true, // Set to true if you want the animation to play automatically
+    animationData: step5Animation, // Your animation data (imported from your JSON file)
   };
 
   // To edit profile fields
@@ -407,14 +420,7 @@ const ProfileDashboard = ({
   if (firstName == undefined || lastName == undefined) {
     return (
       <div>
-        <DoubleBubble
-          text={"Loading..."}
-          bgColor={"#fff"}
-          center={true}
-          width={"150px"}
-          height={"150px"}
-          color="#53ad7a" // Adjust color as needed
-        />
+        <Lottie options={defaultOptions5} height={100} width={100} />
       </div>
     );
   }
@@ -573,7 +579,7 @@ const ProfileDashboard = ({
         <hr />
         <div className="video-section">
           <Lottie options={fireDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: 'center' }}>Tell us your story</h3>
+          <h3 style={{ textAlign: "center" }}>Tell us your story</h3>
           <div>
             <br></br>
           </div>
@@ -585,7 +591,9 @@ const ProfileDashboard = ({
         </div>
         <div className="video-section">
           <Lottie options={bottleDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: 'center' }}>What makes you stand out amongst other candidates?</h3>
+          <h3 style={{ textAlign: "center" }}>
+            What makes you stand out amongst other candidates?
+          </h3>
           <br></br>
           <div>
             <br></br>
@@ -597,7 +605,9 @@ const ProfileDashboard = ({
         </div>
         <div className="video-section">
           <Lottie options={challengeDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: 'center' }}>Tell us about a time when you overcame a challenge</h3>
+          <h3 style={{ textAlign: "center" }}>
+            Tell us about a time when you overcame a challenge
+          </h3>
           <br></br>
           <div>
             <br></br>
