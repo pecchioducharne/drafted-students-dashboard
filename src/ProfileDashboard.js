@@ -415,76 +415,83 @@ const ProfileDashboard = ({
         <h1 className="name">{`${firstName} ${lastName}`}</h1>
         <div className="university">{university}</div>
       </div>
-      <div className="info-section">
-        <div className="profile-field">
-          <div className="field-label">
-            <strong>🎒 Major</strong>
-            <button
-              className="edit-button"
-              onClick={() => toggleEditMode("major")}
-            >
-              {editMode.major ? "Save" : "Edit"}
-            </button>
-          </div>
-          {editMode.major ? (
-            <input
-              type="text"
-              value={editMajor}
-              onChange={(e) => setMajor(e.target.value)}
-              onBlur={() => updateField("major", editMajor)}
-            />
-          ) : (
-            <p>{editMajor}</p>
-          )}
-        </div>
-        <div className="profile-field">
-          <strong>📧 Email</strong>
-          <br></br>
-          <p>{email}</p>
-        </div>
-        <div className="profile-field">
-          <div className="field-label">
-            <img src={linkedInIcon} alt="LinkedIn" className="icon" />{" "}
-            {/* LinkedIn icon */}
-            <strong>LinkedIn</strong>
-            <button
-              className="edit-button"
-              onClick={() => toggleEditMode("linkedIn")}
-            >
-              {editMode.linkedIn ? "Save" : "Edit"}
-            </button>
-          </div>
-          {editMode.linkedIn ? (
-            <input
-              type="text"
-              value={editLinkedInURL}
-              onChange={(e) => setLinkedInURL(e.target.value)}
-              onBlur={() => updateField("linkedInURL", editLinkedInURL)}
-            />
-          ) : (
-            <p>
-              <a
-                href={editLinkedInURL}
-                target="_blank"
-                rel="noopener noreferrer"
+      <div className="dashboard-body">
+        <div className="left-column">
+          <div className="profile-field">
+            <div className="field-label">
+              <strong>📧 Email</strong>
+              {/* <button
+                className="edit-button"
+                onClick={() => toggleEditMode("major")}
               >
-                {editLinkedInURL}
-              </a>
-            </p>
-          )}
-        </div>
-        <div className="profile-field">
-          <div className="field-label">
-            <strong>🎓 Graduation</strong>
-            <button
-              className="edit-button"
-              onClick={() => toggleEditMode("graduationYear")}
-            >
-              {editMode.graduationYear ? "Save" : "Edit"}
-            </button>
+                {editMode.major ? "Save" : "Edit"}
+              </button> */}
+            </div>
+            <p>{email}</p>
           </div>
-          {editMode.graduationYear ? (
-            <div>
+          <div className="profile-field">
+            <div className="field-label">
+              <strong>🎒 Major</strong>
+              <button
+                className="edit-button"
+                onClick={() => toggleEditMode("major")}
+              >
+                {editMode.major ? "Save" : "Edit"}
+              </button>
+            </div>
+            {editMode.major ? (
+              <input
+                type="text"
+                value={editMajor}
+                onChange={(e) => setMajor(e.target.value)}
+                onBlur={() => updateField("major", editMajor)}
+              />
+            ) : (
+              <p>{editMajor}</p>
+            )}
+          </div>
+
+          <div className="profile-field">
+            <div className="field-label">
+              <strong>LinkedIn</strong>
+              <button
+                className="edit-button"
+                onClick={() => toggleEditMode("linkedIn")}
+              >
+                {editMode.linkedIn ? "Save" : "Edit"}
+              </button>
+            </div>
+            {editMode.linkedIn ? (
+              <input
+                type="text"
+                value={editLinkedInURL}
+                onChange={(e) => setLinkedInURL(e.target.value)}
+                onBlur={() => updateField("linkedInURL", editLinkedInURL)}
+              />
+            ) : (
+              <p>
+                <a
+                  href={editLinkedInURL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {editLinkedInURL}
+                </a>
+              </p>
+            )}
+          </div>
+
+          <div className="profile-field">
+            <div className="field-label">
+              <strong>🎓 Graduation Year</strong>
+              <button
+                className="edit-button"
+                onClick={() => toggleEditMode("graduationYear")}
+              >
+                {editMode.graduationYear ? "Save" : "Edit"}
+              </button>
+            </div>
+            {editMode.graduationYear ? (
               <input
                 type="text"
                 placeholder="Year"
@@ -492,136 +499,128 @@ const ProfileDashboard = ({
                 onChange={(e) => setGraduationYear(e.target.value)}
                 onBlur={() => updateField("graduationYear", editGraduationYear)}
               />
-            </div>
-          ) : (
-            <p>{graduationYear}</p>
-          )}
-        </div>
-      </div>
-      <br></br>
-      <div className="resume-section">
-        <div className="resume-header">
-          <strong>📄 Resume</strong>
-          <button
-            onClick={() => document.getElementById("resume-upload").click()}
-            className="edit-button"
-          >
-            {resumeUrl ? "Re-upload Resume" : "Upload Resume"}
-          </button>
-          <input
-            type="file"
-            id="resume-upload"
-            style={{ display: "none" }}
-            onChange={handleResumeUpload}
-          />
-        </div>
-        <a
-          href={resumeUrl || "#"}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="view-resume-link"
-          onClick={handleViewResumeClick}
-        >
-          <strong>View Resume</strong>
-        </a>
-      </div>
+            ) : (
+              <p>{graduationYear}</p>
+            )}
+          </div>
 
-      <div className="profile-dashboard">
-        <div className="founders-message-header">
-          <strong>Message from Founders</strong>
-          <button
-            className="speech-bubble-button"
-            onClick={() => setShowFoundersPopup(true)}
-          >
-            💬
-          </button>
-        </div>
-        <hr />
-      </div>
-      <div className="video-resumes">
-        <Lottie
-          options={defaultOptions}
-          height={40} // Adjust size as necessary
-          width={40} // Adjust size as necessary
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-        />
-        <strong style={{ verticalAlign: "middle", marginLeft: "0px" }}>
-          Let's Create Your Video Resume
-        </strong>
-        <span style={{}}>
-          <a
-            href="#"
-            onClick={() => setShowPopup(true)}
-            style={{
-              color: "#00BF63",
-              textDecoration: "underline",
-              fontWeight: "bold",
-            }}
-          >
-            Why Video Resume?
-          </a>
-        </span>
-        <hr />
-        <div className="video-section">
-          <Lottie options={fireDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>Tell us your story</h3>
-          <div>
-            <br></br>
+          <div className="profile-section">
+            <div className="field-label">
+              <strong>📄 Resume</strong>
+              <button
+                onClick={() => document.getElementById("resume-upload").click()}
+                className="edit-button"
+              >
+                {resumeUrl ? "Re-upload Resume" : "Upload Resume"}
+              </button>
+            </div>
+            <input
+              type="file"
+              id="resume-upload"
+              style={{ display: "none" }}
+              onChange={handleResumeUpload}
+            />
+            <a
+              href={resumeUrl || "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="view-resume-link"
+              onClick={handleViewResumeClick}
+            >
+              View Resume
+            </a>
           </div>
-          <br></br>
-          <VideoPlayer url={videoUrl} />
-          <button className="record-button" onClick={handleRecordClick}>
-            {videoUrl ? "Re-record" : "Record"}
-          </button>
-        </div>
-        <div className="video-section">
-          <Lottie options={bottleDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>
-            What makes you stand out amongst other candidates?
-          </h3>
-          <br></br>
-          <div>
-            <br></br>
+
+          <div className="founders-message">
+            <strong>Message from Founders</strong>
+            <button
+              className="speech-bubble-button"
+              onClick={() => setShowFoundersPopup(true)}
+            >
+              💬
+            </button>
           </div>
-          <VideoPlayer url={videoUrl2} />
-          <button className="record-button" onClick={handleRecordClick}>
-            {videoUrl2 ? "Re-record" : "Record"}
-          </button>
         </div>
-        <div className="video-section">
-          <Lottie options={challengeDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>
-            Tell us about a time when you overcame a challenge
-          </h3>
-          <br></br>
-          <div>
-            <br></br>
-          </div>
-          <VideoPlayer url={videoUrl3} />
-          <button className="record-button" onClick={handleRecordClick}>
-            {videoUrl3 ? "Re-record" : "Record"}
-          </button>
-        </div>
-      </div>
-      <FoundersMessagePopup />
-      <PopupModal />
-      <div className="sign-out-button-container">
-        <button onClick={handleSignOut} className="sign-out-button">
-          {isSigningOut ? (
-            <>
-              <DoubleBubble
-                text={"Signing out..."}
-                bgColor={"#fff"}
-                center={true}
-                width={"18px"}
-                height={"18px"}
+
+        <div className="right-column">
+          <div className="video-resumes">
+            {/* <Lottie
+              options={defaultOptions}
+              height={40} // Adjust size as necessary
+              width={40} // Adjust size as necessary
+              style={{ display: "inline-block", verticalAlign: "middle" }}
+            /> */}
+            <strong style={{ verticalAlign: "middle", marginLeft: "0px" }}>
+              Video Resume
+            </strong>
+            <span style={{}}>
+              <a
+                href="#"
+                onClick={() => setShowPopup(true)}
+                style={{
+                  color: "#00BF63",
+                  textDecoration: "underline",
+                  fontWeight: "bold",
+                }}
+              >
+                Why Video Resume?
+              </a>
+            </span>
+            <hr />
+            <div className="video-section">
+              <Lottie options={fireDefaultOptions} height={40} width={40} />
+              <h4 style={{ textAlign: "center" }}>Tell us your story</h4>
+              <VideoPlayer url={videoUrl} />
+              <button className="record-button" onClick={handleRecordClick}>
+                {videoUrl ? "Re-record" : "Record"}
+              </button>
+            </div>
+            <div className="video-section">
+              <Lottie options={bottleDefaultOptions} height={40} width={40} />
+              <h4 style={{ textAlign: "center" }}>
+                What makes you stand out amongst other candidates?
+              </h4>
+              <VideoPlayer url={videoUrl2} />
+              <button className="record-button" onClick={handleRecordClick}>
+                {videoUrl2 ? "Re-record" : "Record"}
+              </button>
+            </div>
+            <div className="video-section">
+              <Lottie
+                options={challengeDefaultOptions}
+                height={40}
+                width={40}
               />
-              Signing out...
-            </>
-          ) : (
-            "Sign Out"
-          )}
-        </button>
+              <h4 style={{ textAlign: "center" }}>
+                Tell us about a time when you overcame a challenge
+              </h4>
+              <VideoPlayer url={videoUrl3} />
+              <button className="record-button" onClick={handleRecordClick}>
+                {videoUrl3 ? "Re-record" : "Record"}
+              </button>
+            </div>
+          </div>
+        </div>
+        <FoundersMessagePopup />
+        <PopupModal />
+        <div className="sign-out-button-container">
+          <button onClick={handleSignOut} className="sign-out-button">
+            {isSigningOut ? (
+              <>
+                <DoubleBubble
+                  text={"Signing out..."}
+                  bgColor={"#fff"}
+                  center={true}
+                  width={"18px"}
+                  height={"18px"}
+                />
+                Signing out...
+              </>
+            ) : (
+              "Sign Out"
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

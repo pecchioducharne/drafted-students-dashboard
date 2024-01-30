@@ -1,15 +1,91 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
 .profile-dashboard {
-    font-family: 'Poppins', sans-serif;
-    background-color: white;
-    color: #333;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 800px;
-    margin: 30px auto;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  font-family: 'Poppins', sans-serif;
+  background-color: white;
+  color: #333;
+  border-radius: 10px;
+  padding: 20px; /* Reduced padding */
+  max-width: 1200px;
+  margin: 20px auto; /* Adjusted margin */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dashboard-container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 20px;
+}
+
+.sidebar-navigation {
+  background: #f7f7f7;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.button {
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+.button:hover {
+  background-color: #0056b3;
+}
+
+
+
+  .dashboard-body {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
   }
+  
+  .left-column, .right-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Spread out the content evenly */
+  }
+  
+  .profile-info > div {
+    margin-bottom: 15px;
+  }
+
+  .profile-field, .resume-section, .founders-message {
+    margin-bottom: 20px; /* Reduced margin-bottom */
+  }
+
+  .profile-info .profile-field {
+    display: block; /* Ensures each field starts on a new line */
+    margin-bottom: 10px; /* Adds some space between each field */
+  }
+  
+
+  @media (max-width: 768px) {
+    .dashboard-body {
+      flex-direction: column;
+    }
+  
+    .left-column, .right-column {
+      width: 100%; /* Full width for smaller screens */
+    }
+  
+    .profile-dashboard {
+      padding: 15px; /* Reduced padding for smaller screens */
+    }
+  }
+  
   
   .header-section {
     display: flex;
@@ -70,14 +146,18 @@
     margin-bottom: 0;
   }
 
-  .profile-field .edit-button {
-    padding: 4px 8px; /* Reduce padding to make the buttons smaller */
-    margin-left: 4px; /* Add some margin to the left for spacing */
-    margin-top: 2px;
-    font-size: 9px;
-    background-color: gray;
-    font-family: 'Roboto', sans-serif;
+  .profile-field .edit-button, .resume-section .edit-button {
+    padding: 2px 6px; /* Reduced padding */
+    font-size: 0.7em; /* Adjusted font size */
+    background-color: #e0e0e0; /* Lighter color */
+    color: #333; /* Darker text color for contrast */
+    border-radius: 4px; /* Smoother border radius */
   }
+
+  .profile-field strong, .resume-section strong, .founders-message strong {
+    font-size: 0.9em; /* Slightly smaller font size */
+    font-weight: 500; /* Lighter font weight */
+  }  
   
   .profile-field strong {
     margin-bottom: 0.5em;
@@ -127,6 +207,7 @@
     /* Flex adjustments if needed */
     flex-shrink: 0; /* Prevents the button from shrinking */
     font-family: 'Roboto', sans-serif;
+    margin-left: auto; 
   }
 
   .edit-resume-container {
@@ -152,7 +233,9 @@
   /* ... existing styles ... */
 
   .video-resumes {
-    margin-top: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   
   .video-resumes strong {
@@ -185,7 +268,7 @@
   }
   
   .video-section {
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     display: flex;
     flex-direction: column; /* Stack children vertically */
     align-items: center; /* Center children horizontally */
@@ -194,14 +277,16 @@
   .video-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 300px; /* Reduced max-width to make the video smaller */
     overflow: hidden;
     border-radius: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Adjust as needed */
     display: flex;
     align-items: center;
     justify-content: center;
-}
+    padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  }
+  
 
 .video-container:not(.iframe-container) {
   padding-top: 0; /* Removes padding for non-iframe containers (like GIFs) */
@@ -209,6 +294,15 @@
 
 .video-container.iframe-container {
   padding-top: 56.25%; /* Keep this for videos */
+}
+
+.video-container img, .video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
   .video-container img {
@@ -245,7 +339,7 @@
     transition: background-color 0.3s ease;
     text-align: center;
     display: block;
-    width: 50%;
+    width: auto;
     margin-top: 10px;
 }
 
@@ -254,15 +348,28 @@
     background-color: #009950;
 }
   
-  .video-container {
-    position: relative;
-    width: 100%;
-    max-width: 500px; /* Control the size */
-    overflow: hidden; /* Ensures the rounded edges are applied to the video */
-    border-radius: 10px;
-    padding-top: 56.25%; /* Initial aspect ratio for 16:9 videos, adjust as needed */
-    margin-bottom: 10px;
-  }
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 300px; /* Reduced max-width to make the video smaller */
+  overflow: hidden;
+  border-radius: 10px;
+  margin-bottom: 20px; /* Adjust as needed */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+}
+
+.video-container img, .video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
   
   .video-container iframe {
     position: absolute;
