@@ -584,7 +584,7 @@ const ProfileDashboard = ({
             <br></br>
           </div>
           <VideoPlayer url={videoUrl2} />
-          <button className="record-button" onClick={handleRecordClick}>
+          <button className="record-button" onClick={handleRecordClick2}>
             {videoUrl2 ? "Re-record" : "Record"}
           </button>
         </div>
@@ -598,7 +598,7 @@ const ProfileDashboard = ({
             <br></br>
           </div>
           <VideoPlayer url={videoUrl3} />
-          <button className="record-button" onClick={handleRecordClick}>
+          <button className="record-button" onClick={handleRecordClick3}>
             {videoUrl3 ? "Re-record" : "Record"}
           </button>
         </div>
