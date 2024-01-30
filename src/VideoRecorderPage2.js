@@ -61,7 +61,7 @@ const VideoRecorderPage2 = () => {
           label: "Record Video 2"
         });
 
-        navigate("/login"); // Redirect to ProfileDashboard
+        navigate("/dashboard"); // Redirect to ProfileDashboard
       } catch (error) {
         console.error("Video upload failed:", error);
       } finally {
