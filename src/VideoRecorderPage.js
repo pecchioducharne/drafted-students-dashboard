@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Lottie from "react-lottie";
 import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
 import ReactGA4 from 'react-ga4';
+import fireAnimationData from "./fire.json"; // Adjust the path as necessary
 
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -101,9 +103,19 @@ const VideoRecorderPage = () => {
     setShowProTips(!showProTips); // Toggle visibility of pro tips
   };
 
+  const fireDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: fireAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
     <div className="video-recorder-container">
-      <h1>🗺️ Tell us your story</h1>
+      <Lottie options={fireDefaultOptions} height={100} width={100} />
+      <h1>Tell us your story</h1>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}

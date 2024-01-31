@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
+import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
 import ReactGA4 from 'react-ga4';
+import bottleAnimationData from "./bottle.json"; // Adjust the path as necessary
+
 
 const VideoRecorderPage2 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -101,9 +104,19 @@ const VideoRecorderPage2 = () => {
     setShowProTips(!showProTips); // Toggle visibility of pro tips
   };
 
+  const bottleDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: bottleAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
     <div className="video-recorder-container">
-      <h1>🪄 What makes you stand out amongst other candidates?</h1>
+      <Lottie options={bottleDefaultOptions} height={100} width={100} />
+      <h1>What makes you stand out amongst other candidates?</h1>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
+import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
-import ReactGA4 from 'react-ga4';
+import challengeAnimationData from "./challenge.json"; // Adjust the path as necessary
+import ReactGA4 from "react-ga4";
 
 const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -13,7 +15,7 @@ const VideoRecorderPage3 = () => {
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const navigate = useNavigate();
-  ReactGA4.initialize('G-3M4KL5NDYG');
+  ReactGA4.initialize("G-3M4KL5NDYG");
 
   const handleVideoRecording = (videoBlobOrFile) => {
     setRecordedVideo(videoBlobOrFile);
@@ -33,10 +35,10 @@ const VideoRecorderPage3 = () => {
         setIsUploading(true); // Start uploading
 
         // Add TikTok tracking
-        if(window.ttq) {
-          window.ttq.track('CompleteRegistration', {
-            content_id: 'user_recorded_video',
-            email: auth.currentUser.email
+        if (window.ttq) {
+          window.ttq.track("CompleteRegistration", {
+            content_id: "user_recorded_video",
+            email: auth.currentUser.email,
             // Add other relevant parameters here
           });
         }
@@ -58,7 +60,7 @@ const VideoRecorderPage3 = () => {
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
-          label: "Record Video 3"
+          label: "Record Video 3",
         });
 
         navigate("/dashboard"); // Redirect to ProfileDashboard
@@ -91,19 +93,28 @@ const VideoRecorderPage3 = () => {
   }
 
   const toggleProTips = () => {
-
     ReactGA4.event({
       category: "Video Recording",
       action: "See Pro Tips",
-      label: "Record Video 3"
+      label: "Record Video 3",
     });
 
     setShowProTips(!showProTips); // Toggle visibility of pro tips
   };
 
+  const challengeDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: challengeAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
   return (
     <div className="video-recorder-container">
-      <h1>🧗 Tell us about a time when you overcame a challenge</h1>
+      <Lottie options={challengeDefaultOptions} height={100} width={100} />
+      <h1>Tell us about a time when you overcame a challenge</h1>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}

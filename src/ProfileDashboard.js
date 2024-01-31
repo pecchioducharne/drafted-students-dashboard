@@ -165,7 +165,7 @@ const ProfileDashboard = ({
   };
 
   const countCompletedVideos = () => {
-    return [videoUrl, videoUrl2, videoUrl3].filter(url => url).length;
+    return [videoUrl, videoUrl2, videoUrl3].filter((url) => url).length;
   };
 
   const completedVideosCount = countCompletedVideos();
@@ -561,15 +561,23 @@ const ProfileDashboard = ({
       <div className="video-resumes">
         <div style={{ display: "flex", alignItems: "center" }}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Lottie
+            {/* <Lottie
               options={defaultOptions}
               height={40} // Adjust size as necessary
               width={40} // Adjust size as necessary
               style={{ marginRight: "10px" }} // Adds some space between the Lottie animation and the text
-            />
+            /> */}
             <h1 className="name" style={{ color: "black", margin: 0 }}>
-              Video Resume ({countCompletedVideos()}/3 videos completed)
+              Video Resume ({countCompletedVideos()}/3 completed)
             </h1>
+            {countCompletedVideos() === 3 && (
+              <Lottie
+                options={defaultOptions5}
+                height={40} // Adjust size as necessary
+                width={40} // Adjust size as necessary
+                style={{ marginRight: "10px" }} // Adds some space between the Lottie animation and the text
+              />
+            )}
           </div>
         </div>
         <span style={{}}>
