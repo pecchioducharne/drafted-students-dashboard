@@ -108,7 +108,7 @@ const VideoRecorderPage3 = () => {
         <VideoRecorder
           key={1}
           isOnInitially
-          timeLimit={60000}
+          timeLimit={90000}
           showReplayControls
           onRecordingComplete={handleVideoRecording}
         />

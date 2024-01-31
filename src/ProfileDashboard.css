@@ -233,14 +233,28 @@
   .video-container {
     position: relative;
     width: 100%;
-    max-width: 500px;
+    max-width: 500px; /* Adjust based on your layout */
     overflow: hidden;
-    border-radius: 10px;
-    margin-bottom: 10px;
+    border-radius: 10px; /* Optional: for rounded corners */
     display: flex;
-    align-items: center;
     justify-content: center;
-}
+    padding-top: 56.25%;
+    align-items: center;
+  }
+  
+  .video-container video,
+  .video-container img {
+    width: 98%; /* Makes the video or image almost as wide as the container */
+    height: auto; /* Maintains aspect ratio */
+    border-radius: 8px; /* Optional: for rounded corners on the video or image */
+  }
+  
+  /* If you are using an iframe for embedding videos */
+  .video-container iframe {
+    width: 98%; /* Adjusts the width to almost full container width */
+    height: auto; /* Adjusts height automatically based on the aspect ratio */
+    border-radius: 8px; /* Optional: for rounded corners */
+  }
 
 .video-container:not(.iframe-container) {
   padding-top: 0; /* Removes padding for non-iframe containers (like GIFs) */

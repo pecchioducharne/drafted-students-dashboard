@@ -24,6 +24,37 @@
     margin-bottom: 20px;
     font-size: 16px;
   }
+
+  .title-and-buttons-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 20px; /* Adjust as needed */
+  }
+  
+  .back-to-profile-button, .see-pro-tips-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #53AD7A; /* Your green color */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .back-to-profile-button:hover, .see-pro-tips-button:hover {
+    background-color: #3A8755; /* Darker shade for hover */
+  }
+  
+  /* Style for your title, ensure it fits well and is centered */
+  .title-and-buttons-container h1 {
+    margin: 0; /* Remove default margin */
+    text-align: center;
+    flex-grow: 1; /* Allow the title to take up the remaining space */
+  }
+  
   
   .video-recorder-wrapper {
     width: 100%; /* Full width of the container */
