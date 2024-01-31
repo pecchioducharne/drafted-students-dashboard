@@ -164,6 +164,12 @@ const ProfileDashboard = ({
     );
   };
 
+  const countCompletedVideos = () => {
+    return [videoUrl, videoUrl2, videoUrl3].filter(url => url).length;
+  };
+
+  const completedVideosCount = countCompletedVideos();
+
   const defaultOptions = {
     loop: true,
     autoplay: true,
@@ -562,7 +568,7 @@ const ProfileDashboard = ({
               style={{ marginRight: "10px" }} // Adds some space between the Lottie animation and the text
             />
             <h1 className="name" style={{ color: "black", margin: 0 }}>
-              Video Resume
+              Video Resume ({countCompletedVideos()}/3 videos completed)
             </h1>
           </div>
         </div>
