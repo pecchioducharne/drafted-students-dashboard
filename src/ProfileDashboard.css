@@ -10,6 +10,43 @@
     margin: 30px auto;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
   }
+
+  .video-card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 20px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center content */
+    width: 600px; /* Set a fixed width for all cards */
+    max-width: 100%; /* Ensure it doesn't exceed the container's width */
+  }
+  
+  
+  .video-resume-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    width: 100%; /* Full width */
+    justify-content: center; /* Center header content */
+  }
+  
+  .video-container {
+    flex-grow: 1; /* Take up remaining space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%; /* Full width */
+    overflow: hidden;
+    border-radius: 10px;
+  }
+  
+  .video-container video, .video-container img {
+    max-height: 100%; /* Limit video/img height to fit within container */
+  }
   
   .header-section {
     display: flex;
@@ -165,6 +202,8 @@
   .video-resume-header {
     display: flex;
     align-items: center;
+    gap: 10px; /* Adjust the space between the icon and the text */
+    margin-bottom: 20px; /* Space between the header and the video player */
   }
 
   .lottie-inline-icon {

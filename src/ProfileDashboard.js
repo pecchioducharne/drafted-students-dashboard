@@ -15,6 +15,7 @@ import getDraftedScreenshot from "./get-drafted.png";
 import speechBubble from "./speech-bubble.png";
 import linkedInIcon from "./linkedin.svg";
 import profileGif from "./profile.gif";
+import uscLogo from "./usc-logo.png";
 import {
   BarLoader,
   DoubleBubble,
@@ -412,7 +413,20 @@ const ProfileDashboard = ({
   return (
     <div className="profile-dashboard">
       <div className="header-section">
-        <h1 className="name">{`${firstName} ${lastName}`}</h1>
+        <h1 className="name">
+          {`${firstName} ${lastName}`}{" "}
+          {university === "University of Southern California" && (
+            <img
+              src={uscLogo}
+              alt="USC Logo"
+              style={{
+                width: "19px",
+                marginLeft: "10px",
+                verticalAlign: "middle",
+              }}
+            />
+          )}
+        </h1>
         <div className="university">{university}</div>
       </div>
       <div className="info-section">
@@ -539,15 +553,19 @@ const ProfileDashboard = ({
         <hr />
       </div>
       <div className="video-resumes">
-        <Lottie
-          options={defaultOptions}
-          height={40} // Adjust size as necessary
-          width={40} // Adjust size as necessary
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-        />
-        <strong style={{ verticalAlign: "middle", marginLeft: "0px" }}>
-          Let's Create Your Video Resume
-        </strong>
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Lottie
+              options={defaultOptions}
+              height={40} // Adjust size as necessary
+              width={40} // Adjust size as necessary
+              style={{ marginRight: "10px" }} // Adds some space between the Lottie animation and the text
+            />
+            <h1 className="name" style={{ color: "black", margin: 0 }}>
+              Video Resume
+            </h1>
+          </div>
+        </div>
         <span style={{}}>
           <a
             href="#"
@@ -563,44 +581,52 @@ const ProfileDashboard = ({
         </span>
         <hr />
         <div className="video-section">
-          <Lottie options={fireDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>Tell us your story</h3>
-          <div>
-            <br></br>
+          <div className="video-card">
+            <div className="video-resume-header">
+              <Lottie options={fireDefaultOptions} height={40} width={40} />
+              <h3>Tell us your story</h3>
+            </div>
+            <div className="video-container">
+              <VideoPlayer url={videoUrl} />
+            </div>
+            <button className="record-button" onClick={handleRecordClick}>
+              {videoUrl ? "Re-record" : "Record"}
+            </button>
           </div>
-          <br></br>
-          <VideoPlayer url={videoUrl} />
-          <button className="record-button" onClick={handleRecordClick}>
-            {videoUrl ? "Re-record" : "Record"}
-          </button>
         </div>
+
         <div className="video-section">
-          <Lottie options={bottleDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>
-            What makes you stand out amongst other candidates?
-          </h3>
-          <br></br>
-          <div>
-            <br></br>
+          <div className="video-card">
+            <div className="video-resume-header">
+              <Lottie options={bottleDefaultOptions} height={40} width={40} />
+              <h3>What makes you stand out amongst other candidates?</h3>
+            </div>
+            <div className="video-container">
+              <VideoPlayer url={videoUrl2} />
+            </div>
+            <button className="record-button" onClick={handleRecordClick2}>
+              {videoUrl2 ? "Re-record" : "Record"}
+            </button>
           </div>
-          <VideoPlayer url={videoUrl2} />
-          <button className="record-button" onClick={handleRecordClick2}>
-            {videoUrl2 ? "Re-record" : "Record"}
-          </button>
         </div>
+
         <div className="video-section">
-          <Lottie options={challengeDefaultOptions} height={60} width={60} />
-          <h3 style={{ textAlign: "center" }}>
-            Tell us about a time when you overcame a challenge
-          </h3>
-          <br></br>
-          <div>
-            <br></br>
+          <div className="video-card">
+            <div className="video-resume-header">
+              <Lottie
+                options={challengeDefaultOptions}
+                height={40}
+                width={40}
+              />
+              <h3>Tell us about a time when you overcame a challenge</h3>
+            </div>
+            <div className="video-container">
+              <VideoPlayer url={videoUrl3} />
+            </div>
+            <button className="record-button" onClick={handleRecordClick3}>
+              {videoUrl3 ? "Re-record" : "Record"}
+            </button>
           </div>
-          <VideoPlayer url={videoUrl3} />
-          <button className="record-button" onClick={handleRecordClick3}>
-            {videoUrl3 ? "Re-record" : "Record"}
-          </button>
         </div>
       </div>
       <FoundersMessagePopup />
