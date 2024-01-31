@@ -597,8 +597,10 @@ const ProfileDashboard = ({
         <div className="video-section">
           <div className="video-card">
             <div className="video-resume-header">
-              <Lottie options={fireDefaultOptions} height={40} width={40} />
-              <h3>Tell us your story</h3>
+              <div className="video-title-container">
+                <Lottie options={fireDefaultOptions} height={70} width={70} />
+                <h3>Tell us your story</h3>
+              </div>
             </div>
             <div className="video-container">
               <VideoPlayer url={videoUrl} />
@@ -612,8 +614,10 @@ const ProfileDashboard = ({
         <div className="video-section">
           <div className="video-card">
             <div className="video-resume-header">
-              <Lottie options={bottleDefaultOptions} height={40} width={40} />
-              <h3>What makes you stand out amongst other candidates?</h3>
+              <div className="video-title-container">
+                <Lottie options={bottleDefaultOptions} height={70} width={70} />
+                <h3>What makes you stand out amongst other candidates?</h3>
+              </div>
             </div>
             <div className="video-container">
               <VideoPlayer url={videoUrl2} />
@@ -627,12 +631,14 @@ const ProfileDashboard = ({
         <div className="video-section">
           <div className="video-card">
             <div className="video-resume-header">
-              <Lottie
-                options={challengeDefaultOptions}
-                height={40}
-                width={40}
-              />
-              <h3>Tell us about a time when you overcame a challenge</h3>
+              <div className="video-title-container">
+                <Lottie
+                  options={challengeDefaultOptions}
+                  height={70}
+                  width={70}
+                />
+                <h3>Tell us about a time when you overcame a challenge</h3>
+              </div>
             </div>
             <div className="video-container">
               <VideoPlayer url={videoUrl3} />
@@ -642,6 +648,7 @@ const ProfileDashboard = ({
             </button>
           </div>
         </div>
+
       </div>
       <FoundersMessagePopup />
       <PopupModal />
