@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { auth, db } from "./firebase";
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Lottie from "react-lottie";
@@ -12,6 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [resetMessage, setResetMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -33,7 +34,6 @@ const Login = () => {
     return urlParams.get(name);
   };
 
-  // Login Component
   useEffect(() => {
     const emailParam = getUrlParam("email");
     const passwordParam = getUrlParam("password");
@@ -68,38 +68,38 @@ const Login = () => {
 
     try {
       await signOut(auth); // Explicitly sign out before signing in
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      const userProfileRef = doc(db, "drafted-accounts", user.email);
+      const userProfileRef = doc(db, "users", user.email);
       const userProfileSnap = await getDoc(userProfileRef);
 
       if (!userProfileSnap.exists()) {
-        setErrorMessage("Couldn't find account. Please sign up.");
+        setErrorMessage("Couldn't find your account. Please sign up.");
       } else {
         navigate("/dashboard");
       }
     } catch (error) {
       console.error("Error signing in:", error);
       setIsLoading(false);
+      setErrorMessage(error.message); // Display error message from Firebase
+    }
+  };
 
-      switch (error.code) {
-        case "auth/wrong-password":
-          setErrorMessage(
-            "Wrong email or password. Try again or create an account."
-          );
-          break;
-        case "auth/user-not-found":
-          setErrorMessage("No user found with this email. Please sign up.");
-          break;
-        default:
-          setErrorMessage("An error occurred during login.");
-          break;
-      }
+  // Function to handle password reset
+  const handlePasswordReset = async () => {
+    if (!email) {
+      setErrorMessage("Please enter your email address to reset your password.");
+      return;
+    }
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+      setResetMessage("Password reset email sent. Please check your inbox.");
+      setErrorMessage("");
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+      setErrorMessage("Failed to send password reset email. Please try again.");
     }
   };
 
@@ -117,6 +117,7 @@ const Login = () => {
         <h2>Welcome back.</h2>
         <Lottie options={welcomeBack} height={100} width={100} />
         {errorMessage && <p className="error-message">{errorMessage}</p>}
+        {resetMessage && <p className="reset-message">{resetMessage}</p>}
         <div className="input-field">
           <label>Email</label>
           <input
@@ -134,6 +135,8 @@ const Login = () => {
           />
         </div>
         <button type="submit">Login</button>
+        <br></br>
+        <button type="button" className="reset-password-btn" onClick={handlePasswordReset}>Forgot Password?</button>
       </form>
     </div>
   );
