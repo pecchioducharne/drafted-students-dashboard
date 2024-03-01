@@ -12,8 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [resetMessage, setResetMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false); // Initialize isLoading to false
   const navigate = useNavigate();
 
   const defaultOptions5 = {
@@ -28,65 +27,21 @@ const Login = () => {
     animationData: astronautAnimation,
   };
 
-  // Function to get URL parameters
-  const getUrlParam = (name) => {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(name);
-  };
-
-  useEffect(() => {
-    const emailParam = getUrlParam("email");
-    const passwordParam = getUrlParam("password");
-
-    setEmail(emailParam || "");
-    setPassword(passwordParam || "");
-
-    const signOutAndSignIn = async () => {
-      if (emailParam && passwordParam) {
-        setIsLoading(true);
-        try {
-          await signOut(auth); // Explicitly sign out before signing in
-          await signInWithEmailAndPassword(auth, emailParam, passwordParam);
-          navigate("/dashboard"); // Redirect to the dashboard
-        } catch (error) {
-          console.error("Error during sign in:", error);
-          setErrorMessage("Failed to log in automatically.");
-        } finally {
-          setIsLoading(false);
-        }
-      } else {
-        setIsLoading(false);
-      }
-    };
-
-    signOutAndSignIn();
-  }, [auth, navigate]);
-
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
 
     try {
-      await signOut(auth); // Explicitly sign out before signing in
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      const userProfileRef = doc(db, "users", user.email);
-      const userProfileSnap = await getDoc(userProfileRef);
-
-      if (!userProfileSnap.exists()) {
-        setErrorMessage("Couldn't find your account. Please sign up.");
-      } else {
-        navigate("/dashboard");
-      }
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
-      setIsLoading(false);
       setErrorMessage(error.message); // Display error message from Firebase
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Function to handle password reset
   const handlePasswordReset = async () => {
     if (!email) {
       setErrorMessage("Please enter your email address to reset your password.");
@@ -95,8 +50,7 @@ const Login = () => {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setResetMessage("Password reset email sent. Please check your inbox.");
-      setErrorMessage("");
+      alert("Password reset email sent. Please check your inbox."); // Inform the user
     } catch (error) {
       console.error("Error sending password reset email:", error);
       setErrorMessage("Failed to send password reset email. Please try again.");
@@ -107,6 +61,7 @@ const Login = () => {
     return (
       <div>
         <Lottie options={defaultOptions5} height={100} width={100} />
+        <p>Loading...</p>
       </div>
     );
   }
@@ -117,7 +72,6 @@ const Login = () => {
         <h2>Welcome back.</h2>
         <Lottie options={welcomeBack} height={100} width={100} />
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        {resetMessage && <p className="reset-message">{resetMessage}</p>}
         <div className="input-field">
           <label>Email</label>
           <input
