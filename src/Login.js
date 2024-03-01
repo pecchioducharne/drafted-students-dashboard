@@ -12,7 +12,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false); // Initialize isLoading to false
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const defaultOptions5 = {
@@ -27,6 +27,31 @@ const Login = () => {
     animationData: astronautAnimation,
   };
 
+  useEffect(() => {
+    const getUrlParam = (name) => {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    };
+
+    const emailParam = getUrlParam("email");
+    const passwordParam = getUrlParam("password");
+
+    if (emailParam && passwordParam) {
+      setIsLoading(true);
+      signInWithEmailAndPassword(auth, emailParam, passwordParam)
+        .then(() => {
+          navigate("/dashboard");
+        })
+        .catch((error) => {
+          console.error("Error during auto sign in:", error);
+          setErrorMessage("Failed to log in automatically. Please log in manually.");
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [auth, navigate]);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -36,7 +61,7 @@ const Login = () => {
       navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
-      setErrorMessage(error.message); // Display error message from Firebase
+      setErrorMessage(error.message);
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +75,7 @@ const Login = () => {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      alert("Password reset email sent. Please check your inbox."); // Inform the user
+      alert("Password reset email sent. Please check your inbox.");
     } catch (error) {
       console.error("Error sending password reset email:", error);
       setErrorMessage("Failed to send password reset email. Please try again.");
