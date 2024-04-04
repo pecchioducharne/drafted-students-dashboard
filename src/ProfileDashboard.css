@@ -1,445 +1,791 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-.profile-dashboard {
-    font-family: 'Poppins', sans-serif;
-    background-color: white;
-    color: #333;
-    border-radius: 10px;
-    padding: 30px;
-    max-width: 800px;
-    margin: 30px auto;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+* {
+  box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+button {
+  background-color: #00BF63;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  display: block;
+  /* width: 50%; */
+  margin-top: 10px;
+}
+
+button:hover {
+  background: none!;
+}
+
+.profileDashboard {
+  font-family: 'Poppins', sans-serif;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+}
+.profileDashboard p {
+  font-family: 'Poppins', sans-serif;
+}
+
+.sideBar {
+  position: fixed;
+  min-width: 216px;
+  height: 100vh;
+  background-color: #fafafa;
+  left: 0;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sideBarList {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+  align-items: center;
+}
+
+.sideBarListInner {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.sideBarLink {
+  display: flex;
+  background: none;
+  justify-content: center;
+  align-items: center;
+  color: #bababa;
+  width: 68px;
+  height: 68px;
+  border-radius: 18px;
+  margin-bottom: 40px;
+}
+
+.sideBarLink:hover {
+  background: none;
+}
+
+.sideBarLink svg {
+  fill: #bfbfbf;
+  color: #bfbfbf;
+}
+
+.sideBarLink.active {
+  background-color: #4ca65a;
+}
+
+.sideBarLink.active svg {
+  fill: white;
+}
+
+.mainContent {
+  /* position: fixed; */
+  width: calc(100% - 216px);
+  margin-left: 216px;
+  min-height: 100vh;
+  padding: 20px 50px;
+  background-color: #fff;
+  right: 0;
+  margin-bottom: 100px;
+}
+
+/* Start Navbar */
+
+.navbar {
+  display: flex;
+  justify-content: end;
+  margin-bottom: 80px;
+}
+
+.navbarProfile {
+  display: flex;
+  align-items: center;
+}
+
+.navbarProfileInner {
+  display: flex;
+  height: 60px;
+  border: 2px solid #f7f7f7;
+  border-radius: 18px;
+  margin-left: 27px;
+}
+
+.navbarProfileAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+
+.navbarProfileInfo {
+  padding-left: 15px;
+  padding-right: 30px;
+  display: flex;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.navbarProfileName {
+  font-size: 14px;
+  color: #030303;
+  background: none;
+  font-weight: medium;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbarProfileName:hover {
+  background: none;
+}
+
+.navbarProfileClass {
+  font-size: 12px;
+  color: #000;
+  font-weight: 500;
+  opacity: 80%;
+  margin: 0;
+}
+
+.navbarProfileLinks {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px;
+  background: none;
+}
+
+.navbarProfileLinks:hover {
+  background: none;
+}
+
+.navbarNotifications {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f7f7f7;
+  padding: 12.5px 14px;
+  border-radius: 15px;
+}
+
+.navbarNotifications:hover {
+  background-color: #f0f0f0;
+}
+
+.navbarNotifications svg {
+  width: 20px;
+  height: 23px;
+}
+
+/* Start Profile Section */
+.profile {
+  display: flex;
+  margin-bottom: 60px;
+}
+
+.profileInfo {
+  width: 45%;
+  display: flex;
+}
+
+.profileInfoPicture {
+  width: 96px;
+  height: 96px;
+  border-radius: 25px;
+}
+
+.profileInfoInner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.profileInfoClass {
+  display: flex;
+  font-size: 14px;
+  font-weight: 500;
+  color: #000;
+  opacity: 80%;
+  margin: 0;
+  padding: 0;
+}
+
+.profileInfoEdit {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  margin-left: 15px;
+  background: none;
+  color: #438c4f;
+}
+
+.profileInfoEdit:hover {
+  background: none;
+}
+
+.profileInfoName {
+  font-weight: 700;
+  font-size: 34px;
+  margin: 0;
+  padding: 0;
+}
+
+.profileInfoName.video {
+  margin: 0 0 25px 0;
+}
+
+.profileInfoName span {
+  margin-left: 15px;
+}
+
+.profileInfoEmail {
+  font-size: 18px;
+  font-weight: 500;
+  color: #000;
+  opacity: 50%;
+  margin: 0;
+  padding: 0;
+}
+
+.profileExper {
+  width: 65%;
+  display: flex;
+}
+
+.profileExperEduc,
+.profileExperJobs {
+  width: 50%;
+  display: flex;
+}
+
+.profileExperPicture {
+  width: 96px;
+  height: 96px;
+  border-radius: 25px;
+  background-color: #e5e5e5;
+}
+
+.profileExperContent {
+  padding-left: 20px;
+  border-left:solid 4px #e5e5e5;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.profileExperTitle {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0;
+  margin-bottom: 8px;
+  padding: 0;
+}
+
+.header{
+  display: flex;
+  gap: 25px;
+}
+
+.profileExperSubtitle,
+.profileExperPara {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+  padding: 0;
+}
+
+.profileExperEduc .profileExperSubtitle {
+  font-weight: 700;
+}
+
+/* Start Progress Bar Section */
+.progress {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  border-radius: 40px;
+  background-color: #e5e5e5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+}
+
+.progress.info{
+  background: none;
+  margin-bottom: 60px;
+}
+
+.progressCompleted {
+  position: absolute;
+  left: 0;
+  height: 40px;
+  border-radius: 40px;
+  width: 40px;
+  background-color: #4ca65a;
+  transition: all 0.2s ease-in-out;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.progressStepBtn {
+  width: 24px;
+  height: 24px;
+  background-color: #b4b4b4;
+  border-radius: 24px;
+  padding: 0;
+  margin: 0;
+  transition: none;
+}
+
+.progressStepBtn.last {
+  border:solid 3px #4CA65A;
+  background: none;
+}
+
+.progressStepBtn.active {
+  width: 34px;
+  height: 34px;
+  border-radius: 34px;
+  background-color: #fff;
+  margin-right: 4px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.progressStepBtn.active:hover {
+  background-color: #fff;
+}
+
+.progressStepBtn:hover {
+  background-color: #b4b4b4;
+}
+
+.progressStepBtn.last:hover{
+  background: none;
+}
+
+/* Start Recently Joined Section */
+.recently {
+  margin-top: 50px;
+  margin-bottom: 80px;
+}
+
+.sectionTitle {
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+  margin-bottom: 25px;
+  padding: 0;
+}
+
+.sectionTitleInfo {
+  background: #f9f9f9;
+  margin: 0;
+  margin-left: 8px;
+  border-radius: 50%;
+  padding: 12px 15px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+
+.sectionTitleInfo:hover {
+  background: #f1f1f1;
+}
+
+.recentlyList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.recentlyListItem {
+  width: 25%;
+}
+
+.recentlyListItemPicture {
+  display: flex;
+  width: 100%;
+  height: 250px;
+  border-radius: 40px;
+}
+
+.recentlyListItemName {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 60px;
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0 0 15px 0;
+}
+
+.recentlyListItemTime {
+  font-size: 12px;
+  font-weight: 500;
+  color: #000;
+  opacity: 50%;
+  margin: 0;
+}
+
+/* Start Resume Section */
+.resume {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.resumeInfo {
+  width: 312px;
+  height: 325px;
+  background: linear-gradient(317.08deg, #4ca65a 63.71%, #438c4f 128.41%);
+  border-radius: 36px;
+  color: #fff;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.resumeInfoHeader {
+  display: flex;
+  justify-content: end;
+}
+
+.resumeInfoHeaderInfo {
+  background-color: #fff;
+  padding: 6px 8px;
+  border-radius: 50%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.resumeInfo {
+  width: 100%;
+  margin-bottom: 20px;
+  height: 220px;
+  flex-direction: row;
+  align-items: center;
+  position: relative;
+}
+
+.resumeInfoHeader {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.resumeUpload {
+  width: 100%;
+  margin-left: 0;
+  height: 220px;
+}
+
+.resumeInfoHeaderInfo:hover {
+  background: #fff;
+}
+
+.resumeInfoContent {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.resumeInfoContentStep {
+  font-weight: 100;
+  font-size: 115px;
+  margin-right: 16px;
+  width: 66px;
+  text-align: right;
+}
+
+.resumeInfoContentTitle {
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.resumeInfoContentSubtitle {
+  font-size: 14px;
+  font-weight: 200;
+}
+
+.resumeInfoFooter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+.resumeInfoFooterBtn {
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 15px 20px;
+  border-radius: 15px;
+  margin: 0;
+}
+
+.resumeInfoFooterBtn:visited {
+  color: #4da65b;
+}
+
+.resumeInfoFooterBtn.active {
+  flex-grow: 1;
+  background-color: #fff;
+  color: #4da65b;
+  margin-left: 12px;
+  text-align: center;
+}
+
+.resumeUpload {
+  background-color: #f1f1f1;
+  height: 325px;
+  flex-grow: 1;
+  margin-left: 60px;
+  padding: 88px;
+  border-radius: 30px;
+  display: flex;
+}
+
+.resumeUploadStatus {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.resumeUploadStatusTitle {
+  font-size: 34px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.resumeUploadStatusSubtitle {
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.resumeUploadFormWrapper {
+  flex-grow: 1;
+  margin-left: 160px;
+  display: flex;
+  align-items: center;
+}
+
+.resumeUploadForm {
+  height: 160px;
+  width: 100%;
+  background-color: #4ba259;
+  border-radius: 18px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.resumeUploadInfo {
+  display: flex;
+  position: relative;
+}
+
+.resumeUploadInfoInner {
+  flex-grow: 1;
+  padding: 8px 24px;
+  padding-right: 0;
+  color: #fff;
+}
+
+.resumeUploadInfoTitle {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.resumeUploadInfoSize {
+  font-size: 16px;
+  opacity: 80%;
+  font-weight: 300;
+  display: flex;
+  justify-content: space-between;
+}
+
+.resumeUploadCancelBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  background: none;
+}
+
+.resumeUploadGauge {
+  position: relative;
+  height: 4px;
+  width: 100%;
+}
+
+.resumeUploadGauge .full {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  width: 100%;
+  background-color: #fff;
+  opacity: 25%;
+}
+
+.resumeUploadGauge .completed {
+  position: absolute;
+  left: 0;
+  height: 4px;
+  width: 38%;
+  background-color: #fff;
+  opacity: 100%;
+}
+
+.editableHeader{
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@media (max-width: 1560px) {
+  .profile {
+    flex-wrap: wrap;
   }
 
-  .video-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 20px;
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center content */
-    width: 600px; /* Set a fixed width for all cards */
-    max-width: 100%; /* Ensure it doesn't exceed the container's width */
+  .profileInfo {
+    margin-bottom: 35px;
+    width: 100%;
   }
-  
-  
-  .video-resume-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  .profileExper {
+    width: 100%;
+  }
+}
+
+@media (max-width: 1160px) {
+  .profileExper {
+    flex-wrap: wrap;
+  }
+
+  .profileExperEduc {
+    width: 100%;
+    margin-bottom: 22px;
+  }
+
+  .profileExperJobs {
+    width: 100%;
+  }
+}
+
+@media (max-width: 775px) {
+  .sideBar {
+    display: none;
+  }
+
+  .mainContent {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 1220px) {
+  .recentlyList {
+    flex-wrap: wrap;
+  }
+
+  .recentlyListItem {
+    width: 47%;
     margin-bottom: 20px;
-    width: 100%; /* Full width */
-    justify-content: center; /* Center header content */
   }
-  
-  .video-container {
-    flex-grow: 1; /* Take up remaining space */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%; /* Full width */
-    overflow: hidden;
-    border-radius: 10px;
+}
+
+@media (max-width: 570px) {
+  .recentlyListItem {
+    width: 100%;
   }
-  
-  .video-container video, .video-container img {
-    max-height: 100%; /* Limit video/img height to fit within container */
-  }
-  
-  .header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 20px;
-  }
-  
-  .name {
-    color: #00ab59; /* Name in black */
-    margin: 0;
-    font-size: 1.8em;
-  }
-  
-  .university {
-    font-weight: 600;
-    color: #666; /* Adjusted to a more grayish tone */
-    font-size: 1em; /* Slightly smaller font size */
-  }
-  
-  .info-section {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px 40px;
+}
+
+@media (max-width: 1620px) {
+  .resumeUpload {
+    padding: 40px;
   }
 
-  .icon {
-    width: 1em; /* Sets the icon size to match the current font size */
-    height: auto; /* Maintains the aspect ratio of the icon */
-    vertical-align: middle; /* Aligns the icon with the middle of the text */
-    margin-right: 4px; /* Adds some space between the icon and the text */
-    margin-bottom: 13px;
+  .resumeUploadFormWrapper {
+    margin-left: 40px;
   }
-  
+}
 
-  .founders-message-header {
-    display: flex;
-    align-items: center;
-  }
-  
-  .speech-bubble-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
-    font-family: 'Roboto', sans-serif;
-  }
-
-  .speech-bubble-button img {
-    width: 20px; /* Adjust the width as desired */
-    height: auto; /* Maintain aspect ratio */
-  }
-  
-  
-  .profile-field {
-    margin-bottom: 0;
-  }
-
-  .profile-field .edit-button {
-    padding: 4px 8px; /* Reduce padding to make the buttons smaller */
-    margin-left: 4px; /* Add some margin to the left for spacing */
-    margin-top: 2px;
-    font-size: 9px;
-    background-color: gray;
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .profile-field strong {
-    margin-bottom: 0.5em;
-    color: #333;
-    font-weight: 600;
-    margin-right: 4px; /* Add margin to the right for spacing */
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  .field-label {
-    display: flex;
-    align-items: center; /* Ensures vertical alignment */
-    gap: 0; /* No space between label and button */
-    font-family: 'Roboto', sans-serif;
-  }
-
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-  
-  .modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .edit-button {
-    padding: 4px 8px; /* Example padding, adjust as needed */
-    background-color: #00BF63;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    margin: 0;
-    cursor: pointer;
-    font-size: 0.7em;
-    margin-top: -9px;
-    /* Flex adjustments if needed */
-    flex-shrink: 0; /* Prevents the button from shrinking */
-    font-family: 'Roboto', sans-serif;
-  }
-
-  .edit-resume-container {
-    text-align: left; /* Aligns the content of the container to the left */
-    margin-top: 10px; /* Spacing above the button */
-  }
-
-  .resume-header {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adjust as needed */
-  }
-  
-  /* Existing styles for .view-resume-link and .edit-button remain the same */
-  
-  
-  .profile-field p, .profile-field a {
-    margin: 0; /* Resetting margin to align with the button */
-    display: inline-block; /* Aligns text with the button */
-    font-family: 'Roboto', sans-serif;
-  }
-  
-  /* ... existing styles ... */
-
-  .video-resumes {
-    margin-top: 50px;
-  }
-  
-  .video-resumes strong {
-    display: block;
-    margin-bottom: 0.5em;
-    font-weight: 600;
-    font-size: 1.4em;
-  }
-
-  .video-resume-header {
-    display: flex;
-    align-items: center;
-    gap: 10px; /* Adjust the space between the icon and the text */
-    margin-bottom: 20px; /* Space between the header and the video player */
-  }
-
-  .lottie-inline-icon {
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .video-resume-title {
-    margin-left: 8px;
-    vertical-align: middle;
-  }
-
-  hr {
-    border: none;
-    height: 2px;
-    background-color: #eee;
+@media (max-width: 1440px) {
+  .resumeInfo {
+    width: 100%;
     margin-bottom: 20px;
-  }
-  
-  .video-section {
-    margin-bottom: 30px;
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    align-items: center; /* Center children horizontally */
-  }
-  
-  .video-container {
-    position: relative;
-    width: 100%;
-    max-width: 500px; /* Adjust based on your layout */
-    overflow: hidden;
-    border-radius: 10px; /* Optional: for rounded corners */
-    display: flex;
-    justify-content: center;
-    padding-top: 56.25%;
+    height: 220px;
+    flex-direction: row;
     align-items: center;
-  }
-  
-  .video-container video,
-  .video-container img {
-    width: 98%; /* Makes the video or image almost as wide as the container */
-    height: auto; /* Maintains aspect ratio */
-    border-radius: 8px; /* Optional: for rounded corners on the video or image */
-  }
-  
-  /* If you are using an iframe for embedding videos */
-  .video-container iframe {
-    width: 98%; /* Adjusts the width to almost full container width */
-    height: auto; /* Adjusts height automatically based on the aspect ratio */
-    border-radius: 8px; /* Optional: for rounded corners */
-  }
-
-.video-container:not(.iframe-container) {
-  padding-top: 0; /* Removes padding for non-iframe containers (like GIFs) */
-}
-
-.video-container.iframe-container {
-  padding-top: 56.25%; /* Keep this for videos */
-}
-
-  .video-container img {
-    width: 100%;
-    height: auto; /* Adjust height automatically based on the width */
-  } 
-
-  .video-title-container {
-    display: flex;
-    flex-direction: column; /* Stack children vertically */
-    align-items: center; /* Center children horizontally */
-    margin-bottom: 0px; /* Space between the title and the video player */
-  }
-  
-  .video-container iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    border: none;
-}
-
-.video-section h3 {
-    margin: 0;
-    font-weight: 600;
-    text-align: left; /* Align the title to the left */
-    width: 100%; /* Ensure the title takes full width */
-}
-
-.record-button {
-    background-color: #00BF63;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    font-family: 'Poppins', sans-serif;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-align: center;
-    display: block;
-    width: 50%;
-    margin-top: 10px;
-}
-
-/* Hover style remains the same */
-.record-button:hover {
-    background-color: #009950;
-}
-  
-  .video-container {
     position: relative;
-    width: 100%;
-    max-width: 500px; /* Control the size */
-    overflow: hidden; /* Ensures the rounded edges are applied to the video */
-    border-radius: 10px;
-    padding-top: 56.25%; /* Initial aspect ratio for 16:9 videos, adjust as needed */
-    margin-bottom: 10px;
-  }
-  
-  .video-container iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 100%;
-    border: none;
   }
 
-  .sign-out-button {
-    /* Desktop styles (default) */
+  .resumeInfoHeader {
     position: absolute;
-    top: 20px; /* Adjust the top position as needed for desktop */
-    right: 20px; /* Adjust the right position as needed for desktop */
-    font-family: 'Roboto', sans-serif;
+    right: 20px;
+    top: 20px;
   }
 
-  .profile-gif {
-    width: 5em; /* Adjust the size to match the emoji size */
+  .resumeUpload {
+    width: 100%;
+    margin-left: 0;
+    height: 220px;
+  }
+}
+
+@media (max-width: 1020px) {
+  .resumeUpload {
+    flex-wrap: wrap;
     height: auto;
-    vertical-align: middle; /* Align it with the text */
-    margin-right: 4px; /* Space between the image and the title */
   }
 
-  .loading-dot {
-    background-color: #00BF63 !important;
+  .resumeUploadStatus {
+    margin-bottom: 40px;
+    width: 100%;
   }
 
-  .profile-dashboard .loading-dot {
-    background-color: #00BF63; /* Green color */
+  .resumeUploadFormWrapper {
+    margin-left: 0;
   }
-
-  @media (max-width: 600px) {
-    .profile-dashboard {
-      padding: 20px;
-    }
-  
-    .info-section {
-      grid-template-columns: 1fr;
-    }
-  
-    .profile-field {
-      margin-bottom: 20px;
-    }
-  
-    .record-button {
-      width: 100%;
-    }
-  
-    /* Add the following styles to move Graduation Year and LinkedIn below the others */
-    .profile-field strong {
-      margin-bottom: 0.5em;
-      color: #333;
-      font-weight: 600;
-    }
-  
-    .profile-field p {
-      margin: 0; /* Reset margin to remove extra spacing */
-    }
-  
-    .info-section .profile-field:nth-child(3),
-    .info-section .profile-field:nth-child(4) {
-      grid-column: span 2; /* Make these fields span two columns to move them below */
-    }
-
-    /* Adjust the margin-top to push the Sign Out button to the bottom */
-    .sign-out-button-container {
-      margin-top: 20px;
-    }
-
-    .sign-out-button {
-      /* Mobile styles */
-      position: static; /* Reset position to make it part of the document flow */
-      margin-top: 2120px; /* Adjust margin as needed to place it below the last record button */
-      margin-right: 60px;
-      width: auto; /* Allow the button to size itself based on content */
-      text-align: center; /* Center-align the button on mobile */
-      margin-bottom: 30px; /* Add margin at the bottom to separate it from other content */
-      font-family: 'Roboto', sans-serif;
-    }
-  }
-
-  .resume-section {
-    margin-bottom: 20px;
-  }
-  
-  .resume-section strong {
-    display: block;
-    margin-bottom: 10px;
-  }
-  
-  .resume-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Align items to the start of the container */
-  }  
-  
-  .view-resume-link {
-    display: block;
-    color: #00BF63;
-    margin-top: 10px; /* Spacing above the link */
-    text-decoration: underline;
-  }
-  
-  .view-resume-link:hover {
-    text-decoration: none;
-  }
-  
-  .view-resume-link {
-    display: block; /* Make the link a block element */
-    color: #00BF63; /* Match the color with the edit button */
-    margin-top: 10px; /* Spacing above the link */
-    text-decoration: underline; /* Underline to indicate it's a link */
-  }
-  
-  .view-resume-link:hover {
-    text-decoration: none; /* Remove underline on hover for a subtle effect */
-  }
+}
