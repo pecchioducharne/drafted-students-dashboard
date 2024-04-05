@@ -44,7 +44,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1
+        {/* <h1
           style={{
             fontWeight: "2500",
             paddingLeft: "50px",
@@ -53,7 +53,7 @@ function App() {
         >
           drafted<span style={{ color: "#53ad7a" }}> beta</span>
           <span style={{ color: "black" }}>.</span>
-        </h1>
+        </h1> */}
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/video-recorder" element={<VideoRecorderPage />} />
