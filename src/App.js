@@ -44,19 +44,9 @@ function App() {
   return (
     <Router>
       <div className="App">
-        {/* <h1
-          style={{
-            fontWeight: "2500",
-            paddingLeft: "50px",
-            marginLeft: "10px",
-          }}
-        >
-          drafted<span style={{ color: "#53ad7a" }}> beta</span>
-          <span style={{ color: "black" }}>.</span>
-        </h1> */}
         <Routes>
           <Route path="/login" element={<Login />} />
-          <Route path="/video-recorder" element={<VideoRecorderPage />} />
+          <Route path="/video-recorder1" element={<VideoRecorderPage />} />
           <Route path="/video-recorder2" element={<VideoRecorderPage2 />} />
           <Route path="/video-recorder3" element={<VideoRecorderPage3 />} />
           <Route
