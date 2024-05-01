@@ -18,6 +18,18 @@
     margin-bottom: 20px;
     text-align: left; /* Left align for input fields */
   }
+
+  .signupLink {
+    font-size: large;
+    text-align: center;
+    margin-top: 15px;
+  }
+  
+  .link {
+    color: #00ab59;
+    text-decoration: none; /* Removes underline by default */
+    transition: text-decoration 0.3s ease;
+  }
   
   .input-field label {
     display: block;

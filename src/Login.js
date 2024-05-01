@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { auth, db } from "./firebase";
-import { signInWithEmailAndPassword, signOut, sendPasswordResetEmail } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  signOut,
+  sendPasswordResetEmail,
+} from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import Lottie from "react-lottie";
@@ -44,7 +48,9 @@ const Login = () => {
         })
         .catch((error) => {
           console.error("Error during auto sign in:", error);
-          setErrorMessage("Failed to log in automatically. Please log in manually.");
+          setErrorMessage(
+            "Failed to log in automatically. Please log in manually."
+          );
         })
         .finally(() => {
           setIsLoading(false);
@@ -52,12 +58,20 @@ const Login = () => {
     }
   }, [auth, navigate]);
 
+  const navigateToCandidateSignup = () => {
+    window.location.href = "https://drafted-onboarding.netlify.app//";
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
 
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
@@ -69,7 +83,9 @@ const Login = () => {
 
   const handlePasswordReset = async () => {
     if (!email) {
-      setErrorMessage("Please enter your email address to reset your password.");
+      setErrorMessage(
+        "Please enter your email address to reset your password."
+      );
       return;
     }
 
@@ -139,7 +155,23 @@ const Login = () => {
         </div>
         <button type="submit">Login</button>
         <br></br>
-        <button type="button" className="reset-password-btn" onClick={handlePasswordReset}>Forgot Password?</button>
+        <button
+          type="button"
+          className="reset-password-btn"
+          onClick={handlePasswordReset}
+        >
+          Forgot Password?
+        </button>
+        <p className="signupLink">
+          Don't have an account?{" "}
+          <a
+            href="#"
+            onClick={navigateToCandidateSignup}
+            className="link"
+          >
+            <strong>Sign Up</strong>
+          </a>
+        </p>
       </form>
     </div>
   );
