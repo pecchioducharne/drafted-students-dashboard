@@ -162,6 +162,7 @@ const Login = () => {
         >
           Forgot Password?
         </button>
+        <br></br>
         <p className="signupLink">
           Don't have an account?{" "}
           <a
