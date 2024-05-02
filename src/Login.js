@@ -184,7 +184,7 @@ const Login = () => {
             onClick={navigateToCandidateSignup}
             className="link"
           >
-            <strong>Sign In</strong>
+            <strong>Click Here</strong>
           </a>
         </p>
       </form>
