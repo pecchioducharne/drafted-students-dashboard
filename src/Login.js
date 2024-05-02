@@ -62,6 +62,10 @@ const Login = () => {
     window.location.href = "https://drafted-onboarding.netlify.app//";
   };
 
+  const navigateToRecruiterSignIn = () => {
+    window.location.href = "https://drafted-onboarding.netlify.app//";
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
@@ -171,6 +175,16 @@ const Login = () => {
             className="link"
           >
             <strong>Sign Up</strong>
+          </a>
+        </p>
+        <p className="signupLink">
+          Looking to hire?{" "}
+          <a
+            href="#"
+            onClick={navigateToCandidateSignup}
+            className="link"
+          >
+            <strong>Sign In</strong>
           </a>
         </p>
       </form>
