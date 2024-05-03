@@ -59,11 +59,11 @@ const Login = () => {
   }, [auth, navigate]);
 
   const navigateToCandidateSignup = () => {
-    window.location.href = "https://drafted-onboarding.netlify.app//";
+    window.location.href = "https://drafted-onboarding.netlify.app";
   };
 
   const navigateToRecruiterSignIn = () => {
-    window.location.href = "https://drafted-onboarding.netlify.app//";
+    window.location.href = "https://drafted-onboarding.netlify.app";
   };
 
   const handleSubmit = async (event) => {
