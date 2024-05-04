@@ -272,6 +272,9 @@ const ProfileDashboard = ({
               height: "100%",
               borderRadius: "8px",
             }}
+            onError={(e) => {
+              console.error('Error playing video:', e);
+            }}
           >
             Your browser does not support the video tag.
           </video>

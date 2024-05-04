@@ -41,19 +41,22 @@ const VideoRecorderPage = () => {
     }
     setIsUploading(true);
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    // Ensure duration metadata is set
     await ffmpeg.run(
       "-i",
       "original.webm",
-      "-c",
-      "copy",
-      "-fflags",
-      "+genpts",
+      "-c:v",
+      "libx264", // Using H.264 video codec
+      "-crf",
+      "28", // Constant Rate Factor for quality (lower is better)
+      "-preset",
+      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "-movflags",
+      "+faststart", // Place the moov atom at the front of the file for quick start
       "output.mp4"
     );
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
+      type: "video/mp4", // Ensure the Blob type is set correctly
     });
     setRecordedVideo(compressedBlob);
     setIsUploading(false);
