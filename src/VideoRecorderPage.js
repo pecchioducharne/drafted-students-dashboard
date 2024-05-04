@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Lottie from "react-lottie";
 import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
@@ -6,19 +6,57 @@ import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
-import ReactGA4 from 'react-ga4';
+import ReactGA4 from "react-ga4";
 import fireAnimationData from "./fire.json"; // Adjust the path as necessary
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
-  ReactGA4.initialize('G-3M4KL5NDYG');
+  const ffmpeg = createFFmpeg({ log: true });
+  ReactGA4.initialize("G-3M4KL5NDYG");
 
-  const handleVideoRecording = (videoBlobOrFile) => {
-    setRecordedVideo(videoBlobOrFile);
+  useEffect(() => {
+    const loadFFmpeg = async () => {
+      try {
+        if (!ffmpeg.isLoaded()) {
+          await ffmpeg.load();
+          setFFmpegLoaded(true); // Set state only after successful load
+        }
+      } catch (error) {
+        console.error("Could not load FFmpeg:", error);
+      }
+    };
+    loadFFmpeg();
+  }, [ffmpeg]);
+
+  const handleVideoRecording = async (videoBlob) => {
+    if (!ffmpegLoaded) {
+      console.error("FFmpeg is not loaded yet.");
+      return;
+    }
+    setIsUploading(true);
+    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+    // Ensure duration metadata is set
+    await ffmpeg.run(
+      "-i",
+      "original.webm",
+      "-c",
+      "copy",
+      "-fflags",
+      "+genpts",
+      "output.mp4"
+    );
+    const compressedData = ffmpeg.FS("readFile", "output.mp4");
+    const compressedBlob = new Blob([compressedData.buffer], {
+      type: "video/mp4",
+    });
+    setRecordedVideo(compressedBlob);
+    setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
@@ -31,44 +69,23 @@ const VideoRecorderPage = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      try {
-        setIsUploading(true); // Start uploading
+      setIsUploading(true);
+      const fileName = `user_recorded_video_${Date.now()}.mp4`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, recordedVideo);
+      const downloadURL = await getDownloadURL(storageRef);
 
-        // Add TikTok tracking
-        if(window.ttq) {
-          window.ttq.track('CompleteRegistration', {
-            content_id: 'user_recorded_video',
-            email: auth.currentUser.email
-            // Add other relevant parameters here
-          });
-        }
-
-        const fileName = `user_recorded_video_${Date.now()}.mp4`;
-        const storageRef = ref(storage, fileName);
-        await uploadBytes(storageRef, recordedVideo);
-        const downloadURL = await getDownloadURL(storageRef);
-
-        // Update the user's document in Firestore
-        const userEmail = auth.currentUser.email; // Get the logged-in user's email
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video1: downloadURL,
-        });
-
-        console.log("Video uploaded successfully and Firestore updated");
-
-        ReactGA4.event({
-          category: "Video Recording",
-          action: "Saved Video",
-          label: "Record Video 1"
-        });
-
-        navigate("/dashboard"); // Redirect to ProfileDashboard
-      } catch (error) {
-        console.error("Video upload failed:", error);
-      } finally {
-        setIsUploading(false);
-      }
+      const userEmail = auth.currentUser.email;
+      const userDocRef = doc(db, "drafted-accounts", userEmail);
+      await updateDoc(userDocRef, { video1: downloadURL });
+      console.log("Video uploaded successfully and Firestore updated");
+      ReactGA4.event({
+        category: "Video Recording",
+        action: "Saved Video",
+        label: "Record Video 1",
+      });
+      navigate("/dashboard");
+      setIsUploading(false);
     }
   };
 
@@ -93,11 +110,10 @@ const VideoRecorderPage = () => {
   }
 
   const toggleProTips = () => {
-
     ReactGA4.event({
       category: "Video Recording",
       action: "See Pro Tips",
-      label: "Record Video 1"
+      label: "Record Video 1",
     });
 
     setShowProTips(!showProTips); // Toggle visibility of pro tips
