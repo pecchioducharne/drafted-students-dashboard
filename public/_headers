@@ -1,3 +1,4 @@
 /*  
-  Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app
+  Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app/dashboard
+  Cross-Origin-Embedder-Policy: require-corp
   Cross-Origin-Opener-Policy: same-origin
