@@ -129,6 +129,17 @@ const ProfileDashboard = ({
     setEditMode({ ...editMode, [field]: !editMode[field] });
   };
 
+  const fetchVideoAsBlob = async (path) => {
+    try {
+      const response = await fetch(path);
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error("Error fetching video:", error);
+      return "";
+    }
+  };
+
   // Update fields in Firebase and local state
   const updateField = async (field, newValue) => {
     if (field !== "email") {
@@ -256,11 +267,36 @@ const ProfileDashboard = ({
     checkAuthAndFetchData();
   }, [navigate, auth]);
 
-  const VideoPlayer = ({ url }) => {
-    const containerClass = url
-      ? "video-container"
-      : "video-container default-video";
+  useEffect(() => {
+    const fetchVideoUrls = async () => {
+      try {
+        const userDocRef = doc(db, "users", "userID");  // Adjust path as necessary
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          const videoPaths = docSnap.data().videoPaths;  // Adjust according to your data structure
+          loadVideos(videoPaths);
+        } else {
+          console.log("No such document!");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
+      }
+    };
+  
+    fetchVideoUrls();
+  }, []);  // Dependency array might include user-specific info if dynamic
 
+  const loadVideos = async (videoPaths) => {
+    const urls = await Promise.all(videoPaths.map(path => fetchVideoAsBlob(path)));
+    setVideoUrl(urls[0]);
+    setVideoUrl2(urls[1]);
+    setVideoUrl3(urls[2]);
+  };
+  
+
+  const VideoPlayer = ({ url }) => {
+    const containerClass = url ? "video-container" : "video-container default-video";
+  
     return (
       <div className={containerClass}>
         {url ? (
@@ -291,7 +327,7 @@ const ProfileDashboard = ({
         )}
       </div>
     );
-  };
+  };  
 
   return (
     <>
