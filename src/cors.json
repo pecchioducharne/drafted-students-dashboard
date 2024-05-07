@@ -1,13 +1,21 @@
 [
   {
-    "origin": ["https://main--drafted-dashboard.netlify.app"],
-    "responseHeader": [
-      "Content-Type",
-      "Accept-Ranges",
-      "Cross-Origin-Embedder-Policy",
-      "Cross-Origin-Opener-Policy"
-    ],
+    "origin": ["https://main--drafted-dashboard.netlify.app/dashboard"],
+    "responseHeader": ["Content-Type", "Accept-Ranges", "Content-Length", "Access-Control-Allow-Origin"],
     "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     "maxAgeSeconds": 3600
   }
 ]
+
+
+
+
+
+
+
+
+
+
+
+
+
