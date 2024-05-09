@@ -20,46 +20,50 @@ const VideoRecorderPage = () => {
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
 
-  useEffect(() => {
-    const loadFFmpeg = async () => {
-      try {
-        if (!ffmpeg.isLoaded()) {
-          await ffmpeg.load();
-          setFFmpegLoaded(true); // Set state only after successful load
-        }
-      } catch (error) {
-        console.error("Could not load FFmpeg:", error);
-      }
-    };
-    loadFFmpeg();
-  }, [ffmpeg]);
+  // useEffect(() => {
+  //   const loadFFmpeg = async () => {
+  //     try {
+  //       if (!ffmpeg.isLoaded()) {
+  //         await ffmpeg.load();
+  //         setFFmpegLoaded(true); // Set state only after successful load
+  //       }
+  //     } catch (error) {
+  //       console.error("Could not load FFmpeg:", error);
+  //     }
+  //   };
+  //   loadFFmpeg();
+  // }, [ffmpeg]);
 
-  const handleVideoRecording = async (videoBlob) => {
-    if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet.");
-      return;
-    }
-    setIsUploading(true);
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264", // Using H.264 video codec
-      "-crf",
-      "28", // Constant Rate Factor for quality (lower is better)
-      "-preset",
-      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
-      "-movflags",
-      "+faststart", // Place the moov atom at the front of the file for quick start
-      "output.mp4"
-    );
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4", // Ensure the Blob type is set correctly
-    });
-    setRecordedVideo(compressedBlob);
-    setIsUploading(false);
+  // const handleVideoRecording = async (videoBlob) => {
+  //   if (!ffmpegLoaded) {
+  //     console.error("FFmpeg is not loaded yet.");
+  //     return;
+  //   }
+  //   setIsUploading(true);
+  //   ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+  //   await ffmpeg.run(
+  //     "-i",
+  //     "original.webm",
+  //     "-c:v",
+  //     "libx264", // Using H.264 video codec
+  //     "-crf",
+  //     "28", // Constant Rate Factor for quality (lower is better)
+  //     "-preset",
+  //     "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+  //     "-movflags",
+  //     "+faststart", // Place the moov atom at the front of the file for quick start
+  //     "output.mp4"
+  //   );
+  //   const compressedData = ffmpeg.FS("readFile", "output.mp4");
+  //   const compressedBlob = new Blob([compressedData.buffer], {
+  //     type: "video/mp4", // Ensure the Blob type is set correctly
+  //   });
+  //   setRecordedVideo(compressedBlob);
+  //   setIsUploading(false);
+  // };
+
+  const handleVideoRecording = (videoBlobOrFile) => {
+    setRecordedVideo(videoBlobOrFile);
   };
 
   const toggleVideo = (event) => {
