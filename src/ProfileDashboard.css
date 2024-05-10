@@ -45,6 +45,29 @@ button:hover {
   font-family: 'Poppins', sans-serif;
 }
 
+.profileExperLinkedIn a {
+  color: green; /* Set the link color */
+  text-decoration: none; /* Remove default underline */
+}
+
+.profileExperLinkedIn a:hover {
+  text-decoration: underline; /* Add underline on hover */
+  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+}
+
+.view-resume-link {
+  color: green; /* Set the link color */
+  text-decoration: none; /* Remove default underline */
+  margin-top: 7px;
+}
+
+.view-resume-link:hover {
+  text-decoration: underline; /* Add underline on hover */
+  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+}
+
+
+
 .sideBar {
   position: fixed;
   min-width: 216px;

@@ -44,7 +44,7 @@ const ProfileDashboard = ({
     major: false,
     graduationYear: false,
     email: false,
-    linkedIn: false,
+    linkedInURL: false,
   });
 
   const toggleEditMode = (field) => {
@@ -183,6 +183,9 @@ const ProfileDashboard = ({
           if (userData.resume) {
             setResumeUrl(userData.resume);
           }
+          if (userData.linkedInURL) {
+            setLinkedInURL(userData.linkedInURL);
+          }
         } else {
           console.log("No such document!");
         }
@@ -198,10 +201,10 @@ const ProfileDashboard = ({
   useEffect(() => {
     const fetchVideoUrls = async () => {
       try {
-        const userDocRef = doc(db, "users", "userID");  // Adjust path as necessary
+        const userDocRef = doc(db, "users", "userID"); // Adjust path as necessary
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
-          const videoPaths = docSnap.data().videoPaths;  // Adjust according to your data structure
+          const videoPaths = docSnap.data().videoPaths; // Adjust according to your data structure
           loadVideos(videoPaths);
         } else {
           console.log("No such document!");
@@ -210,21 +213,24 @@ const ProfileDashboard = ({
         console.error("Error fetching document:", error);
       }
     };
-  
+
     fetchVideoUrls();
-  }, []);  // Dependency array might include user-specific info if dynamic
+  }, []); // Dependency array might include user-specific info if dynamic
 
   const loadVideos = async (videoPaths) => {
-    const urls = await Promise.all(videoPaths.map(path => fetchVideoAsBlob(path)));
+    const urls = await Promise.all(
+      videoPaths.map((path) => fetchVideoAsBlob(path))
+    );
     setVideoUrl(urls[0]);
     setVideoUrl2(urls[1]);
     setVideoUrl3(urls[2]);
   };
-  
 
   const VideoPlayer = ({ url }) => {
-    const containerClass = url ? "video-container" : "video-container default-video";
-  
+    const containerClass = url
+      ? "video-container"
+      : "video-container default-video";
+
     return (
       <div className={containerClass}>
         {url ? (
@@ -237,7 +243,7 @@ const ProfileDashboard = ({
               borderRadius: "8px",
             }}
             onError={(e) => {
-              console.error('Error playing video:', e);
+              console.error("Error playing video:", e);
             }}
           >
             Your browser does not support the video tag.
@@ -255,7 +261,7 @@ const ProfileDashboard = ({
         )}
       </div>
     );
-  };  
+  };
 
   return (
     <>
@@ -451,6 +457,32 @@ const ProfileDashboard = ({
                   >
                     <strong>View Resume</strong>
                   </a>
+                  <br></br>
+                </div>
+              </div>
+              <div className="profileExperLinkedIn">
+                <div className="profileExperContent">
+                  <div className="editableHeader">
+                    <h4 className="profileExperTitle">LinkedIn</h4>
+                    <button
+                      className="profileInfoEdit"
+                      onClick={() => toggleEditMode("linkedInURL")}
+                    >
+                      {editMode.linkedInURL ? "Save" : <EditIcon />}
+                    </button>
+                  </div>
+                  {editMode.linkedInURL ? (
+                    <input
+                      type="text"
+                      value={editLinkedInURL}
+                      onChange={(e) => setLinkedInURL(e.target.value)}
+                      onBlur={() => updateField("linkedInURL", editLinkedInURL)}
+                    />
+                  ) : (
+                    <a href={linkedInURL} className="profileExperPara">
+                      {linkedInURL}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
