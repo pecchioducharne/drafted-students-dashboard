@@ -46,7 +46,7 @@ button:hover {
 }
 
 .profileExperLinkedIn a {
-  color: green; /* Set the link color */
+  color: #00A857; /* Set the link color */
   text-decoration: none; /* Remove default underline */
 }
 
@@ -56,7 +56,7 @@ button:hover {
 }
 
 .view-resume-link {
-  color: green; /* Set the link color */
+  color: #008F4C; /* Set the link color */
   text-decoration: none; /* Remove default underline */
   margin-top: 7px;
 }
