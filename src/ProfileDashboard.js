@@ -490,6 +490,31 @@ const ProfileDashboard = ({
           {/* End Profile Section */}
           {/* Start Progress Bar */}
           <section className="progressBarSection">
+            {resumeIndex === 3 && (
+              <div className="congratulationsBanner">
+                <h1>You're ready to get drafted! 🤘</h1>
+                <p>Keep an eye on your inbox.</p>
+                <br></br>
+              </div>
+            )}
+            {resumeIndex === 2 && (
+              <div className="congratulationsBanner">
+                <h1>Almost there... Ready to launch... 🚀</h1>
+                <br></br>
+              </div>
+            )}
+            {resumeIndex === 1 && (
+              <div className="congratulationsBanner">
+                <h1>Only 2 more to go... You got this! ✊</h1>
+                <br></br>
+              </div>
+            )}
+            {resumeIndex === 0 && (
+              <div className="congratulationsBanner">
+                <h1>3 videos away from getting drafted... Let's do this! 🔥</h1>
+                <br></br>
+              </div>
+            )}
             <div className="progress">
               <span
                 className="progressCompleted"
