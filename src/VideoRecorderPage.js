@@ -23,9 +23,11 @@ const VideoRecorderPage = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
+        console.log("Attempting to load FFmpeg...");
         if (!ffmpeg.isLoaded()) {
           await ffmpeg.load();
-          setFFmpegLoaded(true); // Set state only after successful load
+          setFFmpegLoaded(true);
+          console.log("FFmpeg loaded successfully.");
         }
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
@@ -45,18 +47,18 @@ const VideoRecorderPage = () => {
       "-i",
       "original.webm",
       "-c:v",
-      "libx264", // Using H.264 video codec
+      "libx264",
       "-crf",
-      "28", // Constant Rate Factor for quality (lower is better)
+      "28",
       "-preset",
-      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "fast",
       "-movflags",
-      "+faststart", // Place the moov atom at the front of the file for quick start
+      "+faststart",
       "output.mp4"
     );
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4", // Ensure the Blob type is set correctly
+      type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
     setIsUploading(false);
