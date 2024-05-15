@@ -1,6 +1,6 @@
 [
   {
-    "origin": ["https://main--drafted-dashboard.netlify.app/dashboard"],
+    "origin": ["https://main--drafted-dashboard.netlify.app", "http://localhost:3000"],
     "responseHeader": ["Content-Type", "Accept-Ranges", "Content-Length", "Access-Control-Allow-Origin"],
     "method": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     "maxAgeSeconds": 3600
