@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import Lottie from "react-lottie";
@@ -8,17 +8,60 @@ import "./VideoRecorderPage.css"; // Importing CSS
 import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
 import challengeAnimationData from "./challenge.json"; // Adjust the path as necessary
 import ReactGA4 from "react-ga4";
+import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
+  const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
 
-  const handleVideoRecording = (videoBlobOrFile) => {
-    setRecordedVideo(videoBlobOrFile);
+  useEffect(() => {
+    const loadFFmpeg = async () => {
+      try {
+        console.log("Attempting to load FFmpeg...");
+        if (!ffmpeg.isLoaded()) {
+          await ffmpeg.load();
+          setFFmpegLoaded(true);
+          console.log("FFmpeg loaded successfully.");
+        }
+      } catch (error) {
+        console.error("Could not load FFmpeg:", error);
+      }
+    };
+    loadFFmpeg();
+  }, [ffmpeg]);
+
+  const handleVideoRecording = async (videoBlob) => {
+    if (!ffmpegLoaded) {
+      console.error("FFmpeg is not loaded yet.");
+      return;
+    }
+    setIsUploading(true);
+    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+    await ffmpeg.run(
+      "-i",
+      "original.webm",
+      "-c:v",
+      "libx264", // Using H.264 video codec
+      "-crf",
+      "28", // Constant Rate Factor for quality (lower is better)
+      "-preset",
+      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "-movflags",
+      "+faststart", // Place the moov atom at the front of the file for quick start
+      "output.mp4"
+    );
+    const compressedData = ffmpeg.FS("readFile", "output.mp4");
+    const compressedBlob = new Blob([compressedData.buffer], {
+      type: "video/mp4", // Ensure the Blob type is set correctly
+    });
+    setRecordedVideo(compressedBlob);
+    setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
