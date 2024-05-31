@@ -415,7 +415,7 @@ const ProfileDashboard = ({
                   </div>
                   <p className="profileExperSubtitle">{university}</p>
                   <p className="profileExperPara">
-                    Bachelor's degee,{" "}
+                    {/* Bachelor's degee,{" "} */}
                     {editMode.major ? (
                       <input
                         type="text"
