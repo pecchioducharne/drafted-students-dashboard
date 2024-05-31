@@ -166,14 +166,10 @@ const ProfileDashboard = ({
   }, [videoUrl, videoUrl2, videoUrl3]);
 
   useEffect(() => {
-    // Function to check user's authentication state and fetch data
     const checkAuthAndFetchData = async () => {
       const user = auth.currentUser;
       if (user) {
-        // User is authenticated, proceed with data fetching
         const userDocRef = doc(db, "drafted-accounts", user.email);
-
-        // Fetch video URLs
         const docSnap = await getDoc(userDocRef);
         if (docSnap.exists()) {
           const userData = docSnap.data();
@@ -186,11 +182,13 @@ const ProfileDashboard = ({
           if (userData.linkedInURL) {
             setLinkedInURL(userData.linkedInURL);
           }
+          if (userData.major) {
+            setMajor(userData.major); // Ensure this line is present
+          }
         } else {
           console.log("No such document!");
         }
       } else {
-        // No user is signed in, redirect to login
         navigate("/login");
       }
     };
@@ -415,7 +413,6 @@ const ProfileDashboard = ({
                   </div>
                   <p className="profileExperSubtitle">{university}</p>
                   <p className="profileExperPara">
-                    {/* Bachelor's degee,{" "} */}
                     {editMode.major ? (
                       <input
                         type="text"
