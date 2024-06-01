@@ -79,15 +79,36 @@ const VideoRecorderPage = () => {
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
+  
+      // Upload the recorded video
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
       await uploadBytes(storageRef, recordedVideo);
       const downloadURL = await getDownloadURL(storageRef);
-
+  
+      // Generate thumbnail using FFmpeg
+      ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
+      await ffmpeg.run(
+        "-i", "video.mp4",
+        "-ss", "00:00:01.000", // Take the screenshot at the 1 second mark
+        "-vframes", "1",
+        "thumbnail.jpg"
+      );
+      const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
+      const thumbnailBlob = new Blob([thumbnailData.buffer], { type: "image/jpeg" });
+  
+      // Upload the thumbnail
+      const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
+      const thumbnailRef = ref(storage, thumbnailFileName);
+      await uploadBytes(thumbnailRef, thumbnailBlob);
+      const thumbnailURL = await getDownloadURL(thumbnailRef);
+  
+      // Update Firestore document with video and thumbnail URLs
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, { video1: downloadURL });
-      console.log("Video uploaded successfully and Firestore updated");
+      await updateDoc(userDocRef, { video1: downloadURL, thumbnail: thumbnailURL });
+  
+      console.log("Video and thumbnail uploaded successfully and Firestore updated");
       ReactGA4.event({
         category: "Video Recording",
         action: "Saved Video",
@@ -97,6 +118,7 @@ const VideoRecorderPage = () => {
       setIsUploading(false);
     }
   };
+  
 
   function YouTubeEmbedQuestion() {
     return (
