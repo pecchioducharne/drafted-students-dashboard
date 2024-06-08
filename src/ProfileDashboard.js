@@ -535,7 +535,7 @@ const ProfileDashboard = ({
           {/* Start Recently Joined Section */}
           <section className="recently">
             <h3 className="profileInfoName video">
-              Video Resumes
+              Video Resume
               <button className="sectionTitleInfo">
                 <QuestionMarkIcon />
               </button>
