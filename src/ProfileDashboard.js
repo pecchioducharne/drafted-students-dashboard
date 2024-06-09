@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db, storage, auth } from "./firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
-import recordGif from "./record.gif";
+import recordGif from "./drafted-template.jpeg";
 import ReactGA4 from "react-ga4";
 import "./ProfileDashboard.css";
 import { DoubleBubble } from "react-spinner-animated";
