@@ -35,6 +35,7 @@ const ProfileDashboard = ({
   const [editGraduationMonth, setGraduationMonth] = useState(graduationMonth); // State for graduationMonth
   const [editGraduationYear, setGraduationYear] = useState(graduationYear); // State for graduationYear
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   const navigate = useNavigate();
   ReactGA4.initialize("G-3M4KL5NDYG");
@@ -536,7 +537,7 @@ const ProfileDashboard = ({
           <section className="recently">
             <h3 className="profileInfoName video">
               Video Resume
-              <button className="sectionTitleInfo">
+              <button className="sectionTitleInfo" onClick={() => setShowPopup(true)}>
                 <QuestionMarkIcon />
               </button>
             </h3>
@@ -574,6 +575,19 @@ const ProfileDashboard = ({
           {/* <ResumeRecord resume={resumes.find(r => r.id === resumeIndex)} /> */}
           {/* End Resume Section */}
         </main>
+        {showPopup && (
+          <div className="popup">
+            <div className="popup-content">
+              <p>
+                Video resumes are a way to leverage your personal voice to stand
+                out to recruiters.
+              </p>
+              <button className="close-btn" onClick={() => setShowPopup(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
