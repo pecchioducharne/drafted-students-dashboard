@@ -20,7 +20,7 @@ const ProfileDashboard = ({
   linkedInURL,
 }) => {
   const resumes = [
-    { id: 1, title: "Tell us about your story!" },
+    { id: 1, title: "What's your story?" },
     { id: 2, title: "What makes you stand out amongst other condidates?" },
     { id: 3, title: "Tell us about a time when you overcame a challenge!" },
   ];
@@ -251,11 +251,12 @@ const ProfileDashboard = ({
         ) : (
           <img
             src={recordGif}
-            alt="Default GIF"
+            alt="Default Record"
             style={{
               width: "100%",
               height: "100%",
               borderRadius: "8px",
+              objectFit: "contain",
             }}
           />
         )}
