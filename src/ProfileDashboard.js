@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db, storage, auth } from "./firebase";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { signOut } from "firebase/auth";
+import banner from "./banner.png";
 import recordTemplate from "./drafted-template.jpeg";
 import ReactGA4 from "react-ga4";
 import "./ProfileDashboard.css";
@@ -24,6 +25,19 @@ const ProfileDashboard = ({
     { id: 2, title: "What makes you stand out amongst other condidates?" },
     { id: 3, title: "Tell us about a time when you overcame a challenge!" },
   ];
+
+  const exampleVideos = [
+    "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-1.mov?alt=media&token=628534b2-01d4-4614-b50d-4a5f3cca9e5b",
+    "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-2.mov?alt=media&token=89358c12-68f2-432e-b00c-5eb0ec0c3e44",
+    "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-3-updated.mp4?alt=media&token=8fdd91b1-b327-4c7e-84d9-d51c37ea31eb",
+  ];
+
+  const exampleVideoTitles = [
+    "Listen to Quinn's story",
+    "What makes him stand out",
+    "How Quinn overcame a challenge",
+  ];
+
   const [resumeIndex, setResumeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoUrl2, setVideoUrl2] = useState("");
@@ -31,6 +45,7 @@ const ProfileDashboard = ({
   const [videoUrl3, setVideoUrl3] = useState("");
   const [editMajor, setMajor] = useState(major);
   const [editEmail, setEmail] = useState(email);
+  const [popupContent, setPopupContent] = useState("");
   const [editLinkedInURL, setLinkedInURL] = useState(linkedInURL);
   const [editGraduationMonth, setGraduationMonth] = useState(graduationMonth); // State for graduationMonth
   const [editGraduationYear, setGraduationYear] = useState(graduationYear); // State for graduationYear
@@ -67,6 +82,34 @@ const ProfileDashboard = ({
       console.error("Error fetching video:", error);
       return "";
     }
+  };
+
+  const handleTipClick = (index) => {
+    let content = "";
+    if (index === 0) {
+      content = `
+      <ul>
+        <li>This is the typical "walk me through your resume" question. Talk about what you majored in and why. What internships or experiences you've had, and what have you learned from them? What skills will you bring to the hiring company?</li>
+        <li>Show why you're the best candidate to get an opportunity, in terms of degree, internships, and experience as well as soft skills which truly set you apart. Talk about what you are passionate about, and what you hope to explore in your first role.</li>
+        <li>Demonstrate that you can communicate clearly and effectively, present yourself professionally, and most importantly have fun and show your enthusiasm to go pro and put that degree to work!</li>
+      </ul>`;
+    } else if (index === 1) {
+      content = `
+      <ul>
+        <li>Don’t be modest — this is the time to be confident about your strengths and really sell yourself to employers. Focus on your unique skills and experiences, and explain why these make you the ideal candidate.</li>
+        <li>Focus on your education, skills, and experiences that make you unique! Tell employers how your unique skills will help the company succeed.</li>
+        <li>Employers ask this to identify reasons why hiring you is better than hiring a similarly qualified candidate. Use specific examples to demonstrate your skills and achievements, and relate them back to the requirements of the job.</li>
+      </ul>`;
+    } else if (index === 2) {
+      content = `
+      <ul>
+        <li>This is like your "highlight reel" moment. Show off! Share specific examples where you exhibited problem-solving skills and the ability to overcome obstacles.</li>
+        <li>Pick one specific challenge in your studies, personal life, or work/internships. Tell a story with a positive outcome and/or positive lesson learned that you can contribute to the workplace.</li>
+        <li>Emphasize key "soft skills". Examples of soft skills include creativity, leadership, resilience, adaptability, quick decision-making, etc. Relate these to the specific challenge and outcome you are discussing.</li>
+      </ul>`;
+    }
+    setPopupContent(content);
+    setShowPopup(true);
   };
 
   // Update fields in Firebase and local state
@@ -488,6 +531,9 @@ const ProfileDashboard = ({
             </div>
           </section>
           {/* End Profile Section */}
+          <div className="bannerContainer">
+            <img src={banner} alt="Banner" className="bannerImage" />
+          </div>
           {/* Start Progress Bar */}
           <section className="progressBarSection">
             {resumeIndex === 3 && (
@@ -538,7 +584,10 @@ const ProfileDashboard = ({
           <section className="recently">
             <h3 className="profileInfoName video">
               Video Resume
-              <button className="sectionTitleInfo" onClick={() => setShowPopup(true)}>
+              <button
+                className="sectionTitleInfo"
+                onClick={() => setShowPopup(true)}
+              >
                 <QuestionMarkIcon />
               </button>
             </h3>
@@ -560,11 +609,17 @@ const ProfileDashboard = ({
                         >
                           Record
                         </button>
-                        <a className="resumeInfoFooterBtn" href="#">
-                          Tip info
-                        </a>
+                        <button
+                          className="resumeInfoFooterBtn"
+                          onClick={() => handleTipClick(index)}
+                        >
+                          Tips
+                        </button>
                       </div>
-                      {/* <p className="recentlyListItemTime">4h ago</p> */}
+                    </div>
+                    <div className="exampleVideo">
+                      <h5>{exampleVideoTitles[index]}</h5>
+                      <VideoPlayer url={exampleVideos[index]} />
                     </div>
                   </li>
                 );
@@ -583,6 +638,16 @@ const ProfileDashboard = ({
                 Video resumes are a way to leverage your personal voice to stand
                 out to recruiters.
               </p>
+              <button className="close-btn" onClick={() => setShowPopup(false)}>
+                Close
+              </button>
+            </div>
+          </div>
+        )}
+        {showPopup && (
+          <div className="popup">
+            <div className="popup-content">
+              <div dangerouslySetInnerHTML={{ __html: popupContent }}></div>
               <button className="close-btn" onClick={() => setShowPopup(false)}>
                 Close
               </button>

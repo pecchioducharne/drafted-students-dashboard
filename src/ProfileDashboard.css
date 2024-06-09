@@ -32,7 +32,7 @@ button {
 }
 
 button:hover {
-  background: none!;
+  background: none !;
 }
 
 .profileDashboard {
@@ -41,29 +41,55 @@ button:hover {
   min-height: 100vh;
   display: flex;
 }
+
 .profileDashboard p {
   font-family: 'Poppins', sans-serif;
 }
 
+.exampleVideo {
+  margin-top: 20px;
+}
+
+.exampleVideo h5 {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.exampleVideo video {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+
 .profileExperLinkedIn a {
-  color: #00A857; /* Set the link color */
-  text-decoration: none; /* Remove default underline */
+  color: #00A857;
+  /* Set the link color */
+  text-decoration: none;
+  /* Remove default underline */
 }
 
 .profileExperLinkedIn a:hover {
-  text-decoration: underline; /* Add underline on hover */
-  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+  text-decoration: underline;
+  /* Add underline on hover */
+  cursor: pointer;
+  /* Change cursor to pointer to indicate it's clickable */
 }
 
 .view-resume-link {
-  color: #008F4C; /* Set the link color */
-  text-decoration: none; /* Remove default underline */
+  color: #008F4C;
+  /* Set the link color */
+  text-decoration: none;
+  /* Remove default underline */
   margin-top: 7px;
 }
 
 .view-resume-link:hover {
-  text-decoration: underline; /* Add underline on hover */
-  cursor: pointer; /* Change cursor to pointer to indicate it's clickable */
+  text-decoration: underline;
+  /* Add underline on hover */
+  cursor: pointer;
+  /* Change cursor to pointer to indicate it's clickable */
 }
 
 /* Add these styles to ProfileDashboard.css */
@@ -73,10 +99,10 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   z-index: 1000;
 }
 
@@ -84,8 +110,40 @@ button:hover {
   background: white;
   padding: 20px;
   border-radius: 8px;
+  width: 80%;
+  max-width: 600px;
+  text-align: left;
+}
+
+.bannerContainer {
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+
+.bannerImage {
+  max-width: 100%;
+  height: auto;
+}
+
+
+.popup-content ul {
+  list-style: disc;
+  margin: 0;
+  padding-left: 20px;
+}
+
+.popup-content li {
+  margin-bottom: 10px;
+}
+
+.close-btn {
+  background: #4CA65A;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-top: 20px;
 }
 
 .close-btn {
@@ -347,7 +405,7 @@ button:hover {
 
 .profileExperContent {
   padding-left: 20px;
-  border-left:solid 4px #e5e5e5;
+  border-left: solid 4px #e5e5e5;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -361,7 +419,7 @@ button:hover {
   padding: 0;
 }
 
-.header{
+.header {
   display: flex;
   gap: 25px;
 }
@@ -391,7 +449,7 @@ button:hover {
   padding: 0 8px;
 }
 
-.progress.info{
+.progress.info {
   background: none;
   margin-bottom: 60px;
 }
@@ -420,7 +478,7 @@ button:hover {
 }
 
 .progressStepBtn.last {
-  border:solid 3px #4CA65A;
+  border: solid 3px #4CA65A;
   background: none;
 }
 
@@ -445,7 +503,7 @@ button:hover {
   background-color: #b4b4b4;
 }
 
-.progressStepBtn.last:hover{
+.progressStepBtn.last:hover {
   background: none;
 }
 
@@ -607,6 +665,7 @@ button:hover {
   gap: 15px;
   margin-top: 15px;
 }
+
 .resumeInfoFooterBtn {
   font-size: 16px;
   font-weight: 500;
@@ -652,6 +711,7 @@ button:hover {
   font-weight: 700;
   margin-bottom: 8px;
 }
+
 .resumeUploadStatusSubtitle {
   font-size: 22px;
   font-weight: 500;
@@ -734,7 +794,7 @@ button:hover {
   opacity: 100%;
 }
 
-.editableHeader{
+.editableHeader {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -749,6 +809,7 @@ button:hover {
     margin-bottom: 35px;
     width: 100%;
   }
+
   .profileExper {
     width: 100%;
   }
