@@ -22,7 +22,7 @@ const ProfileDashboard = ({
 }) => {
   const resumes = [
     { id: 1, title: "What's your story?" },
-    { id: 2, title: "What makes you stand out amongst other condidates?" },
+    { id: 2, title: "What makes you stand out?" },
     { id: 3, title: "Tell us about a time when you overcame a challenge!" },
   ];
 
@@ -45,7 +45,10 @@ const ProfileDashboard = ({
   const [videoUrl3, setVideoUrl3] = useState("");
   const [editMajor, setMajor] = useState(major);
   const [editEmail, setEmail] = useState(email);
+  const [showVideoResumePopup, setShowVideoResumePopup] = useState(false);
+  const [showTipPopup, setShowTipPopup] = useState(false);
   const [popupContent, setPopupContent] = useState("");
+  const [bannerContent, setBannerContent] = useState(false);
   const [editLinkedInURL, setLinkedInURL] = useState(linkedInURL);
   const [editGraduationMonth, setGraduationMonth] = useState(graduationMonth); // State for graduationMonth
   const [editGraduationYear, setGraduationYear] = useState(graduationYear); // State for graduationYear
@@ -84,6 +87,16 @@ const ProfileDashboard = ({
     }
   };
 
+  const handleVideoResumeClick = () => {
+    setPopupContent(`
+      <div class="bannerContainer">
+        <img src="${banner}" alt="Banner" class="bannerImage" />
+      </div>
+      <p>Video resumes are a way to leverage your personal voice to stand out to recruiters.</p>
+    `);
+    setShowVideoResumePopup(true);
+  };
+
   const handleTipClick = (index) => {
     let content = "";
     if (index === 0) {
@@ -109,7 +122,7 @@ const ProfileDashboard = ({
       </ul>`;
     }
     setPopupContent(content);
-    setShowPopup(true);
+    setShowTipPopup(true);
   };
 
   // Update fields in Firebase and local state
@@ -531,9 +544,9 @@ const ProfileDashboard = ({
             </div>
           </section>
           {/* End Profile Section */}
-          <div className="bannerContainer">
+          {/* <div className="bannerContainer">
             <img src={banner} alt="Banner" className="bannerImage" />
-          </div>
+          </div> */}
           {/* Start Progress Bar */}
           <section className="progressBarSection">
             {resumeIndex === 3 && (
@@ -586,69 +599,71 @@ const ProfileDashboard = ({
               Video Resume
               <button
                 className="sectionTitleInfo"
-                onClick={() => setShowPopup(true)}
+                onClick={handleVideoResumeClick}
               >
                 <QuestionMarkIcon />
               </button>
             </h3>
             <ul className="recentlyList">
-              {[videoUrl, videoUrl2, videoUrl3].map((item, index) => {
-                return (
-                  <li key={index} className="recentlyListItem">
-                    <h4 className="recentlyListItemName">
-                      {resumes[index].id}. {resumes[index].title}
-                    </h4>
-                    <div className="recentlyListItemPicture">
-                      <VideoPlayer url={item} />
-                    </div>
-                    <div>
-                      <div className="resumeInfoFooter">
-                        <button
-                          className="resumeInfoFooterBtn"
-                          onClick={() => handleRecordClick(index + 1)}
-                        >
-                          Record
-                        </button>
-                        <button
-                          className="resumeInfoFooterBtn"
-                          onClick={() => handleTipClick(index)}
-                        >
-                          Tips
-                        </button>
-                      </div>
-                    </div>
-                    <div className="exampleVideo">
-                      <h5>{exampleVideoTitles[index]}</h5>
-                      <VideoPlayer url={exampleVideos[index]} />
-                    </div>
-                  </li>
-                );
-              })}
+              {[videoUrl, videoUrl2, videoUrl3].map((item, index) => (
+                <li key={index} className="recentlyListItem">
+                  <h4 className="recentlyListItemName">
+                    {resumes[index].id}. {resumes[index].title}
+                  </h4>
+                  <div className="recentlyListItemPicture">
+                    <VideoPlayer url={item} />
+                  </div>
+                  <div className="resumeInfoFooter">
+                    <button
+                      className="resumeInfoFooterBtn"
+                      onClick={() => handleRecordClick(index + 1)}
+                    >
+                      Record
+                    </button>
+                    <button
+                      className="resumeInfoFooterBtn"
+                      onClick={() => handleTipClick(index)}
+                    >
+                      Tips
+                    </button>
+                  </div>
+                  <div className="exampleVideo">
+                    <h5>{exampleVideoTitles[index]}</h5>
+                    <VideoPlayer url={exampleVideos[index]} />
+                  </div>
+                </li>
+              ))}
             </ul>
           </section>
+
           {/* End Recently Joined Section */}
           {/* Start Resume Section */}
           {/* <ResumeRecord resume={resumes.find(r => r.id === resumeIndex)} /> */}
           {/* End Resume Section */}
         </main>
-        {showPopup && (
+
+        {showVideoResumePopup && (
           <div className="popup">
             <div className="popup-content">
-              <p>
-                Video resumes are a way to leverage your personal voice to stand
-                out to recruiters.
-              </p>
-              <button className="close-btn" onClick={() => setShowPopup(false)}>
+              <div dangerouslySetInnerHTML={{ __html: popupContent }}></div>
+              <button
+                className="close-btn"
+                onClick={() => setShowVideoResumePopup(false)}
+              >
                 Close
               </button>
             </div>
           </div>
         )}
-        {showPopup && (
+
+        {showTipPopup && (
           <div className="popup">
             <div className="popup-content">
               <div dangerouslySetInnerHTML={{ __html: popupContent }}></div>
-              <button className="close-btn" onClick={() => setShowPopup(false)}>
+              <button
+                className="close-btn"
+                onClick={() => setShowTipPopup(false)}
+              >
                 Close
               </button>
             </div>

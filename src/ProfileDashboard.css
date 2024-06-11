@@ -57,9 +57,22 @@ button:hover {
 }
 
 .exampleVideo video {
-  width: 100%;
+  width: 80%;
   height: auto;
   border-radius: 8px;
+  filter: grayscale(100%);
+  transition: transform 0.3s ease, filter 0.3s ease;
+}
+
+.exampleVideo:hover video {
+  transform: scale(1.1);
+  filter: grayscale(0%);
+}
+
+video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Cover ensures the video fills the container without distortion */
 }
 
 
@@ -111,18 +124,19 @@ button:hover {
   padding: 20px;
   border-radius: 8px;
   width: 80%;
-  max-width: 600px;
+  max-width: 80%;
   text-align: left;
+  font-size: 1.5rem;
 }
 
-.bannerContainer {
+.popup-content .bannerContainer {
   text-align: center;
-  margin-top: 20px;
 }
 
 .bannerImage {
   max-width: 100%;
   height: auto;
+  margin-bottom: 20px;
 }
 
 
@@ -539,22 +553,32 @@ button:hover {
 }
 
 .recentlyList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
+  align-items: stretch; /* Ensures that all child elements take up equal space */
 }
 
 .recentlyListItem {
-  width: 25%;
+  display: flex;
+  flex-direction: column; /* Stack the contents vertically */
+  justify-content: space-between; /* Distribute space between and around content items */
+  width: calc(33.333% - 20px); /* Adjust width as necessary, accounting for margin */
+  margin: 10px; /* Optional: adds space between the boxes */
 }
 
 .recentlyListItemPicture {
+  height: 250px; /* or whatever height fits your design */
   display: flex;
-  width: 100%;
-  height: 250px;
-  border-radius: 40px;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden; /* Ensures no overflow if video is taller than the container */
+}
+
+
+.recentlyListItem h4 {
+  text-align: center;
+  margin-top: 12px;
 }
 
 .recentlyListItemName {
@@ -676,6 +700,10 @@ button:hover {
   padding: 15px 20px;
   border-radius: 15px;
   margin: 0;
+  width: 100px;
+  /* Ensure both buttons have the same width */
+  text-align: center;
+  /* Center the text */
 }
 
 .resumeInfoFooterBtn:visited {
