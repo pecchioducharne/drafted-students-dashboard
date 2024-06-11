@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Lottie from "react-lottie";
-import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
+import { storage, db, auth } from "./firebase";
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import "./VideoRecorderPage.css"; // Importing CSS
-import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
+import "./VideoRecorderPage.css";
+import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
-import fireAnimationData from "./fire.json"; // Adjust the path as necessary
+import fireAnimationData from "./fire.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 const VideoRecorderPage = () => {
@@ -23,11 +23,9 @@ const VideoRecorderPage = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
-        console.log("Attempting to load FFmpeg...");
         if (!ffmpeg.isLoaded()) {
           await ffmpeg.load();
           setFFmpegLoaded(true);
-          console.log("FFmpeg loaded successfully.");
         }
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
@@ -47,68 +45,56 @@ const VideoRecorderPage = () => {
       "-i",
       "original.webm",
       "-c:v",
-      "libx264", // Using H.264 video codec
+      "libx264",
       "-crf",
-      "28", // Constant Rate Factor for quality (lower is better)
+      "28",
       "-preset",
-      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "fast",
       "-movflags",
-      "+faststart", // Place the moov atom at the front of the file for quick start
+      "+faststart",
       "output.mp4"
     );
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4", // Ensure the Blob type is set correctly
+      type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
     setIsUploading(false);
   };
 
-  // const handleVideoRecording = (videoBlobOrFile) => {
-  //   setRecordedVideo(videoBlobOrFile);
-  // };
-
   const toggleVideo = (event) => {
-    // Prevent the default anchor behavior of going to the link
     event.preventDefault();
-
-    // Set the showVideo state to true to show the YouTubeEmbedQuestion1 component
     setShowVideo(!showVideo);
   };
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
-  
-      // Upload the recorded video
+
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
       await uploadBytes(storageRef, recordedVideo);
       const downloadURL = await getDownloadURL(storageRef);
-  
-      // Generate thumbnail using FFmpeg
+
       ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
       await ffmpeg.run(
         "-i", "video.mp4",
-        "-ss", "00:00:01.000", // Take the screenshot at the 1 second mark
+        "-ss", "00:00:01.000",
         "-vframes", "1",
         "thumbnail.jpg"
       );
       const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
       const thumbnailBlob = new Blob([thumbnailData.buffer], { type: "image/jpeg" });
-  
-      // Upload the thumbnail
+
       const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
       const thumbnailRef = ref(storage, thumbnailFileName);
       await uploadBytes(thumbnailRef, thumbnailBlob);
       const thumbnailURL = await getDownloadURL(thumbnailRef);
-  
-      // Update Firestore document with video and thumbnail URLs
+
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
       await updateDoc(userDocRef, { video1: downloadURL, thumbnail: thumbnailURL });
-  
-      console.log("Video and thumbnail uploaded successfully and Firestore updated");
+
       ReactGA4.event({
         category: "Video Recording",
         action: "Saved Video",
@@ -118,27 +104,20 @@ const VideoRecorderPage = () => {
       setIsUploading(false);
     }
   };
-  
 
-  function YouTubeEmbedQuestion() {
-    return (
-      <div
-        className="youtube-container"
-        style={{ overflow: "hidden", borderRadius: "8px" }}
-      >
-        <iframe
-          width="350"
-          height="315"
-          src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
-          title="YouTube video player"
-          frameborder="0"
-          style={{ borderRadius: "14px" }} // Add border-radius here
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
-    );
-  }
+  const YouTubeEmbedQuestion = () => (
+    <div className="youtube-container">
+      <iframe
+        width="350"
+        height="315"
+        src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  );
 
   const toggleProTips = () => {
     ReactGA4.event({
@@ -146,8 +125,7 @@ const VideoRecorderPage = () => {
       action: "See Pro Tips",
       label: "Record Video 1",
     });
-
-    setShowProTips(!showProTips); // Toggle visibility of pro tips
+    setShowProTips(!showProTips);
   };
 
   const fireDefaultOptions = {
@@ -161,8 +139,11 @@ const VideoRecorderPage = () => {
 
   return (
     <div className="video-recorder-container">
-      <Lottie options={fireDefaultOptions} height={100} width={100} />
-      <h1>Tell us your story</h1>
+      <div className="title-and-buttons-container">
+        <Lottie options={fireDefaultOptions} height={100} width={100} />
+        <h1>Tell us your story</h1>
+        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+      </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}
@@ -176,56 +157,31 @@ const VideoRecorderPage = () => {
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
           {isUploading ? "Saving Video" : "Save Video"}
         </button>
-        <button
-          onClick={toggleProTips}
-          style={{ color: "white", fontWeight: "bold" }}
-        >
+        <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips
         </button>
         {showProTips && (
           <>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                This is the typical "walk me through your resume" question.
-              </span>{" "}
-              Talk about what you majored in and why. What internships or
-              experiences you've had, and what have you learned from them? What
-              skills will you bring to the hiring company?
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Show why you're the best candidate to get an opportunity,
-              </span>{" "}
-              in terms of degree, internships, and experience as well as soft
-              skills which truly set you apart. Talk about what you are
-              passionate about, and what you hope to explore in your first role.
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Demonstrate that you can communicate clearly and effectively,
-              </span>{" "}
-              present yourself professionally, and most importantly have fun and
-              show your enthusiasm to go pro and put that degree to work!
-            </li>
+            <ul>
+              <li><strong className="highlight">This is the typical "walk me through your resume" question.</strong> Talk about what you majored in and why. What internships or experiences you've had, and what have you learned from them? What skills will you bring to the hiring company?</li>
+              <li><strong className="highlight">Show why you're the best candidate to get an opportunity,</strong> in terms of degree, internships, and experience as well as soft skills which truly set you apart. Talk about what you are passionate about, and what you hope to explore in your first role.</li>
+              <li><strong className="highlight">Demonstrate that you can communicate clearly and effectively,</strong> present yourself professionally, and most importantly have fun and show your enthusiasm to go pro and put that degree to work!</li>
+            </ul>
             <div>
               <a
                 href="https://youtu.be/T9Dym8dDLzM?si=bfF-HDKHnuTAcRdq"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#53AD7A", fontWeight: "bold" }}
+                className="link"
               >
                 Click to Watch Question Explained
               </a>
-              <br />
-              <br />
               {showVideo && <YouTubeEmbedQuestion />}
             </div>
           </>
         )}
-        <button onClick={() => navigate("/dashboard")}>Back to Profile</button>
       </div>
-      {/* Add your tips and 'Click to watch question 1 explained' link here */}
     </div>
   );
 };

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
-import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import Lottie from "react-lottie";
+import { storage, db, auth } from "./firebase";
+import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import "./VideoRecorderPage.css"; // Importing CSS
-import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
-import ReactGA4 from 'react-ga4';
-import bottleAnimationData from "./bottle.json"; // Adjust the path as necessary
+import "./VideoRecorderPage.css";
+import { doc, updateDoc } from "firebase/firestore";
+import ReactGA4 from "react-ga4";
+import bottleAnimationData from "./bottle.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
 const VideoRecorderPage2 = () => {
@@ -18,16 +18,14 @@ const VideoRecorderPage2 = () => {
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
-  ReactGA4.initialize('G-3M4KL5NDYG');
+  ReactGA4.initialize("G-3M4KL5NDYG");
 
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
-        console.log("Attempting to load FFmpeg...");
         if (!ffmpeg.isLoaded()) {
           await ffmpeg.load();
           setFFmpegLoaded(true);
-          console.log("FFmpeg loaded successfully.");
         }
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
@@ -47,102 +45,87 @@ const VideoRecorderPage2 = () => {
       "-i",
       "original.webm",
       "-c:v",
-      "libx264", // Using H.264 video codec
+      "libx264",
       "-crf",
-      "28", // Constant Rate Factor for quality (lower is better)
+      "28",
       "-preset",
-      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "fast",
       "-movflags",
-      "+faststart", // Place the moov atom at the front of the file for quick start
+      "+faststart",
       "output.mp4"
     );
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4", // Ensure the Blob type is set correctly
+      type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
     setIsUploading(false);
   };
-  const toggleVideo = (event) => {
-    // Prevent the default anchor behavior of going to the link
-    event.preventDefault();
 
-    // Set the showVideo state to true to show the YouTubeEmbedQuestion1 component
+  const toggleVideo = (event) => {
+    event.preventDefault();
     setShowVideo(!showVideo);
   };
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      try {
-        setIsUploading(true); // Start uploading
+      setIsUploading(true);
 
-        // Add TikTok tracking
-        if(window.ttq) {
-          window.ttq.track('CompleteRegistration', {
-            content_id: 'user_recorded_video',
-            email: auth.currentUser.email
-            // Add other relevant parameters here
-          });
-        }
+      const fileName = `user_recorded_video_${Date.now()}.mp4`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, recordedVideo);
+      const downloadURL = await getDownloadURL(storageRef);
 
-        const fileName = `user_recorded_video_${Date.now()}.mp4`;
-        const storageRef = ref(storage, fileName);
-        await uploadBytes(storageRef, recordedVideo);
-        const downloadURL = await getDownloadURL(storageRef);
+      ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
+      await ffmpeg.run(
+        "-i", "video.mp4",
+        "-ss", "00:00:01.000",
+        "-vframes", "1",
+        "thumbnail.jpg"
+      );
+      const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
+      const thumbnailBlob = new Blob([thumbnailData.buffer], { type: "image/jpeg" });
 
-        // Update the user's document in Firestore
-        const userEmail = auth.currentUser.email; // Get the logged-in user's email
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video2: downloadURL,
-        });
+      const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
+      const thumbnailRef = ref(storage, thumbnailFileName);
+      await uploadBytes(thumbnailRef, thumbnailBlob);
+      const thumbnailURL = await getDownloadURL(thumbnailRef);
 
-        console.log("Video uploaded successfully and Firestore updated");
+      const userEmail = auth.currentUser.email;
+      const userDocRef = doc(db, "drafted-accounts", userEmail);
+      await updateDoc(userDocRef, { video2: downloadURL, thumbnail: thumbnailURL });
 
-        ReactGA4.event({
-          category: "Video Recording",
-          action: "Saved Video",
-          label: "Record Video 2"
-        });
-
-        navigate("/dashboard"); // Redirect to ProfileDashboard
-      } catch (error) {
-        console.error("Video upload failed:", error);
-      } finally {
-        setIsUploading(false);
-      }
+      ReactGA4.event({
+        category: "Video Recording",
+        action: "Saved Video",
+        label: "Record Video 2",
+      });
+      navigate("/dashboard");
+      setIsUploading(false);
     }
   };
 
-  function YouTubeEmbedQuestion() {
-    return (
-      <div
-        className="youtube-container"
-        style={{ overflow: "hidden", borderRadius: "8px" }}
-      >
-        <iframe
-          width="350"
-          height="315"
-          src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=0&modestbranding=1&rel=0"
-          title="YouTube video player"
-          frameborder="0"
-          style={{ borderRadius: "14px" }} // Add border-radius here
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
-    );
-  }
+  const YouTubeEmbedQuestion = () => (
+    <div className="youtube-container">
+      <iframe
+        width="350"
+        height="315"
+        src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  );
 
   const toggleProTips = () => {
-
     ReactGA4.event({
       category: "Video Recording",
       action: "See Pro Tips",
-      label: "Record Video 2"
+      label: "Record Video 2",
     });
-
-    setShowProTips(!showProTips); // Toggle visibility of pro tips
+    setShowProTips(!showProTips);
   };
 
   const bottleDefaultOptions = {
@@ -156,8 +139,11 @@ const VideoRecorderPage2 = () => {
 
   return (
     <div className="video-recorder-container">
-      <Lottie options={bottleDefaultOptions} height={100} width={100} />
-      <h1>What makes you stand out amongst other candidates?</h1>
+      <div className="title-and-buttons-container">
+        <Lottie options={bottleDefaultOptions} height={100} width={100} />
+        <h1>What makes you stand out amongst other candidates?</h1>
+        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+      </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}
@@ -171,57 +157,31 @@ const VideoRecorderPage2 = () => {
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
           {isUploading ? "Saving Video" : "Save Video"}
         </button>
-        <button
-          onClick={toggleProTips}
-          style={{ color: "white", fontWeight: "bold" }}
-        >
+        <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips
         </button>
         {showProTips && (
           <>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Don’t be modest — this is the time to be confident about your
-                strengths and really sell yourself to employers.
-              </span>{" "}
-              Focus on your unique skills and experiences, and explain why these
-              make you the ideal candidate.
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Focus on your education, skills, and experiences that make you
-                unique!
-              </span>{" "}
-              Tell employers how your unique skills will help the company
-              succeed.
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Employers ask this to identify reasons why hiring you is better
-                than hiring a similarly qualified candidate.
-              </span>{" "}
-              Use specific examples to demonstrate your skills and achievements,
-              and relate them back to the requirements of the job.
-            </li>
+            <ul>
+              <li><strong className="highlight">Don’t be modest — this is the time to be confident about your strengths and really sell yourself to employers.</strong> Focus on your unique skills and experiences, and explain why these make you the ideal candidate.</li>
+              <li><strong className="highlight">Focus on your education, skills, and experiences that make you unique!</strong> Tell employers how your unique skills will help the company succeed.</li>
+              <li><strong className="highlight">Employers ask this to identify reasons why hiring you is better than hiring a similarly qualified candidate.</strong> Use specific examples to demonstrate your skills and achievements, and relate them back to the requirements of the job.</li>
+            </ul>
             <div>
               <a
-                href="https://youtu.be/T9Dym8dDLzM?si=bfF-HDKHnuTAcRdq"
+                href="https://youtu.be/IshJHdFFtcg?si=dOJl_w_f62enHHSN"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#53AD7A", fontWeight: "bold" }}
+                className="link"
               >
                 Click to Watch Question Explained
               </a>
-              <br />
-              <br />
               {showVideo && <YouTubeEmbedQuestion />}
             </div>
           </>
         )}
-        <button onClick={() => navigate("/dashboard")}>Back to Profile</button>
       </div>
-      {/* Add your tips and 'Click to watch question 1 explained' link here */}
     </div>
   );
 };

@@ -23,11 +23,9 @@ const VideoRecorderPage3 = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
-        console.log("Attempting to load FFmpeg...");
         if (!ffmpeg.isLoaded()) {
           await ffmpeg.load();
           setFFmpegLoaded(true);
-          console.log("FFmpeg loaded successfully.");
         }
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
@@ -47,28 +45,25 @@ const VideoRecorderPage3 = () => {
       "-i",
       "original.webm",
       "-c:v",
-      "libx264", // Using H.264 video codec
+      "libx264",
       "-crf",
-      "28", // Constant Rate Factor for quality (lower is better)
+      "28",
       "-preset",
-      "fast", // Speed/quality tradeoff (faster encoding with slightly lower quality)
+      "fast",
       "-movflags",
-      "+faststart", // Place the moov atom at the front of the file for quick start
+      "+faststart",
       "output.mp4"
     );
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4", // Ensure the Blob type is set correctly
+      type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
     setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
-    // Prevent the default anchor behavior of going to the link
     event.preventDefault();
-
-    // Set the showVideo state to true to show the YouTubeEmbedQuestion1 component
     setShowVideo(!showVideo);
   };
 
@@ -115,25 +110,19 @@ const VideoRecorderPage3 = () => {
     }
   };
 
-  function YouTubeEmbedQuestion() {
-    return (
-      <div
-        className="youtube-container"
-        style={{ overflow: "hidden", borderRadius: "8px" }}
-      >
-        <iframe
-          width="350"
-          height="315"
-          src="https://www.youtube.com/embed/W1vP__7BAEY?si=nktGyavw_DQlWOP7?autoplay=1&controls=0&modestbranding=1&rel=0"
-          title="YouTube video player"
-          frameborder="0"
-          style={{ borderRadius: "14px" }} // Add border-radius here
-          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowfullscreen
-        ></iframe>
-      </div>
-    );
-  }
+  const YouTubeEmbedQuestion = () => (
+    <div className="youtube-container">
+      <iframe
+        width="350"
+        height="315"
+        src="https://www.youtube.com/embed/W1vP__7BAEY?si=nktGyavw_DQlWOP7?autoplay=1&controls=1&modestbranding=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  );
 
   const toggleProTips = () => {
     ReactGA4.event({
@@ -141,8 +130,7 @@ const VideoRecorderPage3 = () => {
       action: "See Pro Tips",
       label: "Record Video 3",
     });
-
-    setShowProTips(!showProTips); // Toggle visibility of pro tips
+    setShowProTips(!showProTips);
   };
 
   const challengeDefaultOptions = {
@@ -156,8 +144,11 @@ const VideoRecorderPage3 = () => {
 
   return (
     <div className="video-recorder-container">
-      <Lottie options={challengeDefaultOptions} height={100} width={100} />
-      <h1>Tell us about a time when you overcame a challenge</h1>
+      <div className="title-and-buttons-container">
+        <Lottie options={challengeDefaultOptions} height={100} width={100} />
+        <h1>Tell us about a time when you overcame a challenge</h1>
+        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+      </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
           key={1}
@@ -171,56 +162,31 @@ const VideoRecorderPage3 = () => {
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
           {isUploading ? "Saving Video" : "Save Video"}
         </button>
-        <button
-          onClick={toggleProTips}
-          style={{ color: "white", fontWeight: "bold" }}
-        >
+        <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips
         </button>
         {showProTips && (
           <>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                This is like your "highlight reel" moment. Show off!
-              </span>{" "}
-              Share specific examples where you exhibited problem-solving skills
-              and the ability to overcome obstacles.
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Pick one specific challenge in your studies, personal life, or
-                work/internships.
-              </span>{" "}
-              Tell a story with a positive outcome and/or positive lesson
-              learned that you can contribute to the workplace.
-            </li>
-            <li>
-              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
-                Emphasize key "soft skills".
-              </span>{" "}
-              Examples of soft skills include creativity, leadership,
-              resilience, adaptability, quick decision-making, etc. Relate these
-              to the specific challenge and outcome you are discussing.
-            </li>
+            <ul>
+              <li><strong className="highlight">This is like your "highlight reel" moment. Show off!</strong> Share specific examples where you exhibited problem-solving skills and the ability to overcome obstacles.</li>
+              <li><strong className="highlight">Pick one specific challenge in your studies, personal life, or work/internships.</strong> Tell a story with a positive outcome and/or positive lesson learned that you can contribute to the workplace.</li>
+              <li><strong className="highlight">Emphasize key "soft skills".</strong> Examples of soft skills include creativity, leadership, resilience, adaptability, quick decision-making, etc. Relate these to the specific challenge and outcome you are discussing.</li>
+            </ul>
             <div>
               <a
-                href="https://youtu.be/T9Dym8dDLzM?si=bfF-HDKHnuTAcRdq"
+                href="https://youtu.be/W1vP__7BAEY?si=nktGyavw_DQlWOP7"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ color: "#53AD7A", fontWeight: "bold" }}
+                className="link"
               >
                 Click to Watch Question Explained
               </a>
-              <br />
-              <br />
               {showVideo && <YouTubeEmbedQuestion />}
             </div>
           </>
         )}
-        <button onClick={() => navigate("/dashboard")}>Back to Profile</button>
       </div>
-      {/* Add your tips and 'Click to watch question 1 explained' link here */}
     </div>
   );
 };
