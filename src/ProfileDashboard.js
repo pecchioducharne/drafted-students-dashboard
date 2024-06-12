@@ -28,7 +28,7 @@ const ProfileDashboard = ({
 
   const exampleVideos = [
     "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-1.mov?alt=media&token=628534b2-01d4-4614-b50d-4a5f3cca9e5b",
-    "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-2.mov?alt=media&token=89358c12-68f2-432e-b00c-5eb0ec0c3e44",
+    "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-2.mp4?alt=media&token=aac9f8af-1561-4052-b9ab-d7ca75b82c3c",
     "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-3-updated.mp4?alt=media&token=8fdd91b1-b327-4c7e-84d9-d51c37ea31eb",
   ];
 
@@ -100,7 +100,9 @@ const ProfileDashboard = ({
   const handleTipClick = (index) => {
     const content = (
       <div>
-        <VideoPlayer url={exampleVideos[index]} />
+        <div className="video-container">
+          <VideoPlayer url={exampleVideos[index]} />
+        </div>
         <ul>
           {index === 0 && (
             <>
@@ -343,8 +345,9 @@ const ProfileDashboard = ({
             crossOrigin="anonymous"
             style={{
               width: "100%",
-              height: "100%",
+              height: "auto",
               borderRadius: "8px",
+              objectFit: "contain", // Ensures the video is fully displayed
             }}
             onError={(e) => {
               console.error("Error playing video:", e);
@@ -358,9 +361,9 @@ const ProfileDashboard = ({
             alt="Default Record"
             style={{
               width: "100%",
-              height: "100%",
+              height: "auto",
               borderRadius: "20px",
-              objectFit: "contain",
+              objectFit: "contain", // Ensures the image is fully displayed
             }}
           />
         )}
