@@ -32,6 +32,8 @@ const ProfileDashboard = ({
     "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-3-updated.mp4?alt=media&token=8fdd91b1-b327-4c7e-84d9-d51c37ea31eb",
   ];
 
+  const [dataLoaded, setDataLoaded] = useState(false);
+
   const exampleVideoTitles = [
     "Listen to Quinn's story",
     "What makes him stand out",
@@ -302,6 +304,29 @@ const ProfileDashboard = ({
 
     checkAuthAndFetchData();
   }, [navigate, auth]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const user = auth.currentUser;
+        if (user) {
+          const userDocRef = doc(db, "users", user.uid); // Adjust this path as necessary
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+            const userData = docSnap.data();
+            // Set state with user data here
+            setDataLoaded(true);
+          } else {
+            console.log("No user data available");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchVideoUrls = async () => {

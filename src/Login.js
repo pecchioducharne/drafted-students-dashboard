@@ -101,16 +101,14 @@ const Login = () => {
       setErrorMessage("Failed to send password reset email. Please try again.");
     }
   };
-
+  
   if (isLoading) {
     return (
-      <div>
+      <div className="loading-container">
         <Lottie options={defaultOptions5} height={100} width={100} />
-        <p>Loading...</p>
       </div>
     );
   }
-
   function DraftedLogo() {
     return (
       <svg
@@ -157,33 +155,28 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <button type="submit">Login</button>
+        <button type="submit" className="login-btn button">
+          Login
+        </button>
         <br></br>
         <button
           type="button"
-          className="reset-password-btn"
+          className="reset-password-btn button"
           onClick={handlePasswordReset}
         >
           Forgot Password?
         </button>
+        
         <br></br>
         <p className="signupLink">
           Don't have an account?{" "}
-          <a
-            href="#"
-            onClick={navigateToCandidateSignup}
-            className="link"
-          >
+          <a href="#" onClick={navigateToCandidateSignup} className="link">
             <strong>Sign Up</strong>
           </a>
         </p>
         <p className="signupLink">
           Looking to hire?{" "}
-          <a
-            href="#"
-            onClick={navigateToCandidateSignup}
-            className="link"
-          >
+          <a href="#" onClick={navigateToCandidateSignup} className="link">
             <strong>Click Here</strong>
           </a>
         </p>
