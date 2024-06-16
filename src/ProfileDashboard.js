@@ -94,7 +94,7 @@ const ProfileDashboard = ({
       <div class="bannerContainer">
         <img src="${banner}" alt="Banner" class="bannerImage" />
       </div>
-      <p>Video resumes are a way to leverage your personal voice to stand out to recruiters.</p>
+      <h2>By completing your video resume you will get seen and considered for positions from startups to well-established tech companies.</h2>
     `);
     setShowVideoResumePopup(true);
   };
@@ -532,6 +532,15 @@ const ProfileDashboard = ({
                 </div>
               </div>
             </div>
+            <a
+              className="view-resume-link"
+              onClick={handleViewResumeClick}
+            >
+              <strong><h2>So... Who's hiring? How does this work?</h2></strong>
+            </a>
+            <br>
+            </br>
+            <br></br><br></br>
             <div className="profileExper">
               <div className="profileExperEduc">
                 {/* <div className="profileExperPicture" /> */}
@@ -560,7 +569,7 @@ const ProfileDashboard = ({
                   </p>
                 </div>
               </div>
-              <div className="profileExperJobs">
+              <div className="profileExperEduc">
                 {/* <div className="profileExperPicture" /> */}
                 <div className="profileExperContent">
                   <div className="header">
@@ -592,7 +601,7 @@ const ProfileDashboard = ({
                   <br></br>
                 </div>
               </div>
-              <div className="profileExperLinkedIn">
+              <div className="profileExperEduc">
                 <div className="profileExperContent">
                   <div className="editableHeader">
                     <h4 className="profileExperTitle">LinkedIn</h4>

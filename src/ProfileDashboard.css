@@ -124,11 +124,9 @@ video {
   padding: 20px;
   border-radius: 8px;
   width: 80%;
-  max-width: 600px; /* Restrict max-width for better readability */
+  max-width: 80%;
   text-align: left;
-  font-size: 1rem; /* Adjusted font size */
-  overflow-y: auto; /* Added scroll for overflow content */
-  max-height: 80%; /* Adjusted to fit within the screen */
+  font-size: 1.5rem;
 }
 
 .popup-content .bannerContainer {
@@ -153,7 +151,7 @@ video {
 }
 
 .close-btn {
-  background: #4ca65a;
+  background: #4CA65A;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -390,28 +388,6 @@ video {
 
 .profileInfoName span {
   margin-left: 15px;
-}
-
-.video-container {
-  width: 100%;
-  max-height: 300px; /* Restrict max-height for the video */
-  margin-bottom: 20px;
-  overflow: hidden;
-}
-
-.video-container video {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  object-fit: contain;
-}
-
-/* Adjust the default video image */
-.video-container.default-video img {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-  object-fit: contain;
 }
 
 .profileInfoEmail {
