@@ -534,7 +534,7 @@ const ProfileDashboard = ({
             </div>
             <a
               className="view-resume-link"
-              onClick={handleViewResumeClick}
+              onClick={handleVideoResumeClick}
             >
               <strong><h2>So... Who's hiring? How does this work?</h2></strong>
             </a>
