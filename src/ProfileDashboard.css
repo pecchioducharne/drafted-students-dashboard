@@ -75,6 +75,11 @@ video {
   object-fit: cover; /* Cover ensures the video fills the container without distortion */
 }
 
+example-video {
+  width: 50%;
+  height: 50%;
+  object-fit: cover; /* Cover ensures the video fills the container without distortion */
+}
 
 .profileExperLinkedIn a {
   color: #00A857;
@@ -142,6 +147,7 @@ video {
 
 .popup-content ul {
   list-style: disc;
+  font-size: small;
   margin: 0;
   padding-left: 20px;
 }
