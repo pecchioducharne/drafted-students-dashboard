@@ -74,31 +74,10 @@ const VideoRecorderPage2 = () => {
       await uploadBytes(storageRef, recordedVideo);
       const downloadURL = await getDownloadURL(storageRef);
 
-      ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
-      await ffmpeg.run(
-        "-i",
-        "video.mp4",
-        "-ss",
-        "00:00:01.000",
-        "-vframes",
-        "1",
-        "thumbnail.jpg"
-      );
-      const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
-      const thumbnailBlob = new Blob([thumbnailData.buffer], {
-        type: "image/jpeg",
-      });
-
-      const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
-      const thumbnailRef = ref(storage, thumbnailFileName);
-      await uploadBytes(thumbnailRef, thumbnailBlob);
-      const thumbnailURL = await getDownloadURL(thumbnailRef);
-
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
       await updateDoc(userDocRef, {
         video2: downloadURL,
-        thumbnail: thumbnailURL,
       });
 
       ReactGA4.event({

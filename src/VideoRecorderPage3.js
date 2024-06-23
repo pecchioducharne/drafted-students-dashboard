@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
+import Lottie from "react-lottie";
 import { storage, db, auth } from "./firebase";
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
-import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css";
 import { doc, updateDoc } from "firebase/firestore";
-import challengeAnimationData from "./challenge.json";
 import ReactGA4 from "react-ga4";
+import bottleAnimationData from "./bottle.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
-const VideoRecorderPage3 = () => {
+const VideoRecorderPage2 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
@@ -67,43 +67,26 @@ const VideoRecorderPage3 = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      try {
-        setIsUploading(true); // Start uploading
+      setIsUploading(true);
 
-        // Add TikTok tracking
-        if (window.ttq) {
-          window.ttq.track("CompleteRegistration", {
-            content_id: "user_recorded_video",
-            email: auth.currentUser.email,
-          });
-        }
+      const fileName = `user_recorded_video_${Date.now()}.mp4`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, recordedVideo);
+      const downloadURL = await getDownloadURL(storageRef);
 
-        const fileName = `user_recorded_video_${Date.now()}.mp4`;
-        const storageRef = ref(storage, fileName);
-        await uploadBytes(storageRef, recordedVideo);
-        const downloadURL = await getDownloadURL(storageRef);
+      const userEmail = auth.currentUser.email;
+      const userDocRef = doc(db, "drafted-accounts", userEmail);
+      await updateDoc(userDocRef, {
+        video2: downloadURL,
+      });
 
-        // Update the user's document in Firestore
-        const userEmail = auth.currentUser.email;
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video3: downloadURL,
-        });
-
-        console.log("Video uploaded successfully and Firestore updated");
-
-        ReactGA4.event({
-          category: "Video Recording",
-          action: "Saved Video",
-          label: "Record Video 3",
-        });
-
-        navigate("/dashboard"); // Redirect to ProfileDashboard
-      } catch (error) {
-        console.error("Video upload failed:", error);
-      } finally {
-        setIsUploading(false);
-      }
+      ReactGA4.event({
+        category: "Video Recording",
+        action: "Saved Video",
+        label: "Record Video 2",
+      });
+      navigate("/dashboard");
+      setIsUploading(false);
     }
   };
 
@@ -112,7 +95,7 @@ const VideoRecorderPage3 = () => {
       <iframe
         width="350"
         height="315"
-        src="https://www.youtube.com/embed/W1vP__7BAEY?si=nktGyavw_DQlWOP7?autoplay=1&controls=1&modestbranding=1&rel=0"
+        src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
         frameborder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -125,15 +108,15 @@ const VideoRecorderPage3 = () => {
     ReactGA4.event({
       category: "Video Recording",
       action: "See Pro Tips",
-      label: "Record Video 3",
+      label: "Record Video 2",
     });
     setShowProTips(!showProTips);
   };
 
-  const challengeDefaultOptions = {
+  const bottleDefaultOptions = {
     loop: true,
     autoplay: true,
-    animationData: challengeAnimationData,
+    animationData: bottleAnimationData,
     rendererSettings: {
       preserveAspectRatio: "xMidYMid slice",
     },
@@ -142,8 +125,8 @@ const VideoRecorderPage3 = () => {
   return (
     <div className="video-recorder-container">
       <div className="title-and-buttons-container">
-        <Lottie options={challengeDefaultOptions} height={100} width={100} />
-        <h1>Tell us about a time when you overcame a challenge</h1>
+        <Lottie options={bottleDefaultOptions} height={100} width={100} />
+        <h1>What makes you stand out amongst other candidates?</h1>
         <button
           onClick={() => navigate("/dashboard")}
           className="back-to-profile-button"
@@ -172,31 +155,33 @@ const VideoRecorderPage3 = () => {
             <ul>
               <li>
                 <strong className="highlight">
-                  This is like your "highlight reel" moment. Show off!
+                  Don’t be modest — this is the time to be confident about your
+                  strengths and really sell yourself to employers.
                 </strong>{" "}
-                Share specific examples where you exhibited problem-solving
-                skills and the ability to overcome obstacles.
+                Focus on your unique skills and experiences, and explain why
+                these make you the ideal candidate.
               </li>
               <li>
                 <strong className="highlight">
-                  Pick one specific challenge in your studies, personal life, or
-                  work/internships.
+                  Focus on your education, skills, and experiences that make you
+                  unique!
                 </strong>{" "}
-                Tell a story with a positive outcome and/or positive lesson
-                learned that you can contribute to the workplace.
+                Tell employers how your unique skills will help the company
+                succeed.
               </li>
               <li>
                 <strong className="highlight">
-                  Emphasize key "soft skills".
+                  Employers ask this to identify reasons why hiring you is
+                  better than hiring a similarly qualified candidate.
                 </strong>{" "}
-                Examples of soft skills include creativity, leadership,
-                resilience, adaptability, quick decision-making, etc. Relate
-                these to the specific challenge and outcome you are discussing.
+                Use specific examples to demonstrate your skills and
+                achievements, and relate them back to the requirements of the
+                job.
               </li>
             </ul>
             <div>
               <a
-                href="https://youtu.be/W1vP__7BAEY?si=nktGyavw_DQlWOP7"
+                href="https://youtu.be/IshJHdFFtcg?si=dOJl_w_f62enHHSN"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -213,4 +198,4 @@ const VideoRecorderPage3 = () => {
   );
 };
 
-export default VideoRecorderPage3;
+export default VideoRecorderPage2;
