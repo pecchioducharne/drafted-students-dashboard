@@ -77,7 +77,7 @@ const VideoRecorderPage2 = () => {
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
       await updateDoc(userDocRef, {
-        video2: downloadURL,
+        video3: downloadURL,
       });
 
       ReactGA4.event({
