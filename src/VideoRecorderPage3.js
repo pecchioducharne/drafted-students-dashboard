@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { storage, db, auth } from "./firebase"; // Import the Firebase storage instance and auth
+import { storage, db, auth } from "./firebase";
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import Lottie from "react-lottie";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import "./VideoRecorderPage.css"; // Importing CSS
-import { doc, updateDoc } from "firebase/firestore"; // Import required Firestore functions
-import challengeAnimationData from "./challenge.json"; // Adjust the path as necessary
+import "./VideoRecorderPage.css";
+import { doc, updateDoc } from "firebase/firestore";
+import challengeAnimationData from "./challenge.json";
 import ReactGA4 from "react-ga4";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
@@ -39,7 +39,6 @@ const VideoRecorderPage3 = () => {
       console.error("FFmpeg is not loaded yet.");
       return;
     }
-    setIsUploading(true);
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
@@ -59,7 +58,6 @@ const VideoRecorderPage3 = () => {
       type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
-    setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
@@ -77,7 +75,6 @@ const VideoRecorderPage3 = () => {
           window.ttq.track("CompleteRegistration", {
             content_id: "user_recorded_video",
             email: auth.currentUser.email,
-            // Add other relevant parameters here
           });
         }
 
@@ -87,7 +84,7 @@ const VideoRecorderPage3 = () => {
         const downloadURL = await getDownloadURL(storageRef);
 
         // Update the user's document in Firestore
-        const userEmail = auth.currentUser.email; // Get the logged-in user's email
+        const userEmail = auth.currentUser.email;
         const userDocRef = doc(db, "drafted-accounts", userEmail);
         await updateDoc(userDocRef, {
           video3: downloadURL,
@@ -147,7 +144,12 @@ const VideoRecorderPage3 = () => {
       <div className="title-and-buttons-container">
         <Lottie options={challengeDefaultOptions} height={100} width={100} />
         <h1>Tell us about a time when you overcame a challenge</h1>
-        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="back-to-profile-button"
+        >
+          Back to Profile
+        </button>
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
@@ -168,9 +170,29 @@ const VideoRecorderPage3 = () => {
         {showProTips && (
           <>
             <ul>
-              <li><strong className="highlight">This is like your "highlight reel" moment. Show off!</strong> Share specific examples where you exhibited problem-solving skills and the ability to overcome obstacles.</li>
-              <li><strong className="highlight">Pick one specific challenge in your studies, personal life, or work/internships.</strong> Tell a story with a positive outcome and/or positive lesson learned that you can contribute to the workplace.</li>
-              <li><strong className="highlight">Emphasize key "soft skills".</strong> Examples of soft skills include creativity, leadership, resilience, adaptability, quick decision-making, etc. Relate these to the specific challenge and outcome you are discussing.</li>
+              <li>
+                <strong className="highlight">
+                  This is like your "highlight reel" moment. Show off!
+                </strong>{" "}
+                Share specific examples where you exhibited problem-solving
+                skills and the ability to overcome obstacles.
+              </li>
+              <li>
+                <strong className="highlight">
+                  Pick one specific challenge in your studies, personal life, or
+                  work/internships.
+                </strong>{" "}
+                Tell a story with a positive outcome and/or positive lesson
+                learned that you can contribute to the workplace.
+              </li>
+              <li>
+                <strong className="highlight">
+                  Emphasize key "soft skills".
+                </strong>{" "}
+                Examples of soft skills include creativity, leadership,
+                resilience, adaptability, quick decision-making, etc. Relate
+                these to the specific challenge and outcome you are discussing.
+              </li>
             </ul>
             <div>
               <a

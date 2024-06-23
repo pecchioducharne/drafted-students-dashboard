@@ -39,7 +39,6 @@ const VideoRecorderPage2 = () => {
       console.error("FFmpeg is not loaded yet.");
       return;
     }
-    setIsUploading(true);
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
@@ -59,7 +58,6 @@ const VideoRecorderPage2 = () => {
       type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
-    setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
@@ -78,13 +76,18 @@ const VideoRecorderPage2 = () => {
 
       ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
       await ffmpeg.run(
-        "-i", "video.mp4",
-        "-ss", "00:00:01.000",
-        "-vframes", "1",
+        "-i",
+        "video.mp4",
+        "-ss",
+        "00:00:01.000",
+        "-vframes",
+        "1",
         "thumbnail.jpg"
       );
       const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
-      const thumbnailBlob = new Blob([thumbnailData.buffer], { type: "image/jpeg" });
+      const thumbnailBlob = new Blob([thumbnailData.buffer], {
+        type: "image/jpeg",
+      });
 
       const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
       const thumbnailRef = ref(storage, thumbnailFileName);
@@ -93,7 +96,10 @@ const VideoRecorderPage2 = () => {
 
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, { video2: downloadURL, thumbnail: thumbnailURL });
+      await updateDoc(userDocRef, {
+        video2: downloadURL,
+        thumbnail: thumbnailURL,
+      });
 
       ReactGA4.event({
         category: "Video Recording",
@@ -142,7 +148,12 @@ const VideoRecorderPage2 = () => {
       <div className="title-and-buttons-container">
         <Lottie options={bottleDefaultOptions} height={100} width={100} />
         <h1>What makes you stand out amongst other candidates?</h1>
-        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="back-to-profile-button"
+        >
+          Back to Profile
+        </button>
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
@@ -163,9 +174,31 @@ const VideoRecorderPage2 = () => {
         {showProTips && (
           <>
             <ul>
-              <li><strong className="highlight">Don’t be modest — this is the time to be confident about your strengths and really sell yourself to employers.</strong> Focus on your unique skills and experiences, and explain why these make you the ideal candidate.</li>
-              <li><strong className="highlight">Focus on your education, skills, and experiences that make you unique!</strong> Tell employers how your unique skills will help the company succeed.</li>
-              <li><strong className="highlight">Employers ask this to identify reasons why hiring you is better than hiring a similarly qualified candidate.</strong> Use specific examples to demonstrate your skills and achievements, and relate them back to the requirements of the job.</li>
+              <li>
+                <strong className="highlight">
+                  Don’t be modest — this is the time to be confident about your
+                  strengths and really sell yourself to employers.
+                </strong>{" "}
+                Focus on your unique skills and experiences, and explain why
+                these make you the ideal candidate.
+              </li>
+              <li>
+                <strong className="highlight">
+                  Focus on your education, skills, and experiences that make you
+                  unique!
+                </strong>{" "}
+                Tell employers how your unique skills will help the company
+                succeed.
+              </li>
+              <li>
+                <strong className="highlight">
+                  Employers ask this to identify reasons why hiring you is
+                  better than hiring a similarly qualified candidate.
+                </strong>{" "}
+                Use specific examples to demonstrate your skills and
+                achievements, and relate them back to the requirements of the
+                job.
+              </li>
             </ul>
             <div>
               <a

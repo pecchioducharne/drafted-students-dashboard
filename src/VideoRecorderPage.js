@@ -39,7 +39,6 @@ const VideoRecorderPage = () => {
       console.error("FFmpeg is not loaded yet.");
       return;
     }
-    setIsUploading(true);
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
@@ -59,7 +58,6 @@ const VideoRecorderPage = () => {
       type: "video/mp4",
     });
     setRecordedVideo(compressedBlob);
-    setIsUploading(false);
   };
 
   const toggleVideo = (event) => {
@@ -78,13 +76,18 @@ const VideoRecorderPage = () => {
 
       ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
       await ffmpeg.run(
-        "-i", "video.mp4",
-        "-ss", "00:00:01.000",
-        "-vframes", "1",
+        "-i",
+        "video.mp4",
+        "-ss",
+        "00:00:01.000",
+        "-vframes",
+        "1",
         "thumbnail.jpg"
       );
       const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
-      const thumbnailBlob = new Blob([thumbnailData.buffer], { type: "image/jpeg" });
+      const thumbnailBlob = new Blob([thumbnailData.buffer], {
+        type: "image/jpeg",
+      });
 
       const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
       const thumbnailRef = ref(storage, thumbnailFileName);
@@ -93,7 +96,10 @@ const VideoRecorderPage = () => {
 
       const userEmail = auth.currentUser.email;
       const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, { video1: downloadURL, thumbnail: thumbnailURL });
+      await updateDoc(userDocRef, {
+        video1: downloadURL,
+        thumbnail: thumbnailURL,
+      });
 
       ReactGA4.event({
         category: "Video Recording",
@@ -142,7 +148,12 @@ const VideoRecorderPage = () => {
       <div className="title-and-buttons-container">
         <Lottie options={fireDefaultOptions} height={100} width={100} />
         <h1>Tell us your story</h1>
-        <button onClick={() => navigate("/dashboard")} className="back-to-profile-button">Back to Profile</button>
+        <button
+          onClick={() => navigate("/dashboard")}
+          className="back-to-profile-button"
+        >
+          Back to Profile
+        </button>
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
@@ -163,9 +174,30 @@ const VideoRecorderPage = () => {
         {showProTips && (
           <>
             <ul>
-              <li><strong className="highlight">This is the typical "walk me through your resume" question.</strong> Talk about what you majored in and why. What internships or experiences you've had, and what have you learned from them? What skills will you bring to the hiring company?</li>
-              <li><strong className="highlight">Show why you're the best candidate to get an opportunity,</strong> in terms of degree, internships, and experience as well as soft skills which truly set you apart. Talk about what you are passionate about, and what you hope to explore in your first role.</li>
-              <li><strong className="highlight">Demonstrate that you can communicate clearly and effectively,</strong> present yourself professionally, and most importantly have fun and show your enthusiasm to go pro and put that degree to work!</li>
+              <li>
+                <strong className="highlight">
+                  This is the typical "walk me through your resume" question.
+                </strong>{" "}
+                Talk about what you majored in and why. What internships or
+                experiences you've had, and what have you learned from them?
+                What skills will you bring to the hiring company?
+              </li>
+              <li>
+                <strong className="highlight">
+                  Show why you're the best candidate to get an opportunity,
+                </strong>{" "}
+                in terms of degree, internships, and experience as well as soft
+                skills which truly set you apart. Talk about what you are
+                passionate about, and what you hope to explore in your first
+                role.
+              </li>
+              <li>
+                <strong className="highlight">
+                  Demonstrate that you can communicate clearly and effectively,
+                </strong>{" "}
+                present yourself professionally, and most importantly have fun
+                and show your enthusiasm to go pro and put that degree to work!
+              </li>
             </ul>
             <div>
               <a
