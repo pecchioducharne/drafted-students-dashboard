@@ -36,7 +36,8 @@ const VideoRecorderPage = () => {
 
   const handleVideoRecording = async (videoBlob) => {
     if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet.");
+      console.error("FFmpeg is not loaded yet. Skipping compression.");
+      setRecordedVideo(videoBlob);
       return;
     }
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
@@ -68,38 +69,49 @@ const VideoRecorderPage = () => {
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
-
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
       await uploadBytes(storageRef, recordedVideo);
       const downloadURL = await getDownloadURL(storageRef);
 
-      ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
-      await ffmpeg.run(
-        "-i",
-        "video.mp4",
-        "-ss",
-        "00:00:01.000",
-        "-vframes",
-        "1",
-        "thumbnail.jpg"
-      );
-      const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
-      const thumbnailBlob = new Blob([thumbnailData.buffer], {
-        type: "image/jpeg",
-      });
+      if (ffmpegLoaded) {
+        try {
+          ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
+          await ffmpeg.run(
+            "-i",
+            "video.mp4",
+            "-ss",
+            "00:00:01.000",
+            "-vframes",
+            "1",
+            "thumbnail.jpg"
+          );
+          const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
+          const thumbnailBlob = new Blob([thumbnailData.buffer], {
+            type: "image/jpeg",
+          });
 
-      const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
-      const thumbnailRef = ref(storage, thumbnailFileName);
-      await uploadBytes(thumbnailRef, thumbnailBlob);
-      const thumbnailURL = await getDownloadURL(thumbnailRef);
+          const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
+          const thumbnailRef = ref(storage, thumbnailFileName);
+          await uploadBytes(thumbnailRef, thumbnailBlob);
+          const thumbnailURL = await getDownloadURL(thumbnailRef);
 
-      const userEmail = auth.currentUser.email;
-      const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, {
-        video1: downloadURL,
-        thumbnail: thumbnailURL,
-      });
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video1: downloadURL,
+            thumbnail: thumbnailURL,
+          });
+        } catch (error) {
+          console.error("Error generating thumbnail:", error);
+        }
+      } else {
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video1: downloadURL,
+        });
+      }
 
       ReactGA4.event({
         category: "Video Recording",
@@ -166,49 +178,48 @@ const VideoRecorderPage = () => {
       </div>
       <div className="button-group">
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
-          {isUploading ? "Saving Video" : "Save Video"}
+          {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips
         </button>
         {showProTips && (
           <>
-            <ul>
-              <li>
-                <strong className="highlight">
-                  This is the typical "walk me through your resume" question.
-                </strong>{" "}
-                Talk about what you majored in and why. What internships or
-                experiences you've had, and what have you learned from them?
-                What skills will you bring to the hiring company?
-              </li>
-              <li>
-                <strong className="highlight">
-                  Show why you're the best candidate to get an opportunity,
-                </strong>{" "}
-                in terms of degree, internships, and experience as well as soft
-                skills which truly set you apart. Talk about what you are
-                passionate about, and what you hope to explore in your first
-                role.
-              </li>
-              <li>
-                <strong className="highlight">
-                  Demonstrate that you can communicate clearly and effectively,
-                </strong>{" "}
-                present yourself professionally, and most importantly have fun
-                and show your enthusiasm to go pro and put that degree to work!
-              </li>
-            </ul>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                This is the typical "walk me through your resume" question.
+              </span>{" "}
+              Talk about what you majored in and why. What internships or
+              experiences you've had, and what have you learned from them? What
+              skills will you bring to the hiring company?
+            </li>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                Show why you're the best candidate to get an opportunity,
+              </span>{" "}
+              in terms of degree, internships, and experience as well as soft
+              skills which truly set you apart. Talk about what you are
+              passionate about, and what you hope to explore in your first role.
+            </li>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                Demonstrate that you can communicate clearly and effectively,
+              </span>{" "}
+              present yourself professionally, and most importantly have fun and
+              show your enthusiasm to go pro and put that degree to work!
+            </li>
             <div>
               <a
                 href="https://youtu.be/T9Dym8dDLzM?si=bfF-HDKHnuTAcRdq"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link"
+                style={{ color: "#53AD7A", fontWeight: "bold" }}
               >
                 Click to Watch Question Explained
               </a>
+              <br />
+              <br />
               {showVideo && <YouTubeEmbedQuestion />}
             </div>
           </>

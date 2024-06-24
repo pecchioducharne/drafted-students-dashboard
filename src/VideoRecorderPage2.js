@@ -36,7 +36,8 @@ const VideoRecorderPage2 = () => {
 
   const handleVideoRecording = async (videoBlob) => {
     if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet.");
+      console.error("FFmpeg is not loaded yet. Skipping compression.");
+      setRecordedVideo(videoBlob);
       return;
     }
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
@@ -85,8 +86,8 @@ const VideoRecorderPage2 = () => {
         action: "Saved Video",
         label: "Record Video 2",
       });
-      navigate("/dashboard");
       setIsUploading(false);
+      navigate("/dashboard");
     }
   };
 
@@ -97,9 +98,9 @@ const VideoRecorderPage2 = () => {
         height="315"
         src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
     </div>
   );
@@ -145,50 +146,49 @@ const VideoRecorderPage2 = () => {
       </div>
       <div className="button-group">
         <button onClick={uploadVideoToFirebase} disabled={isUploading}>
-          {isUploading ? "Saving Video" : "Save Video"}
+          {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips
         </button>
         {showProTips && (
           <>
-            <ul>
-              <li>
-                <strong className="highlight">
-                  Don’t be modest — this is the time to be confident about your
-                  strengths and really sell yourself to employers.
-                </strong>{" "}
-                Focus on your unique skills and experiences, and explain why
-                these make you the ideal candidate.
-              </li>
-              <li>
-                <strong className="highlight">
-                  Focus on your education, skills, and experiences that make you
-                  unique!
-                </strong>{" "}
-                Tell employers how your unique skills will help the company
-                succeed.
-              </li>
-              <li>
-                <strong className="highlight">
-                  Employers ask this to identify reasons why hiring you is
-                  better than hiring a similarly qualified candidate.
-                </strong>{" "}
-                Use specific examples to demonstrate your skills and
-                achievements, and relate them back to the requirements of the
-                job.
-              </li>
-            </ul>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                Don’t be modest — this is the time to be confident about your
+                strengths and really sell yourself to employers.
+              </span>{" "}
+              Focus on your unique skills and experiences, and explain why these
+              make you the ideal candidate.
+            </li>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                Focus on your education, skills, and experiences that make you
+                unique!
+              </span>{" "}
+              Tell employers how your unique skills will help the company
+              succeed.
+            </li>
+            <li>
+              <span style={{ fontWeight: "bold", color: "#53AD7A" }}>
+                Employers ask this to identify reasons why hiring you is better
+                than hiring a similarly qualified candidate.
+              </span>{" "}
+              Use specific examples to demonstrate your skills and achievements,
+              and relate them back to the requirements of the job.
+            </li>
             <div>
               <a
-                href="https://youtu.be/IshJHdFFtcg?si=dOJl_w_f62enHHSN"
+                href="https://youtu.be/T9Dym8dDLzM?si=bfF-HDKHnuTAcRdq"
                 onClick={toggleVideo}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="link"
+                style={{ color: "#53AD7A", fontWeight: "bold" }}
               >
                 Click to Watch Question Explained
               </a>
+              <br />
+              <br />
               {showVideo && <YouTubeEmbedQuestion />}
             </div>
           </>
