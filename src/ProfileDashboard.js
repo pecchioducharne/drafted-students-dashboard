@@ -95,6 +95,7 @@ const ProfileDashboard = ({
         <img src="${banner}" alt="Banner" class="bannerImage" />
       </div>
       <h3>By completing your video resume you will get seen and considered for positions from startups to well-established tech companies.</h3>
+      <br></br>
     `);
     setShowVideoResumePopup(true);
   };
