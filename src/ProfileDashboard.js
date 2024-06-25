@@ -94,7 +94,7 @@ const ProfileDashboard = ({
       <div class="bannerContainer">
         <img src="${banner}" alt="Banner" class="bannerImage" />
       </div>
-      <h2>By completing your video resume you will get seen and considered for positions from startups to well-established tech companies.</h2>
+      <h3>By completing your video resume you will get seen and considered for positions from startups to well-established tech companies.</h3>
     `);
     setShowVideoResumePopup(true);
   };
@@ -532,16 +532,15 @@ const ProfileDashboard = ({
                 </div>
               </div>
             </div>
-            <a
-              className="view-resume-link"
-              onClick={handleVideoResumeClick}
-            >
-              <strong><h2>So... Who's hiring? How does this work?</h2></strong>
+            <a className="view-resume-link" onClick={handleVideoResumeClick}>
+              <strong>
+                <h2>So... Who's hiring? How does this work?</h2>
+              </strong>
             </a>
             <br></br>
-            <br>
-            </br>
-            <br></br><br></br>
+            <br></br>
+            <br></br>
+            <br></br>
             <div className="profileExper">
               <div className="profileExperEduc">
                 {/* <div className="profileExperPicture" /> */}
