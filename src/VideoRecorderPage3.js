@@ -110,11 +110,15 @@ const VideoRecorderPage3 = () => {
 
     if (recordedVideo && isAuthenticated) {
       setIsUploading(true);
+<<<<<<< HEAD
       console.info("Video has been recorded and we are signed in");
+=======
+>>>>>>> 26c9a77 (fixed video 3)
 
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
+<<<<<<< HEAD
         console.log("Have fileName: " + fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
@@ -131,11 +135,23 @@ const VideoRecorderPage3 = () => {
         });
         console.info("Updated doc! Video 3: " + downloadURL);
 
+=======
+        await uploadBytes(storageRef, recordedVideo);
+        const downloadURL = await getDownloadURL(storageRef);
+
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video3: downloadURL,
+        });
+
+>>>>>>> 26c9a77 (fixed video 3)
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
           label: "Record Video 3",
         });
+<<<<<<< HEAD
         setIsUploading(false);
         setIsUploadingVideo3(false); // Reset uploading state for Video 3
         if (callback) callback(); // Invoke callback function
@@ -148,6 +164,15 @@ const VideoRecorderPage3 = () => {
       console.info("Didn't catch recorded video or authentication!");
       console.info("Recorded video: " + recordedVideo);
       console.info("Authenticated: " + auth.currentUser);
+=======
+
+        navigate("/dashboard"); // Navigate after successful upload
+      } catch (error) {
+        console.error("Error uploading video:", error);
+      } finally {
+        setIsUploading(false);
+      }
+>>>>>>> 26c9a77 (fixed video 3)
     }
   };
 
