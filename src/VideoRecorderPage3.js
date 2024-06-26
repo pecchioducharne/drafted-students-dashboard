@@ -18,6 +18,7 @@ const VideoRecorderPage3 = () => {
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
+
   ReactGA4.initialize("G-3M4KL5NDYG");
 
   useEffect(() => {
@@ -40,6 +41,7 @@ const VideoRecorderPage3 = () => {
       setRecordedVideo(videoBlob);
       return;
     }
+
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
@@ -54,10 +56,12 @@ const VideoRecorderPage3 = () => {
       "+faststart",
       "output.mp4"
     );
+
     const compressedData = ffmpeg.FS("readFile", "output.mp4");
     const compressedBlob = new Blob([compressedData.buffer], {
       type: "video/mp4",
     });
+
     setRecordedVideo(compressedBlob);
   };
 
@@ -69,25 +73,31 @@ const VideoRecorderPage3 = () => {
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
-      navigate("/dashboard");
 
-      const fileName = `user_recorded_video_${Date.now()}.mp4`;
-      const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, recordedVideo);
-      const downloadURL = await getDownloadURL(storageRef);
+      try {
+        const fileName = `user_recorded_video_${Date.now()}.mp4`;
+        const storageRef = ref(storage, fileName);
+        await uploadBytes(storageRef, recordedVideo);
+        const downloadURL = await getDownloadURL(storageRef);
 
-      const userEmail = auth.currentUser.email;
-      const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, {
-        video3: downloadURL,
-      });
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video3: downloadURL,
+        });
 
-      ReactGA4.event({
-        category: "Video Recording",
-        action: "Saved Video",
-        label: "Record Video 3",
-      });
-      setIsUploading(false);
+        ReactGA4.event({
+          category: "Video Recording",
+          action: "Saved Video",
+          label: "Record Video 3",
+        });
+
+        navigate("/dashboard"); // Navigate after successful upload
+      } catch (error) {
+        console.error("Error uploading video:", error);
+      } finally {
+        setIsUploading(false);
+      }
     }
   };
 
@@ -98,9 +108,9 @@ const VideoRecorderPage3 = () => {
         height="315"
         src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
     </div>
   );
