@@ -41,6 +41,7 @@ const ProfileDashboard = ({
   ];
 
   const [resumeIndex, setResumeIndex] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoUrl2, setVideoUrl2] = useState("");
   const [resumeUrl, setResumeUrl] = useState("");
@@ -204,6 +205,7 @@ const ProfileDashboard = ({
   };
 
   const handleRecordClick = (id) => {
+    setIsUploading(true);
     console.log(id);
     ReactGA4.event({
       category: "Video Resume",
@@ -211,6 +213,7 @@ const ProfileDashboard = ({
       label: `Record Video ${id}`,
     });
     navigate(`/video-recorder${id}`);
+    setIsUploading(false);
   };
 
   const handleResumeUpload = async (event) => {
@@ -705,7 +708,7 @@ const ProfileDashboard = ({
                       className="resumeInfoFooterBtn"
                       onClick={() => handleRecordClick(index + 1)}
                     >
-                      Record
+                      {isUploading ? "Uploading..." : "Record"}
                     </button>
                     <button
                       className="resumeInfoFooterBtn"

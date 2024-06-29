@@ -16,6 +16,7 @@ const VideoRecorderPage2 = () => {
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
+  const [isRecording, setIsRecording] = useState(false); // Added state for recording status
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
@@ -23,10 +24,8 @@ const VideoRecorderPage2 = () => {
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
-        if (!ffmpeg.isLoaded()) {
-          await ffmpeg.load();
-          setFFmpegLoaded(true);
-        }
+        await ffmpeg.load();
+        setFFmpegLoaded(true);
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
       }
@@ -35,30 +34,35 @@ const VideoRecorderPage2 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
+    setIsRecording(false); // Update recording status
     if (!ffmpegLoaded) {
       console.error("FFmpeg is not loaded yet. Skipping compression.");
       setRecordedVideo(videoBlob);
       return;
     }
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-    setRecordedVideo(compressedBlob);
+    try {
+      ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+      await ffmpeg.run(
+        "-i",
+        "original.webm",
+        "-c:v",
+        "libx264",
+        "-crf",
+        "28",
+        "-preset",
+        "fast",
+        "-movflags",
+        "+faststart",
+        "output.mp4"
+      );
+      const compressedData = ffmpeg.FS("readFile", "output.mp4");
+      const compressedBlob = new Blob([compressedData.buffer], {
+        type: "video/mp4",
+      });
+      setRecordedVideo(compressedBlob);
+    } catch (error) {
+      console.error("Error compressing video:", error);
+    }
   };
 
   const toggleVideo = (event) => {
@@ -69,25 +73,29 @@ const VideoRecorderPage2 = () => {
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
+      try {
+        const fileName = `user_recorded_video_${Date.now()}.mp4`;
+        const storageRef = ref(storage, fileName);
+        await uploadBytes(storageRef, recordedVideo);
+        const downloadURL = await getDownloadURL(storageRef);
 
-      const fileName = `user_recorded_video_${Date.now()}.mp4`;
-      const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, recordedVideo);
-      const downloadURL = await getDownloadURL(storageRef);
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video2: downloadURL,
+        });
 
-      const userEmail = auth.currentUser.email;
-      const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, {
-        video2: downloadURL,
-      });
-
-      ReactGA4.event({
-        category: "Video Recording",
-        action: "Saved Video",
-        label: "Record Video 2",
-      });
-      setIsUploading(false);
-      navigate("/dashboard");
+        ReactGA4.event({
+          category: "Video Recording",
+          action: "Saved Video",
+          label: "Record Video 2",
+        });
+        setIsUploading(false);
+        navigate("/dashboard"); // Redirect to dashboard after successful upload
+      } catch (error) {
+        console.error("Error uploading video:", error);
+        setIsUploading(false);
+      }
     }
   };
 
@@ -142,10 +150,14 @@ const VideoRecorderPage2 = () => {
           timeLimit={90000}
           showReplayControls
           onRecordingComplete={handleVideoRecording}
+          onStartRecording={() => setIsRecording(true)} // Added callback for recording start
         />
       </div>
       <div className="button-group">
-        <button onClick={uploadVideoToFirebase} disabled={isUploading}>
+        <button
+          onClick={uploadVideoToFirebase}
+          disabled={isUploading || isRecording}
+        >
           {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">

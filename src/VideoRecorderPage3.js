@@ -147,7 +147,7 @@ const VideoRecorderPage3 = () => {
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
-          key={1}
+          key={3}
           isOnInitially
           timeLimit={90000}
           showReplayControls
