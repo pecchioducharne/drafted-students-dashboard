@@ -73,34 +73,32 @@ const VideoRecorderPage3 = () => {
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
-
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
-
+  
         const userEmail = auth.currentUser.email;
         const userDocRef = doc(db, "drafted-accounts", userEmail);
         await updateDoc(userDocRef, {
           video3: downloadURL,
         });
-
+  
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
           label: "Record Video 3",
         });
-
-        navigate("/dashboard"); // Navigate after successful upload
+        setIsUploading(false);
+        navigate("/dashboard"); // Redirect to dashboard after successful upload
       } catch (error) {
         console.error("Error uploading video:", error);
-      } finally {
         setIsUploading(false);
       }
     }
   };
-
+  
   const YouTubeEmbedQuestion = () => (
     <div className="youtube-container">
       <iframe

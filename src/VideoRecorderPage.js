@@ -118,7 +118,9 @@ const VideoRecorderPage = () => {
         action: "Saved Video",
         label: "Record Video 1",
       });
-      navigate("/dashboard");
+
+      navigate("/dashboard"); // Redirect to dashboard after successful upload
+
       setIsUploading(false);
     }
   };

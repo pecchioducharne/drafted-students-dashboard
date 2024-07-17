@@ -69,7 +69,7 @@ const VideoRecorderPage2 = () => {
     event.preventDefault();
     setShowVideo(!showVideo);
   };
-
+  
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
@@ -78,13 +78,13 @@ const VideoRecorderPage2 = () => {
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
-
+  
         const userEmail = auth.currentUser.email;
         const userDocRef = doc(db, "drafted-accounts", userEmail);
         await updateDoc(userDocRef, {
           video2: downloadURL,
         });
-
+  
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
@@ -98,6 +98,7 @@ const VideoRecorderPage2 = () => {
       }
     }
   };
+  
 
   const YouTubeEmbedQuestion = () => (
     <div className="youtube-container">
