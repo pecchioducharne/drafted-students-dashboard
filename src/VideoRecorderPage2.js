@@ -9,14 +9,17 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import bottleAnimationData from "./bottle.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { useUploadingContext } from "./UploadingContext";
 
 const VideoRecorderPage2 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
+  const { setIsUploadingVideo2 } = useUploadingContext();
+  const [isUploadingVideo2] = useState(false); // New state for video 2 upload
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
-  const [isRecording, setIsRecording] = useState(false); // Added state for recording status
+  const [isRecording, setIsRecording] = useState(false);
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
@@ -34,7 +37,7 @@ const VideoRecorderPage2 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
-    setIsRecording(false); // Update recording status
+    setIsRecording(false);
     if (!ffmpegLoaded) {
       console.error("FFmpeg is not loaded yet. Skipping compression.");
       setRecordedVideo(videoBlob);
@@ -65,12 +68,7 @@ const VideoRecorderPage2 = () => {
     }
   };
 
-  const toggleVideo = (event) => {
-    event.preventDefault();
-    setShowVideo(!showVideo);
-  };
-  
-  const uploadVideoToFirebase = async () => {
+  const uploadVideoToFirebase = async (callback) => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
       try {
@@ -91,14 +89,24 @@ const VideoRecorderPage2 = () => {
           label: "Record Video 2",
         });
         setIsUploading(false);
-        navigate("/dashboard"); // Redirect to dashboard after successful upload
+        if (callback) callback(); // Invoke callback function
       } catch (error) {
         console.error("Error uploading video:", error);
         setIsUploading(false);
       }
     }
+  };  
+
+  const handleSaveVideoClick = () => {
+    setIsUploadingVideo2(true); // Set uploading state for Video 2
+    navigate("/dashboard"); // Redirect to dashboard immediately
+    uploadVideoToFirebase(() => setIsUploadingVideo2(false)); // Pass callback to toggle uploading state
   };
-  
+
+  const toggleVideo = (event) => {
+    event.preventDefault();
+    setShowVideo(!showVideo);
+  };
 
   const YouTubeEmbedQuestion = () => (
     <div className="youtube-container">
@@ -146,20 +154,20 @@ const VideoRecorderPage2 = () => {
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
-          key={1}
+          key={2} // Change the key to force re-mounting of VideoRecorder component
           isOnInitially
           timeLimit={90000}
           showReplayControls
           onRecordingComplete={handleVideoRecording}
-          onStartRecording={() => setIsRecording(true)} // Added callback for recording start
+          onStartRecording={() => setIsRecording(true)}
         />
       </div>
       <div className="button-group">
         <button
-          onClick={uploadVideoToFirebase}
+          onClick={handleSaveVideoClick}
           disabled={isUploading || isRecording}
         >
-          {isUploading ? "Uploading..." : "Save Video"}
+          {isUploadingVideo2 ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips

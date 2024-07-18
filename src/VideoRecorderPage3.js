@@ -9,10 +9,14 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import challengeAnimationData from "./challenge.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { useUploadingContext } from "./UploadingContext";
 
 const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+  const { setIsUploadingVideo3 } = useUploadingContext();
+  const [isUploadingVideo3] = useState(false); // New state for video 2 upload
+  const [isRecording, setIsRecording] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
@@ -36,33 +40,35 @@ const VideoRecorderPage3 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
+    setIsRecording(false);
     if (!ffmpegLoaded) {
       console.error("FFmpeg is not loaded yet. Skipping compression.");
       setRecordedVideo(videoBlob);
       return;
     }
-
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-
-    setRecordedVideo(compressedBlob);
+    try {
+      ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+      await ffmpeg.run(
+        "-i",
+        "original.webm",
+        "-c:v",
+        "libx264",
+        "-crf",
+        "28",
+        "-preset",
+        "fast",
+        "-movflags",
+        "+faststart",
+        "output.mp4"
+      );
+      const compressedData = ffmpeg.FS("readFile", "output.mp4");
+      const compressedBlob = new Blob([compressedData.buffer], {
+        type: "video/mp4",
+      });
+      setRecordedVideo(compressedBlob);
+    } catch (error) {
+      console.error("Error compressing video:", error);
+    }
   };
 
   const toggleVideo = (event) => {
@@ -70,7 +76,7 @@ const VideoRecorderPage3 = () => {
     setShowVideo(!showVideo);
   };
 
-  const uploadVideoToFirebase = async () => {
+  const uploadVideoToFirebase = async (callback) => {
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
       try {
@@ -78,27 +84,33 @@ const VideoRecorderPage3 = () => {
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
-  
+
         const userEmail = auth.currentUser.email;
         const userDocRef = doc(db, "drafted-accounts", userEmail);
         await updateDoc(userDocRef, {
           video3: downloadURL,
         });
-  
+
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
           label: "Record Video 3",
         });
         setIsUploading(false);
-        navigate("/dashboard"); // Redirect to dashboard after successful upload
+        if (callback) callback(); // Invoke callback function
       } catch (error) {
         console.error("Error uploading video:", error);
         setIsUploading(false);
       }
     }
   };
-  
+
+  const handleSaveVideoClick = () => {
+    setIsUploadingVideo3(true); // Set uploading state for Video 2
+    navigate("/dashboard"); // Redirect to dashboard immediately
+    uploadVideoToFirebase(() => setIsUploadingVideo3(false)); // Pass callback to toggle uploading state
+  };
+
   const YouTubeEmbedQuestion = () => (
     <div className="youtube-container">
       <iframe
@@ -153,8 +165,11 @@ const VideoRecorderPage3 = () => {
         />
       </div>
       <div className="button-group">
-        <button onClick={uploadVideoToFirebase} disabled={isUploading}>
-          {isUploading ? "Uploading..." : "Save Video"}
+        <button
+          onClick={handleSaveVideoClick}
+          disabled={isUploading || isRecording}
+        >
+          {isUploadingVideo3 ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips

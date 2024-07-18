@@ -700,16 +700,13 @@ example-video {
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
-  font-size: 16px;
-  font-weight: 500;
-  text-decoration: none;
-  padding: 15px 20px;
+  padding: 10px 20px; /* Adjust padding for a more compact button */
   border-radius: 15px;
   margin: 0;
-  width: 100px;
-  /* Ensure both buttons have the same width */
-  text-align: center;
-  /* Center the text */
+  width: auto; /* Allow button width to adjust based on content */
+  display: inline-block; /* Ensure button is inline */
+  text-align: center; /* Center the text */
+  box-sizing: border-box; /* Ensure padding and border are included in width */
 }
 
 .resumeInfoFooterBtn:visited {

@@ -9,6 +9,7 @@ import ReactGA4 from "react-ga4";
 import "./ProfileDashboard.css";
 import { DoubleBubble } from "react-spinner-animated";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { useUploadingContext } from "./UploadingContext";
 
 const ProfileDashboard = ({
   firstName,
@@ -20,11 +21,17 @@ const ProfileDashboard = ({
   email,
   linkedInURL,
 }) => {
+  const [user, setUser] = useState(auth.currentUser);
   const resumes = [
     { id: 1, title: "What's your story?" },
     { id: 2, title: "What makes you stand out?" },
     { id: 3, title: "Tell us about a time when you overcame a challenge!" },
   ];
+
+  // Captures upload states
+  const { isUploadingVideo1 } = useUploadingContext();
+  const { isUploadingVideo2 } = useUploadingContext();
+  const { isUploadingVideo3 } = useUploadingContext();
 
   const exampleVideos = [
     "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-1.mov?alt=media&token=628534b2-01d4-4614-b50d-4a5f3cca9e5b",
@@ -41,7 +48,6 @@ const ProfileDashboard = ({
   ];
 
   const [resumeIndex, setResumeIndex] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [videoUrl2, setVideoUrl2] = useState("");
   const [resumeUrl, setResumeUrl] = useState("");
@@ -60,6 +66,17 @@ const ProfileDashboard = ({
 
   const navigate = useNavigate();
   ReactGA4.initialize("G-3M4KL5NDYG");
+
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      setUser(user);
+      if (!user) {
+        navigate("/login"); // Redirect to login if user is not authenticated
+      }
+    });
+
+    return () => unsubscribe();
+  }, [navigate]);
 
   const [editMode, setEditMode] = useState({
     university: false,
@@ -205,15 +222,43 @@ const ProfileDashboard = ({
   };
 
   const handleRecordClick = (id) => {
-    setIsUploading(true);
-    console.log(id);
+    // switch (id) {
+    //   case 1:
+    //     setIsUploadingVideo1(true);
+    //     break;
+    //   case 2:
+    //     setIsUploadingVideo2(true);
+    //     break;
+    //   case 3:
+    //     setIsUploadingVideo3(true);
+    //     break;
+    //   default:
+    //     break;
+    // }
+
+    // Perform navigation after setting uploading state
     ReactGA4.event({
       category: "Video Resume",
       action: `Clicked to Record Video ${id}`,
       label: `Record Video ${id}`,
     });
+
     navigate(`/video-recorder${id}`);
-    setIsUploading(false);
+
+    // Reset respective uploading state after navigation
+    // switch (id) {
+    //   case 1:
+    //     setIsUploadingVideo1(false);
+    //     break;
+    //   case 2:
+    //     setIsUploadingVideo2(false);
+    //     break;
+    //   case 3:
+    //     setIsUploadingVideo3(false);
+    //     break;
+    //   default:
+    //     break;
+    // }
   };
 
   const handleResumeUpload = async (event) => {
@@ -277,6 +322,37 @@ const ProfileDashboard = ({
       setResumeIndex(0);
     }
   }, [videoUrl, videoUrl2, videoUrl3]);
+
+  useEffect(() => {
+    const updateVideos = async () => {
+      try {
+        const userDocRef = doc(db, "drafted-accounts", email);
+        const docSnap = await getDoc(userDocRef);
+        
+        if (docSnap.exists()) {
+          const userData = docSnap.data();
+          
+          if (!isUploadingVideo1) {
+            setVideoUrl(userData.video1 || ""); // Update with actual field name from Firestore
+          }
+          if (!isUploadingVideo2) {
+            setVideoUrl2(userData.video2 || ""); // Update with actual field name from Firestore
+          }
+          if (!isUploadingVideo3) {
+            setVideoUrl3(userData.video3 || ""); // Update with actual field name from Firestore
+          }
+        } else {
+          console.log("Document does not exist");
+          // Handle case where document doesn't exist if needed
+        }
+      } catch (error) {
+        console.error("Error fetching Firestore document:", error);
+        // Handle error appropriately, e.g., set default values or show an error message
+      }
+    };
+  
+    updateVideos();
+  }, [isUploadingVideo1, isUploadingVideo2, isUploadingVideo3, email]);  
 
   useEffect(() => {
     const checkAuthAndFetchData = async () => {
@@ -707,8 +783,17 @@ const ProfileDashboard = ({
                     <button
                       className="resumeInfoFooterBtn"
                       onClick={() => handleRecordClick(index + 1)}
+                      disabled={
+                        (isUploadingVideo1 && index === 0) ||
+                        (isUploadingVideo2 && index === 1) ||
+                        (isUploadingVideo3 && index === 2)
+                      }
                     >
-                      {isUploading ? "Uploading..." : "Record"}
+                      {(isUploadingVideo1 && index === 0) ||
+                      (isUploadingVideo2 && index === 1) ||
+                      (isUploadingVideo3 && index === 2)
+                        ? "Uploading..."
+                        : "Record"}
                     </button>
                     <button
                       className="resumeInfoFooterBtn"
