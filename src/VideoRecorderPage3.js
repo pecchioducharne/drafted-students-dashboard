@@ -15,7 +15,8 @@ const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const { setIsUploadingVideo3 } = useUploadingContext();
-  const [isUploadingVideo3] = useState(false); // New state for video 2 upload
+  const { setIsUploadingVideo2, userEmail } = useUploadingContext(); // Access userEmail from context
+  const [isUploadingVideo3] = useState(false); // Updated state for video 3 upload
   const [isRecording, setIsRecording] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
@@ -47,7 +48,7 @@ const VideoRecorderPage3 = () => {
       return;
     }
     try {
-      console.log("compressing video");
+      console.log("Compressing video");
       ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
       await ffmpeg.run(
         "-i",
@@ -80,7 +81,7 @@ const VideoRecorderPage3 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
-    console.info("Upload to firebase triggered!");
+    console.info("Upload to Firebase triggered!");
 
     // Function to retry authentication check with a delay
     const waitForAuth = async (maxAttempts, delay) => {
@@ -127,10 +128,12 @@ const VideoRecorderPage3 = () => {
           label: "Record Video 3",
         });
         setIsUploading(false);
+        setIsUploadingVideo3(false); // Reset uploading state for Video 3
         if (callback) callback(); // Invoke callback function
       } catch (error) {
         console.error("Error uploading video:", error);
         setIsUploading(false);
+        setIsUploadingVideo3(false); // Reset uploading state for Video 3 on error
       }
     } else {
       console.info("Didn't catch recorded video or authentication!");
@@ -140,7 +143,7 @@ const VideoRecorderPage3 = () => {
   };
 
   const handleSaveVideoClick = () => {
-    setIsUploadingVideo3(true); // Set uploading state for Video 2
+    setIsUploadingVideo3(true); // Set uploading state for Video 3
     navigate("/dashboard"); // Redirect to dashboard immediately
     uploadVideoToFirebase(() => setIsUploadingVideo3(false)); // Pass callback to toggle uploading state
   };
@@ -203,7 +206,7 @@ const VideoRecorderPage3 = () => {
           onClick={handleSaveVideoClick}
           disabled={isUploading || isRecording}
         >
-          {isUploadingVideo3 ? "Uploading..." : "Save Video"}
+          {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips

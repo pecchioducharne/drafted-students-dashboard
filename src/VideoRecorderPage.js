@@ -14,7 +14,7 @@ import { useUploadingContext } from "./UploadingContext";
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { setIsUploadingVideo1 } = useUploadingContext();
+  const { setIsUploadingVideo1, userEmail } = useUploadingContext(); // Access userEmail from context
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
@@ -127,7 +127,6 @@ const VideoRecorderPage = () => {
             await uploadBytes(thumbnailRef, thumbnailBlob);
             const thumbnailURL = await getDownloadURL(thumbnailRef);
 
-            const userEmail = auth.currentUser.email;
             const userDocRef = doc(db, "drafted-accounts", userEmail);
             console.info("Updating doc!");
             await updateDoc(userDocRef, {
@@ -141,7 +140,6 @@ const VideoRecorderPage = () => {
               error
             );
             console.info("Updating doc without thumbnail!");
-            const userEmail = auth.currentUser.email;
             const userDocRef = doc(db, "drafted-accounts", userEmail);
             await updateDoc(userDocRef, {
               video1: downloadURL,
@@ -149,9 +147,8 @@ const VideoRecorderPage = () => {
             console.info("Doc updated without thumbnail");
           }
         } else {
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
           console.info("Updating doc without compression!");
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
           await updateDoc(userDocRef, {
             video1: downloadURL,
           });
@@ -193,9 +190,9 @@ const VideoRecorderPage = () => {
         height="315"
         src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
     </div>
   );
@@ -244,7 +241,7 @@ const VideoRecorderPage = () => {
           onClick={handleSaveVideoClick}
           disabled={isUploading || isRecording}
         >
-          {"Save Video"}
+          Save Video
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips

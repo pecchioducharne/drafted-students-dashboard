@@ -16,8 +16,7 @@ const VideoRecorderPage2 = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
-  const { setIsUploadingVideo2 } = useUploadingContext();
-  const [isUploadingVideo2] = useState(false); // New state for video 2 upload
+  const { setIsUploadingVideo2, userEmail } = useUploadingContext(); // Access userEmail from context
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const navigate = useNavigate();
@@ -44,7 +43,7 @@ const VideoRecorderPage2 = () => {
       return;
     }
     try {
-      console.log("compressing video")
+      console.log("Compressing video...");
       ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
       await ffmpeg.run(
         "-i",
@@ -72,10 +71,10 @@ const VideoRecorderPage2 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
-    console.info("Upload to firebase triggered!");
+    console.info("Upload to Firebase triggered!");
     if (recordedVideo /*&& auth.currentUser*/) {
       setIsUploading(true);
-      console.log("Video has been recorded and we are signed in")
+      console.log("Video has been recorded and we are signed in.");
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
@@ -83,18 +82,14 @@ const VideoRecorderPage2 = () => {
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
         console.log("Generated downloadURL: " + downloadURL);
-  
-        const userEmail = auth.currentUser.email;
-        console.log("Retrieved user email: " + userEmail);
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        console.log("Was able to get userDocRef: " + userDocRef);
 
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
         console.info("Updating doc...");
         await updateDoc(userDocRef, {
           video2: downloadURL,
         });
         console.info("Updated doc! Video 2: " + downloadURL);
-  
+
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
@@ -111,7 +106,7 @@ const VideoRecorderPage2 = () => {
       console.info("Recorded video: " + recordedVideo);
       console.info("Authenticated: " + auth.currentUser);
     }
-  };  
+  };
 
   const handleSaveVideoClick = () => {
     setIsUploadingVideo2(true); // Set uploading state for Video 2
@@ -183,7 +178,7 @@ const VideoRecorderPage2 = () => {
           onClick={handleSaveVideoClick}
           disabled={isUploading || isRecording}
         >
-          {isUploadingVideo2 ? "Uploading..." : "Save Video"}
+          {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
           See pro tips

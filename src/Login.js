@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Lottie from "react-lottie";
 import step5Animation from "./step-5.json";
 import astronautAnimation from "./astronaut.json";
+import { useUploadingContext } from "./UploadingContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -18,6 +19,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { updateUserEmail } = useUploadingContext(); // Access updateUserEmail function from context
 
   const defaultOptions5 = {
     loop: true,
@@ -76,6 +78,7 @@ const Login = () => {
         email,
         password
       );
+      updateUserEmail(email); // Update userEmail in UploadingContext
       navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
