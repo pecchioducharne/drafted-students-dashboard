@@ -261,6 +261,11 @@ const ProfileDashboard = ({
     // }
   };
 
+  useEffect(() => {
+    // Scroll to the bottom of the page
+    window.scrollTo(0, document.body.scrollHeight);
+  }, []);
+
   const handleResumeUpload = async (event) => {
     const file = event.target.files[0];
     if (file) {
