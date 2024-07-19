@@ -75,13 +75,16 @@ const VideoRecorderPage = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
+    console.info("Upload to firebase triggered!");
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
+      console.info("Video has been recorded and we are signed in");
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
+        console.log("Generated downloadURL: " + downloadURL);
 
         if (ffmpegLoaded) {
           try {
@@ -107,27 +110,33 @@ const VideoRecorderPage = () => {
 
             const userEmail = auth.currentUser.email;
             const userDocRef = doc(db, "drafted-accounts", userEmail);
+            console.info("Updating doc!");
             await updateDoc(userDocRef, {
               video1: downloadURL,
               thumbnail: thumbnailURL,
             });
+            console.info("Doc updated");
           } catch (error) {
             console.error(
               "Error generating thumbnail, uploading anyways:",
               error
             );
+            console.info("Updating doc without thumbnail!");
             const userEmail = auth.currentUser.email;
             const userDocRef = doc(db, "drafted-accounts", userEmail);
             await updateDoc(userDocRef, {
               video1: downloadURL,
             });
+            console.info("Doc updated without thumbnail");
           }
         } else {
           const userEmail = auth.currentUser.email;
           const userDocRef = doc(db, "drafted-accounts", userEmail);
+          console.info("Updating doc without compression!");
           await updateDoc(userDocRef, {
             video1: downloadURL,
           });
+          console.info("Doc updated without compression nor thumbnail");
         }
 
         ReactGA4.event({

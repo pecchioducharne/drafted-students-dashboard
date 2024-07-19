@@ -69,7 +69,7 @@ const VideoRecorderPage2 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
-    console.info("Upload to firebase triggered!")
+    console.info("Upload to firebase triggered!");
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
       console.log("Video has been recorded and we are signed in")
@@ -101,7 +101,6 @@ const VideoRecorderPage2 = () => {
         if (callback) callback(); // Invoke callback function
       } catch (error) {
         console.error("Error uploading video:", error);
-
         setIsUploading(false);
       }
     } else {
