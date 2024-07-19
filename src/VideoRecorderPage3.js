@@ -47,6 +47,7 @@ const VideoRecorderPage3 = () => {
       return;
     }
     try {
+      console.log("compressing video");
       ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
       await ffmpeg.run(
         "-i",
@@ -65,9 +66,11 @@ const VideoRecorderPage3 = () => {
       const compressedBlob = new Blob([compressedData.buffer], {
         type: "video/mp4",
       });
+      console.info("Compressed video");
       setRecordedVideo(compressedBlob);
     } catch (error) {
       console.error("Error compressing video:", error);
+      setRecordedVideo(videoBlob);
     }
   };
 
@@ -78,9 +81,27 @@ const VideoRecorderPage3 = () => {
 
   const uploadVideoToFirebase = async (callback) => {
     console.info("Upload to firebase triggered!");
-    if (recordedVideo && auth.currentUser) {
+
+    // Function to retry authentication check with a delay
+    const waitForAuth = async (maxAttempts, delay) => {
+      let attempts = 0;
+      while (attempts < maxAttempts) {
+        if (auth.currentUser) {
+          return true; // Authentication succeeded
+        }
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        attempts++;
+      }
+      return false; // Authentication failed after maxAttempts
+    };
+
+    // Check authentication with retries
+    const isAuthenticated = await waitForAuth(5, 1000); // Retry 5 times with 1 second delay
+
+    if (recordedVideo && isAuthenticated) {
       setIsUploading(true);
       console.info("Video has been recorded and we are signed in");
+
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);

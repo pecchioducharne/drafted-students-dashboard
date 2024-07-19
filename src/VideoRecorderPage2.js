@@ -44,6 +44,7 @@ const VideoRecorderPage2 = () => {
       return;
     }
     try {
+      console.log("compressing video")
       ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
       await ffmpeg.run(
         "-i",
@@ -62,15 +63,17 @@ const VideoRecorderPage2 = () => {
       const compressedBlob = new Blob([compressedData.buffer], {
         type: "video/mp4",
       });
+      console.info("Compressed video");
       setRecordedVideo(compressedBlob);
     } catch (error) {
       console.error("Error compressing video:", error);
+      setRecordedVideo(videoBlob);
     }
   };
 
   const uploadVideoToFirebase = async (callback) => {
     console.info("Upload to firebase triggered!");
-    if (recordedVideo && auth.currentUser) {
+    if (recordedVideo /*&& auth.currentUser*/) {
       setIsUploading(true);
       console.log("Video has been recorded and we are signed in")
       try {
