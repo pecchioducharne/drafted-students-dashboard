@@ -1,6 +1,23 @@
-/*  
+/*
   Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app
   Access-Control-Allow-Origin: http://localhost:3000
   Cross-Origin-Embedder-Policy: credentialless
   Cross-Origin-Opener-Policy: same-origin
-*/
+
+/video-recorder1/*
+  Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app
+  Access-Control-Allow-Origin: http://localhost:3000
+  Cross-Origin-Embedder-Policy: credentialless
+  Cross-Origin-Opener-Policy: same-origin
+
+/video-recorder2/*
+  Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app
+  Access-Control-Allow-Origin: http://localhost:3000
+  Cross-Origin-Embedder-Policy: credentialless
+  Cross-Origin-Opener-Policy: same-origin
+
+/video-recorder3/*
+  Access-Control-Allow-Origin: https://main--drafted-dashboard.netlify.app
+  Access-Control-Allow-Origin: http://localhost:3000
+  Cross-Origin-Embedder-Policy: credentialless
+  Cross-Origin-Opener-Policy: same-origin
