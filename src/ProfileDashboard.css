@@ -128,10 +128,13 @@ example-video {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 80%;
-  max-width: 80%;
+  width: 80%; /* Initial width */
+  max-width: 80%; /* Maximum width to maintain readability */
   text-align: left;
   font-size: 1.5rem;
+  overflow: auto; /* Enable scrolling if content exceeds the size */
+  max-height: 80vh; /* Limit maximum height to 80% of viewport height */
+  box-sizing: border-box; /* Ensure padding and border are included in width calculation */
 }
 
 .popup-content .bannerContainer {
@@ -144,7 +147,6 @@ example-video {
   margin-bottom: 20px;
 }
 
-
 .popup-content ul {
   list-style: disc;
   font-size: small;
@@ -155,6 +157,7 @@ example-video {
 .popup-content li {
   margin-bottom: 10px;
 }
+
 
 .close-btn {
   background: #4CA65A;
@@ -394,6 +397,13 @@ example-video {
 
 .profileInfoName span {
   margin-left: 15px;
+}
+
+.video-container-popup {
+  width: 50%;
+  overflow: hidden;
+  margin: 0 auto; /* Center horizontally */
+  margin-bottom: 5px;
 }
 
 .profileInfoEmail {

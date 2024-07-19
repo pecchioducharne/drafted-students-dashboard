@@ -121,7 +121,7 @@ const ProfileDashboard = ({
   const handleTipClick = (index) => {
     const content = (
       <div>
-        <div className="video-container">
+        <div className="video-container-popup">
           <VideoPlayer url={exampleVideos[index]} />
         </div>
         <ul>
