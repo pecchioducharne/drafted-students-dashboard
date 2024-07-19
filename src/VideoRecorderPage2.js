@@ -69,19 +69,28 @@ const VideoRecorderPage2 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
+    console.info("Upload to firebase triggered!")
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
+      console.log("Video has been recorded and we are signed in")
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
+        console.log("Have fileName: " + fileName);
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
+        console.log("Generated downloadURL: " + downloadURL);
   
         const userEmail = auth.currentUser.email;
+        console.log("Retrieved user email: " + userEmail);
         const userDocRef = doc(db, "drafted-accounts", userEmail);
+        console.log("Was able to get userDocRef: " + userDocRef);
+
+        console.info("Updating doc...");
         await updateDoc(userDocRef, {
           video2: downloadURL,
         });
+        console.info("Updated doc! Video 2: " + downloadURL);
   
         ReactGA4.event({
           category: "Video Recording",
@@ -92,8 +101,13 @@ const VideoRecorderPage2 = () => {
         if (callback) callback(); // Invoke callback function
       } catch (error) {
         console.error("Error uploading video:", error);
+
         setIsUploading(false);
       }
+    } else {
+      console.info("Didn't catch recorded video or authentication!");
+      console.info("Recorded video: " + recordedVideo);
+      console.info("Authenticated: " + auth.currentUser);
     }
   };  
 
