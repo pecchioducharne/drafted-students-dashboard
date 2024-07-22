@@ -9,15 +9,10 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import challengeAnimationData from "./challenge.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { useUploadingContext } from "./UploadingContext";
 
 const VideoRecorderPage3 = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { setIsUploadingVideo3 } = useUploadingContext();
-  const { setIsUploadingVideo2, userEmail } = useUploadingContext(); // Access userEmail from context
-  const [isUploadingVideo3] = useState(false); // Updated state for video 3 upload
-  const [isRecording, setIsRecording] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
@@ -40,47 +35,34 @@ const VideoRecorderPage3 = () => {
     loadFFmpeg();
   }, [ffmpeg]);
 
-  const navigateToNewTab = (url) => {
-    window.open(url, "_blank"); // Opens the URL in a new tab or window
-  };
-
-  const handleNavigate = () => {
-    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
-  };
-
   const handleVideoRecording = async (videoBlob) => {
-    setIsRecording(false);
     if (!ffmpegLoaded) {
       console.error("FFmpeg is not loaded yet. Skipping compression.");
       setRecordedVideo(videoBlob);
       return;
     }
-    try {
-      console.log("Compressing video");
-      ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-      await ffmpeg.run(
-        "-i",
-        "original.webm",
-        "-c:v",
-        "libx264",
-        "-crf",
-        "28",
-        "-preset",
-        "fast",
-        "-movflags",
-        "+faststart",
-        "output.mp4"
-      );
-      const compressedData = ffmpeg.FS("readFile", "output.mp4");
-      const compressedBlob = new Blob([compressedData.buffer], {
-        type: "video/mp4",
-      });
-      console.info("Compressed video");
-      setRecordedVideo(compressedBlob);
-    } catch (error) {
-      console.error("Error compressing video:", error);
-      setRecordedVideo(videoBlob);
-    }
+
+    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+    await ffmpeg.run(
+      "-i",
+      "original.webm",
+      "-c:v",
+      "libx264",
+      "-crf",
+      "28",
+      "-preset",
+      "fast",
+      "-movflags",
+      "+faststart",
+      "output.mp4"
+    );
+
+    const compressedData = ffmpeg.FS("readFile", "output.mp4");
+    const compressedBlob = new Blob([compressedData.buffer], {
+      type: "video/mp4",
+    });
+
+    setRecordedVideo(compressedBlob);
   };
 
   const toggleVideo = (event) => {
@@ -88,54 +70,13 @@ const VideoRecorderPage3 = () => {
     setShowVideo(!showVideo);
   };
 
-  const uploadVideoToFirebase = async (callback) => {
-    handleNavigate();
-    console.info("Upload to Firebase triggered!");
-
-    // Function to retry authentication check with a delay
-    const waitForAuth = async (maxAttempts, delay) => {
-      let attempts = 0;
-      while (attempts < maxAttempts) {
-        if (auth.currentUser) {
-          return true; // Authentication succeeded
-        }
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        attempts++;
-      }
-      return false; // Authentication failed after maxAttempts
-    };
-
-    // Check authentication with retries
-    const isAuthenticated = await waitForAuth(5, 1000); // Retry 5 times with 1 second delay
-
-    if (recordedVideo && isAuthenticated) {
+  const uploadVideoToFirebase = async () => {
+    if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
-<<<<<<< HEAD
-      console.info("Video has been recorded and we are signed in");
-=======
->>>>>>> 26c9a77 (fixed video 3)
 
       try {
         const fileName = `user_recorded_video_${Date.now()}.mp4`;
         const storageRef = ref(storage, fileName);
-<<<<<<< HEAD
-        console.log("Have fileName: " + fileName);
-        await uploadBytes(storageRef, recordedVideo);
-        const downloadURL = await getDownloadURL(storageRef);
-        console.log("Generated downloadURL: " + downloadURL);
-
-        const userEmail = auth.currentUser.email;
-        console.log("Retrieved user email: " + userEmail);
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        console.log("Was able to get userDocRef: " + userDocRef);
-
-        console.info("Updating doc...");
-        await updateDoc(userDocRef, {
-          video3: downloadURL,
-        });
-        console.info("Updated doc! Video 3: " + downloadURL);
-
-=======
         await uploadBytes(storageRef, recordedVideo);
         const downloadURL = await getDownloadURL(storageRef);
 
@@ -145,26 +86,11 @@ const VideoRecorderPage3 = () => {
           video3: downloadURL,
         });
 
->>>>>>> 26c9a77 (fixed video 3)
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
           label: "Record Video 3",
         });
-<<<<<<< HEAD
-        setIsUploading(false);
-        setIsUploadingVideo3(false); // Reset uploading state for Video 3
-        if (callback) callback(); // Invoke callback function
-      } catch (error) {
-        console.error("Error uploading video:", error);
-        setIsUploading(false);
-        setIsUploadingVideo3(false); // Reset uploading state for Video 3 on error
-      }
-    } else {
-      console.info("Didn't catch recorded video or authentication!");
-      console.info("Recorded video: " + recordedVideo);
-      console.info("Authenticated: " + auth.currentUser);
-=======
 
         navigate("/dashboard"); // Navigate after successful upload
       } catch (error) {
@@ -172,14 +98,7 @@ const VideoRecorderPage3 = () => {
       } finally {
         setIsUploading(false);
       }
->>>>>>> 26c9a77 (fixed video 3)
     }
-  };
-
-  const handleSaveVideoClick = () => {
-    setIsUploadingVideo3(true); // Set uploading state for Video 3
-    navigate("/dashboard"); // Redirect to dashboard immediately
-    uploadVideoToFirebase(() => setIsUploadingVideo3(false)); // Pass callback to toggle uploading state
   };
 
   const YouTubeEmbedQuestion = () => (
@@ -228,7 +147,7 @@ const VideoRecorderPage3 = () => {
       </div>
       <div className="video-recorder-wrapper">
         <VideoRecorder
-          key={3}
+          key={1}
           isOnInitially
           timeLimit={90000}
           showReplayControls
@@ -236,10 +155,7 @@ const VideoRecorderPage3 = () => {
         />
       </div>
       <div className="button-group">
-        <button
-          onClick={handleSaveVideoClick}
-          disabled={isUploading || isRecording}
-        >
+        <button onClick={uploadVideoToFirebase} disabled={isUploading}>
           {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
