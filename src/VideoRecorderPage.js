@@ -9,6 +9,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import fireAnimationData from "./fire.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
+import { useUploadingContext } from "./UploadingContext"; // Adjust path as needed
 
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -17,7 +18,9 @@ const VideoRecorderPage = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
+  const { userEmail, userPassword } = useUploadingContext(); // Use context to get userEmail and userPassword
   const ffmpeg = createFFmpeg({ log: true });
+
   ReactGA4.initialize("G-3M4KL5NDYG");
 
   useEffect(() => {
@@ -33,6 +36,14 @@ const VideoRecorderPage = () => {
     };
     loadFFmpeg();
   }, [ffmpeg]);
+
+  const navigateToNewTab = (url) => {
+    window.open(url, '_blank'); // Opens the URL in a new tab or window
+  };
+
+  const handleNavigate = () => {
+    navigateToNewTab('/dashboard'); // Example usage: open '/new-route' in a new tab
+  };
 
   const handleVideoRecording = async (videoBlob) => {
     if (!ffmpegLoaded) {
@@ -67,6 +78,7 @@ const VideoRecorderPage = () => {
   };
 
   const uploadVideoToFirebase = async () => {
+    handleNavigate();
     if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
@@ -130,9 +142,9 @@ const VideoRecorderPage = () => {
         height="315"
         src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
     </div>
   );
