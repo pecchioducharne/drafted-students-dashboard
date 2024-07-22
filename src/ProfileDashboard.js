@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { db, storage, auth } from "./firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot } from "firebase/firestore";
 import { signOut } from "firebase/auth";
 import banner from "./banner.png";
 import recordTemplate from "./drafted-template.jpeg";
@@ -360,35 +360,44 @@ const ProfileDashboard = ({
   }, [isUploadingVideo1, isUploadingVideo2, isUploadingVideo3, email]);  
 
   useEffect(() => {
-    const checkAuthAndFetchData = async () => {
-      const user = auth.currentUser;
-      if (user) {
-        const userDocRef = doc(db, "drafted-accounts", user.email);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setVideoUrl(userData.video1);
-          setVideoUrl2(userData.video2);
-          setVideoUrl3(userData.video3);
-          if (userData.resume) {
-            setResumeUrl(userData.resume);
-          }
-          if (userData.linkedInURL) {
-            setLinkedInURL(userData.linkedInURL);
-          }
-          if (userData.major) {
-            setMajor(userData.major); // Ensure this line is present
-          }
-        } else {
-          console.log("No such document!");
-        }
-      } else {
-        navigate("/login");
-      }
-    };
+    const user = auth.currentUser;
+    if (!user) {
+      // If there's no user logged in, clear the data
+      setVideoUrl("");
+      setVideoUrl2("");
+      setVideoUrl3("");
+      setResumeUrl("");
+      setLinkedInURL("");
+      setMajor("");
+      return; // Exit early if no user is logged in
+    }
 
-    checkAuthAndFetchData();
-  }, [navigate, auth]);
+    const userDocRef = doc(db, "drafted-accounts", user.email);
+
+    const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+      if (docSnap.exists()) {
+        const userData = docSnap.data();
+        setVideoUrl(userData.video1 || "");
+        setVideoUrl2(userData.video2 || "");
+        setVideoUrl3(userData.video3 || "");
+        setResumeUrl(userData.resume || "");
+        setLinkedInURL(userData.linkedInURL || "");
+        setMajor(userData.major || "");
+      } else {
+        // Handle case where document does not exist
+        console.log("No such document!");
+        setVideoUrl("");
+        setVideoUrl2("");
+        setVideoUrl3("");
+        setResumeUrl("");
+        setLinkedInURL("");
+        setMajor("");
+      }
+    });
+
+    // Clean up the listener to prevent memory leaks
+    return () => unsubscribe();
+  }, [auth.currentUser]); // Include dependencies as per your application flow
 
   useEffect(() => {
     const fetchData = async () => {

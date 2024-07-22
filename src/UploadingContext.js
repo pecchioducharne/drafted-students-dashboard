@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const UploadingContext = createContext();
 
@@ -8,10 +8,18 @@ export const UploadingProvider = ({ children }) => {
   const [isUploadingVideo1, setIsUploadingVideo1] = useState(false);
   const [isUploadingVideo2, setIsUploadingVideo2] = useState(false);
   const [isUploadingVideo3, setIsUploadingVideo3] = useState(false);
-  const [userEmail, setUserEmail] = useState(null); // State to store user's email
+  const [userEmail, setUserEmail] = useState(localStorage.getItem("userEmail") || null);
+  const [userPassword, setUserPassword] = useState(localStorage.getItem("userPassword") || null);
 
-  const updateUserEmail = (email) => {
+  useEffect(() => {
+    // Store email and password in localStorage
+    localStorage.setItem("userEmail", userEmail);
+    localStorage.setItem("userPassword", userPassword);
+  }, [userEmail, userPassword]);
+
+  const updateUserCredentials = (email, password) => {
     setUserEmail(email);
+    setUserPassword(password);
   };
 
   return (
@@ -24,7 +32,8 @@ export const UploadingProvider = ({ children }) => {
         isUploadingVideo3,
         setIsUploadingVideo3,
         userEmail,
-        updateUserEmail,
+        userPassword,
+        updateUserCredentials,
       }}
     >
       {children}

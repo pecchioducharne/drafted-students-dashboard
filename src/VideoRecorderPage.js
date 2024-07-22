@@ -9,18 +9,19 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import fireAnimationData from "./fire.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { useUploadingContext } from "./UploadingContext";
+import { useUploadingContext } from "./UploadingContext"; // Adjust path as needed
 
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
-  const { setIsUploadingVideo1, userEmail } = useUploadingContext(); // Access userEmail from context
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const navigate = useNavigate();
+  const { userEmail, userPassword } = useUploadingContext(); // Use context to get userEmail and userPassword
   const ffmpeg = createFFmpeg({ log: true });
+
   ReactGA4.initialize("G-3M4KL5NDYG");
 
   useEffect(() => {
@@ -36,6 +37,14 @@ const VideoRecorderPage = () => {
     };
     loadFFmpeg();
   }, [ffmpeg]);
+
+  const navigateToNewTab = (url) => {
+    window.open(url, '_blank'); // Opens the URL in a new tab or window
+  };
+
+  const handleNavigate = () => {
+    navigateToNewTab('/dashboard'); // Example usage: open '/new-route' in a new tab
+  };
 
   const handleVideoRecording = async (videoBlob) => {
     setIsRecording(false);
@@ -75,26 +84,9 @@ const VideoRecorderPage = () => {
     setShowVideo(!showVideo);
   };
 
-  const uploadVideoToFirebase = async (callback) => {
-    console.info("Upload to firebase triggered!");
-
-    // Function to retry authentication check with a delay
-    const waitForAuth = async (maxAttempts, delay) => {
-      let attempts = 0;
-      while (attempts < maxAttempts) {
-        if (auth.currentUser) {
-          return true; // Authentication succeeded
-        }
-        await new Promise((resolve) => setTimeout(resolve, delay));
-        attempts++;
-      }
-      return false; // Authentication failed after maxAttempts
-    };
-
-    // Check authentication with retries
-    const isAuthenticated = await waitForAuth(5, 1000); // Retry 5 times with 1 second delay
-
-    if (recordedVideo && isAuthenticated) {
+  const uploadVideoToFirebase = async () => {
+    handleNavigate();
+    if (recordedVideo && auth.currentUser) {
       setIsUploading(true);
       console.info("Video has been recorded and we are signed in");
 

@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Lottie from "react-lottie";
 import step5Animation from "./step-5.json";
 import astronautAnimation from "./astronaut.json";
-import { useUploadingContext } from "./UploadingContext";
+import { useUploadingContext } from "./UploadingContext"; // Import the context
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,7 +19,7 @@ const Login = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const { updateUserEmail } = useUploadingContext(); // Access updateUserEmail function from context
+  const { updateUserCredentials } = useUploadingContext(); // Access the context function
 
   const defaultOptions5 = {
     loop: true,
@@ -41,6 +41,7 @@ const Login = () => {
 
     const emailParam = getUrlParam("email");
     const passwordParam = getUrlParam("password");
+    updateUserCredentials(emailParam, passwordParam);
 
     if (emailParam && passwordParam) {
       setIsLoading(true);
@@ -58,7 +59,7 @@ const Login = () => {
           setIsLoading(false);
         });
     }
-  }, [auth, navigate]);
+  }, [auth, navigate, updateUserCredentials]);
 
   const navigateToCandidateSignup = () => {
     window.location.href = "https://drafted-onboarding.netlify.app";
@@ -112,6 +113,7 @@ const Login = () => {
       </div>
     );
   }
+  
   function DraftedLogo() {
     return (
       <svg

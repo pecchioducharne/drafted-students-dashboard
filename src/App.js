@@ -59,10 +59,10 @@ function App() {
               path="/dashboard"
               element={<ProfileDashboard {...userProfile} />}
             />
-            <Route
+            {/* <Route
               path="*"
               element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />}
-            />
+            /> */}
           </Routes>
         </UploadingProvider>
       </div>
