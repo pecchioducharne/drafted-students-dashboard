@@ -35,6 +35,14 @@ const VideoRecorderPage2 = () => {
     loadFFmpeg();
   }, [ffmpeg]);
 
+  const navigateToNewTab = (url) => {
+    window.open(url, "_blank"); // Opens the URL in a new tab or window
+  };
+
+  const handleNavigate = () => {
+    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
+  };
+
   const handleVideoRecording = async (videoBlob) => {
     setIsRecording(false);
     if (!ffmpegLoaded) {
@@ -71,6 +79,7 @@ const VideoRecorderPage2 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
+    handleNavigate();
     console.info("Upload to Firebase triggered!");
     if (recordedVideo /*&& auth.currentUser*/) {
       setIsUploading(true);

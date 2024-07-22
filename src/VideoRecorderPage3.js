@@ -40,6 +40,14 @@ const VideoRecorderPage3 = () => {
     loadFFmpeg();
   }, [ffmpeg]);
 
+  const navigateToNewTab = (url) => {
+    window.open(url, "_blank"); // Opens the URL in a new tab or window
+  };
+
+  const handleNavigate = () => {
+    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
+  };
+
   const handleVideoRecording = async (videoBlob) => {
     setIsRecording(false);
     if (!ffmpegLoaded) {
@@ -81,6 +89,7 @@ const VideoRecorderPage3 = () => {
   };
 
   const uploadVideoToFirebase = async (callback) => {
+    handleNavigate();
     console.info("Upload to Firebase triggered!");
 
     // Function to retry authentication check with a delay
