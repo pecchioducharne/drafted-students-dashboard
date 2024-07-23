@@ -128,13 +128,10 @@ example-video {
   background: white;
   padding: 20px;
   border-radius: 8px;
-  width: 80%; /* Initial width */
-  max-width: 80%; /* Maximum width to maintain readability */
+  width: 80%;
+  max-width: 80%;
   text-align: left;
   font-size: 1.5rem;
-  overflow: auto; /* Enable scrolling if content exceeds the size */
-  max-height: 80vh; /* Limit maximum height to 80% of viewport height */
-  box-sizing: border-box; /* Ensure padding and border are included in width calculation */
 }
 
 .popup-content .bannerContainer {
@@ -147,6 +144,7 @@ example-video {
   margin-bottom: 20px;
 }
 
+
 .popup-content ul {
   list-style: disc;
   font-size: small;
@@ -157,7 +155,6 @@ example-video {
 .popup-content li {
   margin-bottom: 10px;
 }
-
 
 .close-btn {
   background: #4CA65A;
@@ -397,13 +394,6 @@ example-video {
 
 .profileInfoName span {
   margin-left: 15px;
-}
-
-.video-container-popup {
-  width: 50%;
-  overflow: hidden;
-  margin: 0 auto; /* Center horizontally */
-  margin-bottom: 5px;
 }
 
 .profileInfoEmail {
@@ -710,13 +700,16 @@ example-video {
   font-size: 16px;
   font-weight: 500;
   text-decoration: none;
-  padding: 10px 20px; /* Adjust padding for a more compact button */
+  font-size: 16px;
+  font-weight: 500;
+  text-decoration: none;
+  padding: 15px 20px;
   border-radius: 15px;
   margin: 0;
-  width: auto; /* Allow button width to adjust based on content */
-  display: inline-block; /* Ensure button is inline */
-  text-align: center; /* Center the text */
-  box-sizing: border-box; /* Ensure padding and border are included in width */
+  width: 100px;
+  /* Ensure both buttons have the same width */
+  text-align: center;
+  /* Center the text */
 }
 
 .resumeInfoFooterBtn:visited {

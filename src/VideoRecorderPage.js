@@ -38,11 +38,11 @@ const VideoRecorderPage = () => {
   }, [ffmpeg]);
 
   const navigateToNewTab = (url) => {
-    window.open(url, "_blank"); // Opens the URL in a new tab or window
+    window.open(url, '_blank'); // Opens the URL in a new tab or window
   };
 
   const handleNavigate = () => {
-    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
+    navigateToNewTab('/dashboard'); // Example usage: open '/new-route' in a new tab
   };
 
   const handleVideoRecording = async (videoBlob) => {
@@ -51,7 +51,6 @@ const VideoRecorderPage = () => {
       setRecordedVideo(videoBlob);
       return;
     }
-    
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
