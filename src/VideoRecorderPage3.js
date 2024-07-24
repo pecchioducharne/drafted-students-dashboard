@@ -7,6 +7,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./VideoRecorderPage.css";
 import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
+import step5Animation from "./step-5.json";
 import challengeAnimationData from "./challenge.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
@@ -20,6 +21,12 @@ const VideoRecorderPage3 = () => {
   const ffmpeg = createFFmpeg({ log: true });
 
   ReactGA4.initialize("G-3M4KL5NDYG");
+
+  const defaultOptions5 = {
+    loop: true,
+    autoplay: true,
+    animationData: step5Animation,
+  };
 
   useEffect(() => {
     const loadFFmpeg = async () => {
@@ -47,12 +54,17 @@ const VideoRecorderPage3 = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
+      navigate("/dashboard");
       setIsUploading(true);
 
       try {
         if (ffmpegLoaded) {
           // Compress video using FFmpeg if loaded
-          ffmpeg.FS("writeFile", "original.webm", await fetchFile(recordedVideo));
+          ffmpeg.FS(
+            "writeFile",
+            "original.webm",
+            await fetchFile(recordedVideo)
+          );
           await ffmpeg.run(
             "-i",
             "original.webm",

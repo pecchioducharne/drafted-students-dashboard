@@ -21,6 +21,13 @@
   margin-bottom: 20px;
 }
 
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Take full viewport height */
+}
+
 .title-and-buttons-container h1 {
   margin: 0;
   text-align: center;

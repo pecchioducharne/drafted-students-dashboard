@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
+import step5Animation from "./step-5.json";
 import fireAnimationData from "./fire.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
@@ -15,9 +16,16 @@ const VideoRecorderPage = () => {
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
+  const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
+
+  const defaultOptions5 = {
+    loop: true,
+    autoplay: true,
+    animationData: step5Animation,
+  };
 
   useEffect(() => {
     const loadFFmpeg = async () => {
@@ -44,6 +52,7 @@ const VideoRecorderPage = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
+      navigate("/dashboard");
       setIsUploading(true); // Set uploading state immediately
 
       try {
