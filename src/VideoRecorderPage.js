@@ -45,31 +45,8 @@ const VideoRecorderPage = () => {
     navigateToNewTab('/dashboard'); // Example usage: open '/new-route' in a new tab
   };
 
-  const handleVideoRecording = async (videoBlob) => {
-    if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet. Skipping compression.");
-      setRecordedVideo(videoBlob);
-      return;
-    }
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-    setRecordedVideo(compressedBlob);
+  const handleVideoRecording = (videoBlob) => {
+    setRecordedVideo(videoBlob);
   };
 
   const toggleVideo = (event) => {
@@ -78,59 +55,58 @@ const VideoRecorderPage = () => {
   };
 
   const uploadVideoToFirebase = async () => {
+    setIsUploading(true);
     handleNavigate();
-    if (recordedVideo && auth.currentUser) {
-      setIsUploading(true);
+
+    if (!recordedVideo || !auth.currentUser) {
+      setIsUploading(false);
+      return;
+    }
+
+    try {
+      if (ffmpegLoaded) {
+        ffmpeg.FS("writeFile", "original.webm", await fetchFile(recordedVideo));
+        await ffmpeg.run(
+          "-i",
+          "original.webm",
+          "-c:v",
+          "libx264",
+          "-crf",
+          "28",
+          "-preset",
+          "fast",
+          "-movflags",
+          "+faststart",
+          "output.mp4"
+        );
+        const compressedData = ffmpeg.FS("readFile", "output.mp4");
+        const compressedBlob = new Blob([compressedData.buffer], {
+          type: "video/mp4",
+        });
+        setRecordedVideo(compressedBlob);
+      }
+      
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
       await uploadBytes(storageRef, recordedVideo);
       const downloadURL = await getDownloadURL(storageRef);
 
-      if (ffmpegLoaded) {
-        try {
-          ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
-          await ffmpeg.run(
-            "-i",
-            "video.mp4",
-            "-ss",
-            "00:00:01.000",
-            "-vframes",
-            "1",
-            "thumbnail.jpg"
-          );
-          const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
-          const thumbnailBlob = new Blob([thumbnailData.buffer], {
-            type: "image/jpeg",
-          });
-
-          const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
-          const thumbnailRef = ref(storage, thumbnailFileName);
-          await uploadBytes(thumbnailRef, thumbnailBlob);
-          const thumbnailURL = await getDownloadURL(thumbnailRef);
-
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
-          await updateDoc(userDocRef, {
-            video1: downloadURL,
-            thumbnail: thumbnailURL,
-          });
-        } catch (error) {
-          console.error("Error generating thumbnail:", error);
-        }
-      } else {
-        const userEmail = auth.currentUser.email;
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video1: downloadURL,
-        });
-      }
+      const userEmail = auth.currentUser.email;
+      const userDocRef = doc(db, "drafted-accounts", userEmail);
+      await updateDoc(userDocRef, {
+        video1: downloadURL,
+      });
 
       ReactGA4.event({
         category: "Video Recording",
         action: "Saved Video",
         label: "Record Video 1",
       });
+
       navigate("/dashboard");
+    } catch (error) {
+      console.error("Error uploading video:", error);
+    } finally {
       setIsUploading(false);
     }
   };
