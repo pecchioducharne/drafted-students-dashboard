@@ -54,7 +54,6 @@ const VideoRecorderPage3 = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      navigate("/dashboard");
       setIsUploading(true);
 
       try {
