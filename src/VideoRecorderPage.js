@@ -42,77 +42,32 @@ const VideoRecorderPage = () => {
   };
 
   const handleNavigate = () => {
-    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
+    navigateToNewTab("/dashboard");
   };
 
-  const handleVideoRecording = async (videoBlob) => {
-    if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet. Skipping compression.");
-      setRecordedVideo(videoBlob);
-      return;
-    }
-    
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-    setRecordedVideo(compressedBlob);
-  };
-
-  const toggleVideo = (event) => {
-    event.preventDefault();
-    setShowVideo(!showVideo);
+  const handleVideoRecording = (videoBlob) => {
+    setRecordedVideo(videoBlob);
   };
 
   const uploadVideoToFirebase = async () => {
-    setIsUploading(true);
-    handleNavigate();
-
     if (!recordedVideo || !auth.currentUser) {
-      setIsUploading(false);
       return;
     }
 
+    setIsUploading(true);
+    handleNavigate();
+
     try {
+      let videoToUpload = recordedVideo;
+
+      // Perform compression if ffmpeg is loaded
       if (ffmpegLoaded) {
-        ffmpeg.FS("writeFile", "original.webm", await fetchFile(recordedVideo));
-        await ffmpeg.run(
-          "-i",
-          "original.webm",
-          "-c:v",
-          "libx264",
-          "-crf",
-          "28",
-          "-preset",
-          "fast",
-          "-movflags",
-          "+faststart",
-          "output.mp4"
-        );
-        const compressedData = ffmpeg.FS("readFile", "output.mp4");
-        const compressedBlob = new Blob([compressedData.buffer], {
-          type: "video/mp4",
-        });
-        setRecordedVideo(compressedBlob);
+        videoToUpload = await compressVideo(recordedVideo);
       }
-      
+
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, recordedVideo);
+      await uploadBytes(storageRef, videoToUpload);
       const downloadURL = await getDownloadURL(storageRef);
 
       const userEmail = auth.currentUser.email;
@@ -133,6 +88,38 @@ const VideoRecorderPage = () => {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  const compressVideo = async (videoBlob) => {
+    if (!ffmpegLoaded) {
+      console.error("FFmpeg is not loaded yet. Skipping compression.");
+      return videoBlob;
+    }
+
+    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+    await ffmpeg.run(
+      "-i",
+      "original.webm",
+      "-c:v",
+      "libx264",
+      "-crf",
+      "28",
+      "-preset",
+      "fast",
+      "-movflags",
+      "+faststart",
+      "output.mp4"
+    );
+    const compressedData = ffmpeg.FS("readFile", "output.mp4");
+    const compressedBlob = new Blob([compressedData.buffer], {
+      type: "video/mp4",
+    });
+    return compressedBlob;
+  };
+
+  const toggleVideo = (event) => {
+    event.preventDefault();
+    setShowVideo(!showVideo);
   };
 
   const YouTubeEmbedQuestion = () => (
