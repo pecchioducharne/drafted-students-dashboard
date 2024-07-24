@@ -17,11 +17,22 @@ const VideoRecorderPage2 = () => {
   const [showProTips, setShowProTips] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
   const navigate = useNavigate();
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
 
-  const defaultOptions5 = {
+  const bottleDefaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: bottleAnimationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
+
+  const successLottieOptions = {
     loop: true,
     autoplay: true,
     animationData: step5Animation,
@@ -52,6 +63,7 @@ const VideoRecorderPage2 = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
+      setShowSuccessPopup(true); // Show success popup
       setIsUploading(true); // Set uploading state immediately
 
       try {
@@ -107,9 +119,14 @@ const VideoRecorderPage2 = () => {
         navigate("/dashboard");
       } catch (error) {
         console.error("Error uploading video:", error);
+        setShowSuccessPopup(false);
+        setShowErrorPopup(true); // Show error popup on upload failure
       } finally {
         setIsUploading(false); // Reset uploading state
       }
+    } else {
+      setShowSuccessPopup(false);
+      setShowErrorPopup(true); // Show error popup on upload failure
     }
   };
 
@@ -136,13 +153,9 @@ const VideoRecorderPage2 = () => {
     setShowProTips(!showProTips);
   };
 
-  const bottleDefaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: bottleAnimationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
+  const closePopup = () => {
+    setShowSuccessPopup(false);
+    setShowErrorPopup(false);
   };
 
   return (
@@ -216,6 +229,66 @@ const VideoRecorderPage2 = () => {
           </>
         )}
       </div>
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="video-container-popup success-popup">
+          <span className="close-button" onClick={closePopup}>
+            &times;
+          </span>
+          <Lottie options={successLottieOptions} height={200} width={200} />
+          <p>
+            Success! Your video is being uploaded successfully. Your dashboard
+            will be updated. In the meantime, feel free to complete the rest of
+            the videos or check out your dashboard!
+          </p>
+          <br />
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => window.open("/dashboard", "_blank")}
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      )}
+
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <div className="video-container-popup error-popup">
+          <span className="close-button" onClick={closePopup}>
+            &times;
+          </span>
+          <p>
+            Whoa! Seems there was an issue uploading your vid. Not to worry,
+            shoot it over to us at{" "}
+            <a
+              href="mailto:appdrafted@gmail.com?subject=Video%201"
+              style={{ color: "#53AD7A", fontWeight: "bold" }}
+            >
+              appdrafted@gmail.com
+            </a>{" "}
+            with subject "Video 2". We'll update your dashboard in next 1-2
+            days. Thanks!
+          </p>
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => window.open("/dashboard", "_blank")}
+          >
+            Back to Dashboard
+          </button>
+          <button
+            className="send-video-button"
+            onClick={() =>
+              window.open(
+                "mailto:appdrafted@gmail.com?subject=Video%20",
+                "_self"
+              )
+            }
+          >
+            Send Video
+          </button>
+        </div>
+      )}
     </div>
   );
 };

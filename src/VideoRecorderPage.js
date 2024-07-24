@@ -14,6 +14,8 @@ const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
   const [showProTips, setShowProTips] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [showErrorPopup, setShowErrorPopup] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const [isLoading, setLoading] = useState(false);
@@ -21,18 +23,11 @@ const VideoRecorderPage = () => {
   const ffmpeg = createFFmpeg({ log: true });
   ReactGA4.initialize("G-3M4KL5NDYG");
 
-  const defaultOptions5 = {
-    loop: true,
-    autoplay: true,
-    animationData: step5Animation,
-  };
-
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
         if (!ffmpeg.isLoaded()) {
           await ffmpeg.load();
-          setFFmpegLoaded(true);
         }
       } catch (error) {
         console.error("Could not load FFmpeg:", error);
@@ -45,6 +40,21 @@ const VideoRecorderPage = () => {
     setRecordedVideo(videoBlob); // Save the recorded video blob
   };
 
+  const toggleProTips = () => {
+    ReactGA4.event({
+      category: "Video Recording",
+      action: "See Pro Tips",
+      label: "Record Video 1",
+    });
+    setShowProTips(!showProTips);
+  };
+
+  const successLottieOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: step5Animation,
+  };
+
   const toggleVideo = (event) => {
     event.preventDefault();
     setShowVideo(!showVideo);
@@ -52,6 +62,7 @@ const VideoRecorderPage = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
+      setShowSuccessPopup(true); // Show success popup
       setIsUploading(true); // Set uploading state immediately
 
       try {
@@ -130,10 +141,20 @@ const VideoRecorderPage = () => {
         navigate("/dashboard");
       } catch (error) {
         console.error("Error uploading video:", error);
+        setShowSuccessPopup(false);
+        setShowErrorPopup(true); // Show error popup
       } finally {
         setIsUploading(false); // Reset uploading state
       }
+    } else {
+      setShowSuccessPopup(false);
+      setShowErrorPopup(true); // Show error popup if conditions are not met
     }
+  };
+
+  const closePopup = () => {
+    setShowSuccessPopup(false);
+    setShowErrorPopup(false);
   };
 
   const YouTubeEmbedQuestion = () => (
@@ -149,15 +170,6 @@ const VideoRecorderPage = () => {
       ></iframe>
     </div>
   );
-
-  const toggleProTips = () => {
-    ReactGA4.event({
-      category: "Video Recording",
-      action: "See Pro Tips",
-      label: "Record Video 1",
-    });
-    setShowProTips(!showProTips);
-  };
 
   const fireDefaultOptions = {
     loop: true,
@@ -238,6 +250,66 @@ const VideoRecorderPage = () => {
           </>
         )}
       </div>
+
+      {/* Success Popup */}
+      {showSuccessPopup && (
+        <div className="video-container-popup success-popup">
+          <span className="close-button" onClick={closePopup}>
+            &times;
+          </span>
+          <Lottie options={successLottieOptions} height={200} width={200} />
+          <p>
+            Success! Your video is being uploaded successfully. Your dashboard
+            will be updated. In the meantime, feel free to complete the rest of
+            the videos or check out your dashboard!
+          </p>
+          <br />
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => window.open("/dashboard", "_blank")}
+          >
+            Back to Dashboard
+          </button>
+        </div>
+      )}
+
+      {/* Error Popup */}
+      {showErrorPopup && (
+        <div className="video-container-popup error-popup">
+          <span className="close-button" onClick={closePopup}>
+            &times;
+          </span>
+          <p>
+            Whoa! Seems there was an issue uploading your vid. Not to worry,
+            shoot it over to us at{" "}
+            <a
+              href="mailto:appdrafted@gmail.com?subject=Video%201"
+              style={{ color: "#53AD7A", fontWeight: "bold" }}
+            >
+              appdrafted@gmail.com
+            </a>{" "}
+            with subject "Video 1". We'll update your dashboard in next 1-2
+            days. Thanks!
+          </p>
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => window.open("/dashboard", "_blank")}
+          >
+            Back to Dashboard
+          </button>
+          <button
+            className="send-video-button"
+            onClick={() =>
+              window.open(
+                "mailto:appdrafted@gmail.com?subject=Video%201",
+                "_self"
+              )
+            }
+          >
+            Send Video
+          </button>
+        </div>
+      )}
     </div>
   );
 };

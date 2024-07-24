@@ -34,6 +34,43 @@
   flex-grow: 1;
 }
 
+.video-container-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 50%;
+  max-width: 400px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 20px;
+  z-index: 1000;
+  padding-bottom: 5px;
+}
+
+.video-container-popup p {
+  text-align: center;
+  font-size: large;
+}
+
+.video-container-popup.success-popup {
+  background-color: white; /* Green background for success */
+  color: black;
+}
+
+.video-container-popup.error-popup {
+  background-color: white; /* Red background for error */
+  color: black;
+}
+
+.video-container-popup .close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
 .back-to-profile-button,
 .see-pro-tips-button {
   padding: 10px 20px;
