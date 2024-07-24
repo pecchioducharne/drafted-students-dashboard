@@ -9,7 +9,6 @@ import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
 import fireAnimationData from "./fire.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-import { useUploadingContext } from "./UploadingContext"; // Adjust path as needed
 
 const VideoRecorderPage = () => {
   const [recordedVideo, setRecordedVideo] = useState(null);
@@ -18,9 +17,7 @@ const VideoRecorderPage = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [ffmpegLoaded, setFFmpegLoaded] = useState(false);
   const navigate = useNavigate();
-  const { userEmail, userPassword } = useUploadingContext(); // Use context to get userEmail and userPassword
   const ffmpeg = createFFmpeg({ log: true });
-
   ReactGA4.initialize("G-3M4KL5NDYG");
 
   useEffect(() => {
@@ -37,65 +34,12 @@ const VideoRecorderPage = () => {
     loadFFmpeg();
   }, [ffmpeg]);
 
-  const navigateToNewTab = (url) => {
-    window.open(url, "_blank"); // Opens the URL in a new tab or window
-  };
-
-  const handleNavigate = () => {
-    navigateToNewTab("/dashboard");
-  };
-
-  const handleVideoRecording = (videoBlob) => {
-    setRecordedVideo(videoBlob);
-  };
-
-  const uploadVideoToFirebase = async () => {
-    if (!recordedVideo || !auth.currentUser) {
-      return;
-    }
-
-    setIsUploading(true);
-    handleNavigate();
-
-    try {
-      let videoToUpload = recordedVideo;
-
-      // Perform compression if ffmpeg is loaded
-      if (ffmpegLoaded) {
-        videoToUpload = await compressVideo(recordedVideo);
-      }
-
-      const fileName = `user_recorded_video_${Date.now()}.mp4`;
-      const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, videoToUpload);
-      const downloadURL = await getDownloadURL(storageRef);
-
-      const userEmail = auth.currentUser.email;
-      const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, {
-        video1: downloadURL,
-      });
-
-      ReactGA4.event({
-        category: "Video Recording",
-        action: "Saved Video",
-        label: "Record Video 1",
-      });
-
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error uploading video:", error);
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const compressVideo = async (videoBlob) => {
+  const handleVideoRecording = async (videoBlob) => {
     if (!ffmpegLoaded) {
       console.error("FFmpeg is not loaded yet. Skipping compression.");
-      return videoBlob;
+      setRecordedVideo(videoBlob);
+      return;
     }
-
     ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
     await ffmpeg.run(
       "-i",
@@ -114,12 +58,69 @@ const VideoRecorderPage = () => {
     const compressedBlob = new Blob([compressedData.buffer], {
       type: "video/mp4",
     });
-    return compressedBlob;
+    setRecordedVideo(compressedBlob);
   };
 
   const toggleVideo = (event) => {
     event.preventDefault();
     setShowVideo(!showVideo);
+  };
+
+  const uploadVideoToFirebase = async () => {
+    if (recordedVideo && auth.currentUser) {
+      setIsUploading(true);
+      const fileName = `user_recorded_video_${Date.now()}.mp4`;
+      const storageRef = ref(storage, fileName);
+      await uploadBytes(storageRef, recordedVideo);
+      const downloadURL = await getDownloadURL(storageRef);
+
+      if (ffmpegLoaded) {
+        try {
+          ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
+          await ffmpeg.run(
+            "-i",
+            "video.mp4",
+            "-ss",
+            "00:00:01.000",
+            "-vframes",
+            "1",
+            "thumbnail.jpg"
+          );
+          const thumbnailData = ffmpeg.FS("readFile", "thumbnail.jpg");
+          const thumbnailBlob = new Blob([thumbnailData.buffer], {
+            type: "image/jpeg",
+          });
+
+          const thumbnailFileName = `thumbnail_${Date.now()}.jpg`;
+          const thumbnailRef = ref(storage, thumbnailFileName);
+          await uploadBytes(thumbnailRef, thumbnailBlob);
+          const thumbnailURL = await getDownloadURL(thumbnailRef);
+
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video1: downloadURL,
+            thumbnail: thumbnailURL,
+          });
+        } catch (error) {
+          console.error("Error generating thumbnail:", error);
+        }
+      } else {
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video1: downloadURL,
+        });
+      }
+
+      ReactGA4.event({
+        category: "Video Recording",
+        action: "Saved Video",
+        label: "Record Video 1",
+      });
+      navigate("/dashboard");
+      setIsUploading(false);
+    }
   };
 
   const YouTubeEmbedQuestion = () => (
@@ -129,9 +130,9 @@ const VideoRecorderPage = () => {
         height="315"
         src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameBorder="0"
+        frameborder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowFullScreen
+        allowfullscreen
       ></iframe>
     </div>
   );
