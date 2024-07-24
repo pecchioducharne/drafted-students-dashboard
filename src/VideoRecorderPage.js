@@ -68,14 +68,14 @@ const VideoRecorderPage = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      setIsUploading(true);
+      setIsUploading(true); // Set uploading state immediately
       const fileName = `user_recorded_video_${Date.now()}.mp4`;
       const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, recordedVideo);
-      const downloadURL = await getDownloadURL(storageRef);
+      try {
+        await uploadBytes(storageRef, recordedVideo);
+        const downloadURL = await getDownloadURL(storageRef);
 
-      if (ffmpegLoaded) {
-        try {
+        if (ffmpegLoaded) {
           ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
           await ffmpeg.run(
             "-i",
@@ -102,24 +102,26 @@ const VideoRecorderPage = () => {
             video1: downloadURL,
             thumbnail: thumbnailURL,
           });
-        } catch (error) {
-          console.error("Error generating thumbnail:", error);
+        } else {
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video1: downloadURL,
+          });
         }
-      } else {
-        const userEmail = auth.currentUser.email;
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video1: downloadURL,
-        });
-      }
 
-      ReactGA4.event({
-        category: "Video Recording",
-        action: "Saved Video",
-        label: "Record Video 1",
-      });
-      navigate("/dashboard");
-      setIsUploading(false);
+        ReactGA4.event({
+          category: "Video Recording",
+          action: "Saved Video",
+          label: "Record Video 1",
+        });
+
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Error uploading video:", error);
+      } finally {
+        setIsUploading(false); // Reset uploading state
+      }
     }
   };
 
@@ -130,9 +132,9 @@ const VideoRecorderPage = () => {
         height="315"
         src="https://www.youtube.com/embed/T9Dym8dDLzM?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
-        frameborder="0"
+        frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
+        allowFullScreen
       ></iframe>
     </div>
   );
