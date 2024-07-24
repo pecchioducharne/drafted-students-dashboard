@@ -38,15 +38,39 @@ const VideoRecorderPage = () => {
   }, [ffmpeg]);
 
   const navigateToNewTab = (url) => {
-    window.open(url, '_blank'); // Opens the URL in a new tab or window
+    window.open(url, "_blank"); // Opens the URL in a new tab or window
   };
 
   const handleNavigate = () => {
-    navigateToNewTab('/dashboard'); // Example usage: open '/new-route' in a new tab
+    navigateToNewTab("/dashboard"); // Example usage: open '/new-route' in a new tab
   };
 
-  const handleVideoRecording = (videoBlob) => {
-    setRecordedVideo(videoBlob);
+  const handleVideoRecording = async (videoBlob) => {
+    if (!ffmpegLoaded) {
+      console.error("FFmpeg is not loaded yet. Skipping compression.");
+      setRecordedVideo(videoBlob);
+      return;
+    }
+    
+    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
+    await ffmpeg.run(
+      "-i",
+      "original.webm",
+      "-c:v",
+      "libx264",
+      "-crf",
+      "28",
+      "-preset",
+      "fast",
+      "-movflags",
+      "+faststart",
+      "output.mp4"
+    );
+    const compressedData = ffmpeg.FS("readFile", "output.mp4");
+    const compressedBlob = new Blob([compressedData.buffer], {
+      type: "video/mp4",
+    });
+    setRecordedVideo(compressedBlob);
   };
 
   const toggleVideo = (event) => {

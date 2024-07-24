@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore"; // Import Firestore
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore"; // Import Firestore
 import { getStorage } from "firebase/storage"; // Import Firebase Storage
 
 const firebaseConfig = {
@@ -15,7 +15,23 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app); // Initialize Firebase Authentication
+setPersistence(auth, browserLocalPersistence); // Enable auth persistence
 const db = getFirestore(app); // Initialize Firestore
 const storage = getStorage(app); // Initialize Firebase Storage
+
+// Enable Firestore persistence
+try {
+  enableIndexedDbPersistence(db);
+} catch (err) {
+  if (err.code === 'failed-precondition') {
+    // Multiple tabs open, persistence can only be enabled
+    // in one tab at a a time.
+    console.log('Multiple tabs open, persistence can only be enabled in one tab at a time.');
+  } else if (err.code === 'unimplemented') {
+    // The current browser does not support all of the
+    // features required to enable persistence
+    console.log('The current browser does not support all of the features required to enable persistence.');
+  }
+}
 
 export { app, auth, db, storage }; // Export app, auth, and db

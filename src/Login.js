@@ -79,6 +79,7 @@ const Login = () => {
         email,
         password
       );
+      updateUserCredentials(email, password); // Update userEmail in UploadingContext
       navigate("/dashboard");
     } catch (error) {
       console.error("Error signing in:", error);
