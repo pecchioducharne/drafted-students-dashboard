@@ -36,33 +36,8 @@ const VideoRecorderPage3 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
-    if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet. Skipping compression.");
-      setRecordedVideo(videoBlob);
-      return;
-    }
-
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-
-    setRecordedVideo(compressedBlob);
+    // Set recordedVideo state with the original videoBlob
+    setRecordedVideo(videoBlob);
   };
 
   const toggleVideo = (event) => {
@@ -75,16 +50,51 @@ const VideoRecorderPage3 = () => {
       setIsUploading(true);
 
       try {
-        const fileName = `user_recorded_video_${Date.now()}.mp4`;
-        const storageRef = ref(storage, fileName);
-        await uploadBytes(storageRef, recordedVideo);
-        const downloadURL = await getDownloadURL(storageRef);
+        if (ffmpegLoaded) {
+          // Compress video using FFmpeg if loaded
+          ffmpeg.FS("writeFile", "original.webm", await fetchFile(recordedVideo));
+          await ffmpeg.run(
+            "-i",
+            "original.webm",
+            "-c:v",
+            "libx264",
+            "-crf",
+            "28",
+            "-preset",
+            "fast",
+            "-movflags",
+            "+faststart",
+            "output.mp4"
+          );
 
-        const userEmail = auth.currentUser.email;
-        const userDocRef = doc(db, "drafted-accounts", userEmail);
-        await updateDoc(userDocRef, {
-          video3: downloadURL,
-        });
+          const compressedData = ffmpeg.FS("readFile", "output.mp4");
+          const compressedBlob = new Blob([compressedData.buffer], {
+            type: "video/mp4",
+          });
+
+          const fileName = `user_recorded_video_${Date.now()}.mp4`;
+          const storageRef = ref(storage, fileName);
+          await uploadBytes(storageRef, compressedBlob);
+          const downloadURL = await getDownloadURL(storageRef);
+
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video3: downloadURL,
+          });
+        } else {
+          // Directly upload the recorded video if FFmpeg is not loaded
+          const fileName = `user_recorded_video_${Date.now()}.webm`;
+          const storageRef = ref(storage, fileName);
+          await uploadBytes(storageRef, recordedVideo);
+          const downloadURL = await getDownloadURL(storageRef);
+
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video3: downloadURL,
+          });
+        }
 
         ReactGA4.event({
           category: "Video Recording",

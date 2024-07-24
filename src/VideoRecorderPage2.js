@@ -35,30 +35,7 @@ const VideoRecorderPage2 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
-    if (!ffmpegLoaded) {
-      console.error("FFmpeg is not loaded yet. Skipping compression.");
-      setRecordedVideo(videoBlob);
-      return;
-    }
-    ffmpeg.FS("writeFile", "original.webm", await fetchFile(videoBlob));
-    await ffmpeg.run(
-      "-i",
-      "original.webm",
-      "-c:v",
-      "libx264",
-      "-crf",
-      "28",
-      "-preset",
-      "fast",
-      "-movflags",
-      "+faststart",
-      "output.mp4"
-    );
-    const compressedData = ffmpeg.FS("readFile", "output.mp4");
-    const compressedBlob = new Blob([compressedData.buffer], {
-      type: "video/mp4",
-    });
-    setRecordedVideo(compressedBlob);
+    setRecordedVideo(videoBlob);
   };
 
   const toggleVideo = (event) => {
@@ -68,26 +45,64 @@ const VideoRecorderPage2 = () => {
 
   const uploadVideoToFirebase = async () => {
     if (recordedVideo && auth.currentUser) {
-      setIsUploading(true);
+      setIsUploading(true); // Set uploading state immediately
 
-      const fileName = `user_recorded_video_${Date.now()}.mp4`;
-      const storageRef = ref(storage, fileName);
-      await uploadBytes(storageRef, recordedVideo);
-      const downloadURL = await getDownloadURL(storageRef);
+      try {
+        if (ffmpegLoaded) {
+          ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
+          await ffmpeg.run(
+            "-i",
+            "video.mp4",
+            "-c:v",
+            "libx264",
+            "-crf",
+            "28",
+            "-preset",
+            "fast",
+            "-movflags",
+            "+faststart",
+            "output.mp4"
+          );
+          const compressedData = ffmpeg.FS("readFile", "output.mp4");
+          const compressedBlob = new Blob([compressedData.buffer], {
+            type: "video/mp4",
+          });
 
-      const userEmail = auth.currentUser.email;
-      const userDocRef = doc(db, "drafted-accounts", userEmail);
-      await updateDoc(userDocRef, {
-        video2: downloadURL,
-      });
+          const fileName = `user_recorded_video_${Date.now()}.mp4`;
+          const storageRef = ref(storage, fileName);
+          await uploadBytes(storageRef, compressedBlob);
+          const downloadURL = await getDownloadURL(storageRef);
 
-      ReactGA4.event({
-        category: "Video Recording",
-        action: "Saved Video",
-        label: "Record Video 2",
-      });
-      setIsUploading(false);
-      navigate("/dashboard");
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video2: downloadURL,
+          });
+        } else {
+          const fileName = `user_recorded_video_${Date.now()}.mp4`;
+          const storageRef = ref(storage, fileName);
+          await uploadBytes(storageRef, recordedVideo);
+          const downloadURL = await getDownloadURL(storageRef);
+
+          const userEmail = auth.currentUser.email;
+          const userDocRef = doc(db, "drafted-accounts", userEmail);
+          await updateDoc(userDocRef, {
+            video2: downloadURL,
+          });
+        }
+
+        ReactGA4.event({
+          category: "Video Recording",
+          action: "Saved Video",
+          label: "Record Video 2",
+        });
+
+        navigate("/dashboard");
+      } catch (error) {
+        console.error("Error uploading video:", error);
+      } finally {
+        setIsUploading(false); // Reset uploading state
+      }
     }
   };
 
@@ -96,7 +111,7 @@ const VideoRecorderPage2 = () => {
       <iframe
         width="350"
         height="315"
-        src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
+        src="https://www.youtube.com/embed/IshJHdFFtcg?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
