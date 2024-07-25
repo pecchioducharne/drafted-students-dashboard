@@ -288,15 +288,18 @@ const VideoRecorderPage = () => {
             >
               appdrafted@gmail.com
             </a>{" "}
-            with subject "Video 1". We'll update your dashboard in next 1-2
+            with subject "Video 1". Or just re-record. We'll update your dashboard in next 1-2
             days. Thanks!
           </p>
+          <br></br>
           <button
             className="back-to-dashboard-button"
             onClick={() => window.open("/dashboard", "_blank")}
           >
             Back to Dashboard
           </button>
+          <br></br>
+
           <button
             className="send-video-button"
             onClick={() =>
@@ -307,6 +310,14 @@ const VideoRecorderPage = () => {
             }
           >
             Send Video
+          </button>
+          <br></br>
+
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => setShowErrorPopup(false)}
+          >
+            Re-record
           </button>
         </div>
       )}

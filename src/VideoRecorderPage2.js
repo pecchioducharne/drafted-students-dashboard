@@ -4,10 +4,9 @@ import { storage, db, auth } from "./firebase";
 import VideoRecorder from "react-video-recorder/lib/video-recorder";
 import { useNavigate } from "react-router-dom";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import "./VideoRecorderPage.css";
+import step5Animation from "./step-5.json";
 import { doc, updateDoc } from "firebase/firestore";
 import ReactGA4 from "react-ga4";
-import step5Animation from "./step-5.json";
 import bottleAnimationData from "./bottle.json";
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
 
@@ -67,7 +66,10 @@ const VideoRecorderPage2 = () => {
       setIsUploading(true); // Set uploading state immediately
 
       try {
+        let downloadURL = "";
+
         if (ffmpegLoaded) {
+          // FFmpeg compression
           ffmpeg.FS("writeFile", "video.mp4", await fetchFile(recordedVideo));
           await ffmpeg.run(
             "-i",
@@ -90,26 +92,21 @@ const VideoRecorderPage2 = () => {
           const fileName = `user_recorded_video_${Date.now()}.mp4`;
           const storageRef = ref(storage, fileName);
           await uploadBytes(storageRef, compressedBlob);
-          const downloadURL = await getDownloadURL(storageRef);
-
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
-          await updateDoc(userDocRef, {
-            video2: downloadURL,
-          });
+          downloadURL = await getDownloadURL(storageRef);
         } else {
           const fileName = `user_recorded_video_${Date.now()}.mp4`;
           const storageRef = ref(storage, fileName);
           await uploadBytes(storageRef, recordedVideo);
-          const downloadURL = await getDownloadURL(storageRef);
-
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
-          await updateDoc(userDocRef, {
-            video2: downloadURL,
-          });
+          downloadURL = await getDownloadURL(storageRef);
         }
 
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video2: downloadURL,
+        });
+
+        // Track event
         ReactGA4.event({
           category: "Video Recording",
           action: "Saved Video",
@@ -259,33 +256,32 @@ const VideoRecorderPage2 = () => {
             &times;
           </span>
           <p>
-            Whoa! Seems there was an issue uploading your vid. Not to worry,
+            Whoa! Seems there was an issue uploading your video. Not to worry,
             shoot it over to us at{" "}
             <a
-              href="mailto:appdrafted@gmail.com?subject=Video%201"
+              href="mailto:appdrafted@gmail.com?subject=Video%202"
               style={{ color: "#53AD7A", fontWeight: "bold" }}
             >
               appdrafted@gmail.com
             </a>{" "}
-            with subject "Video 2". We'll update your dashboard in next 1-2
-            days. Thanks!
+            with subject "Video 2". Or just re-record. We'll update your
+            dashboard in the next 1-2 days. Thanks!
           </p>
+          <br></br>
+
           <button
             className="back-to-dashboard-button"
-            onClick={() => window.open("/dashboard", "_blank")}
+            onClick={() => navigate("/dashboard")}
           >
             Back to Dashboard
           </button>
+          <br></br>
+
           <button
-            className="send-video-button"
-            onClick={() =>
-              window.open(
-                "mailto:appdrafted@gmail.com?subject=Video%20",
-                "_self"
-              )
-            }
+            className="back-to-dashboard-button"
+            onClick={() => setShowErrorPopup(false)}
           >
-            Send Video
+            Re-record
           </button>
         </div>
       )}

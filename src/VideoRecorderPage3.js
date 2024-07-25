@@ -51,7 +51,6 @@ const VideoRecorderPage3 = () => {
   }, [ffmpeg]);
 
   const handleVideoRecording = async (videoBlob) => {
-    // Set recordedVideo state with the original videoBlob
     setRecordedVideo(videoBlob);
   };
 
@@ -66,6 +65,8 @@ const VideoRecorderPage3 = () => {
       setIsUploading(true);
 
       try {
+        let downloadURL = "";
+
         if (ffmpegLoaded) {
           // Compress video using FFmpeg if loaded
           ffmpeg.FS(
@@ -95,26 +96,20 @@ const VideoRecorderPage3 = () => {
           const fileName = `user_recorded_video_${Date.now()}.mp4`;
           const storageRef = ref(storage, fileName);
           await uploadBytes(storageRef, compressedBlob);
-          const downloadURL = await getDownloadURL(storageRef);
-
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
-          await updateDoc(userDocRef, {
-            video3: downloadURL,
-          });
+          downloadURL = await getDownloadURL(storageRef);
         } else {
           // Directly upload the recorded video if FFmpeg is not loaded
           const fileName = `user_recorded_video_${Date.now()}.webm`;
           const storageRef = ref(storage, fileName);
           await uploadBytes(storageRef, recordedVideo);
-          const downloadURL = await getDownloadURL(storageRef);
-
-          const userEmail = auth.currentUser.email;
-          const userDocRef = doc(db, "drafted-accounts", userEmail);
-          await updateDoc(userDocRef, {
-            video3: downloadURL,
-          });
+          downloadURL = await getDownloadURL(storageRef);
         }
+
+        const userEmail = auth.currentUser.email;
+        const userDocRef = doc(db, "drafted-accounts", userEmail);
+        await updateDoc(userDocRef, {
+          video3: downloadURL,
+        });
 
         ReactGA4.event({
           category: "Video Recording",
@@ -122,13 +117,13 @@ const VideoRecorderPage3 = () => {
           label: "Record Video 3",
         });
 
-        navigate("/dashboard"); // Navigate after successful upload
+        navigate("/dashboard");
       } catch (error) {
         console.error("Error uploading video:", error);
         setShowSuccessPopup(false);
         setShowErrorPopup(true); // Show error popup on upload failure
       } finally {
-        setIsUploading(false);
+        setIsUploading(false); // Reset uploading state
       }
     } else {
       setShowSuccessPopup(false);
@@ -141,7 +136,7 @@ const VideoRecorderPage3 = () => {
       <iframe
         width="350"
         height="315"
-        src="https://www.youtube.com/embed/IshJHdFFtcg?si=dOJl_w_f62enHHSN?autoplay=1&controls=1&modestbranding=1&rel=0"
+        src="https://www.youtube.com/embed/IshJHdFFtcg?autoplay=1&controls=1&modestbranding=1&rel=0"
         title="YouTube video player"
         frameBorder="0"
         allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -273,33 +268,45 @@ const VideoRecorderPage3 = () => {
             &times;
           </span>
           <p>
-            Whoa! Seems there was an issue uploading your vid. Not to worry,
+            Whoa! Seems there was an issue uploading your video. Not to worry,
             shoot it over to us at{" "}
             <a
-              href="mailto:appdrafted@gmail.com?subject=Video%201"
+              href="mailto:appdrafted@gmail.com?subject=Video%203"
               style={{ color: "#53AD7A", fontWeight: "bold" }}
             >
               appdrafted@gmail.com
             </a>{" "}
-            with subject "Video 3". We'll update your dashboard in next 1-2
-            days. Thanks!
+            with subject "Video 3". Or just re-record. We'll update your
+            dashboard in the next 1-2 days. Thanks!
           </p>
+          <br></br>
+
           <button
             className="back-to-dashboard-button"
             onClick={() => window.open("/dashboard", "_blank")}
           >
             Back to Dashboard
           </button>
+          <br></br>
+
           <button
             className="send-video-button"
             onClick={() =>
               window.open(
-                "mailto:appdrafted@gmail.com?subject=Video%30",
+                "mailto:appdrafted@gmail.com?subject=Video%203",
                 "_self"
               )
             }
           >
             Send Video
+          </button>
+          <br></br>
+
+          <button
+            className="back-to-dashboard-button"
+            onClick={() => setShowErrorPopup(false)}
+          >
+            Re-record
           </button>
         </div>
       )}
