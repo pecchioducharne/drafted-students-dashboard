@@ -247,9 +247,9 @@ const VideoRecorderPage3 = () => {
           </span>
           <Lottie options={successLottieOptions} height={200} width={200} />
           <p>
-            Success! Your video is being uploaded successfully. Your dashboard
-            will be updated. In the meantime, feel free to complete the rest of
-            the videos or check out your dashboard!
+            Success! Your video has been saved and is currently being uploaded.
+            It may take a moment for your dashboard to update. In the meantime,
+            feel free to proceed with completing the next video.
           </p>
           <br />
           <button
