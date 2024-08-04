@@ -9,6 +9,7 @@ import ReactGA4 from "react-ga4";
 import "./ProfileDashboard.css";
 import { DoubleBubble } from "react-spinner-animated";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import emailjs from 'emailjs-com';
 
 const ProfileDashboard = ({
   firstName,
@@ -25,6 +26,9 @@ const ProfileDashboard = ({
     { id: 2, title: "What makes you stand out?" },
     { id: 3, title: "Tell us about a time when you overcame a challenge!" },
   ];
+
+  // Init email sender
+  emailjs.init("RfdLlpPTsLae8Wd_j");
 
   const exampleVideos = [
     "https://firebasestorage.googleapis.com/v0/b/drafted-6c302.appspot.com/o/quinn-1.mov?alt=media&token=628534b2-01d4-4614-b50d-4a5f3cca9e5b",
@@ -86,6 +90,32 @@ const ProfileDashboard = ({
     } catch (error) {
       console.error("Error fetching video:", error);
       return "";
+    }
+  };
+
+  const sendVideoCompleteEmail = async (email, firstName) => {
+    try {
+      await emailjs.send("drafted_service", "video_complete_template", {
+        to_name: firstName,
+        to_email: email,
+      });
+
+      // Handle success
+      console.log("Email sent successfully!");
+      console.log("Email: " + email);
+      console.log("First name: " + firstName);
+
+      // Optionally track email sent event using GA4
+      ReactGA4.event({
+        category: "Email",
+        action: "Sent Welcome Email",
+        label: "Welcome Email Sent",
+      });
+    } catch (error) {
+      console.error("Error sending email:", error);
+      alert("Failed to send email. Please try again later.");
+    } finally {
+      // setIsLoading(false); // Set loading to false after email attempt
     }
   };
 
@@ -274,6 +304,27 @@ const ProfileDashboard = ({
       setResumeIndex(0);
     }
   }, [videoUrl, videoUrl2, videoUrl3]);
+
+  useEffect(() => {
+    const checkVideoCompletionAndSendEmail = async () => {
+      const urls = [videoUrl, videoUrl2, videoUrl3];
+      const count = urls.filter((url) => url).length;
+
+      if (count === 3) {
+        // Three URLs exist, send email
+        try {
+          await sendVideoCompleteEmail(email, firstName);
+
+          // Update local state or perform other actions as needed
+          console.log("All videos recorded, email sent.");
+        } catch (error) {
+          console.error("Error sending completion email:", error);
+        }
+      }
+    };
+
+    checkVideoCompletionAndSendEmail();
+  }, [videoUrl, videoUrl2, videoUrl3, email, firstName]);
 
   useEffect(() => {
     const user = auth.currentUser;
@@ -639,10 +690,6 @@ const ProfileDashboard = ({
               </div>
             </div>
           </section>
-          {/* End Profile Section */}
-          {/* <div className="bannerContainer">
-            <img src={banner} alt="Banner" className="bannerImage" />
-          </div> */}
           {/* Start Progress Bar */}
           <section className="progressBarSection">
             {resumeIndex === 3 && (
@@ -731,11 +778,6 @@ const ProfileDashboard = ({
               ))}
             </ul>
           </section>
-
-          {/* End Recently Joined Section */}
-          {/* Start Resume Section */}
-          {/* <ResumeRecord resume={resumes.find(r => r.id === resumeIndex)} /> */}
-          {/* End Resume Section */}
         </main>
 
         {showVideoResumePopup && (
