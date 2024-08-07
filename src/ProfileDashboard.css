@@ -128,6 +128,8 @@ example-video {
   background: white;
   padding: 20px;
   border-radius: 8px;
+  width: 80%;
+  max-width: 80%;
   width: 80%; /* Initial width */
   max-width: 80%; /* Maximum width to maintain readability */
   text-align: left;

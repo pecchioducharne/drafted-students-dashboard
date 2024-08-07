@@ -9,7 +9,7 @@ import ReactGA4 from "react-ga4";
 import "./ProfileDashboard.css";
 import { DoubleBubble } from "react-spinner-animated";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import emailjs from 'emailjs-com';
+import emailjs from "emailjs-com";
 
 const ProfileDashboard = ({
   firstName,
@@ -43,6 +43,10 @@ const ProfileDashboard = ({
     "What makes him stand out",
     "How Quinn overcame a challenge",
   ];
+
+  const popupStyle = {
+    fontSize: "50px", // Adjust the font size as needed
+  };
 
   const [resumeIndex, setResumeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
@@ -132,8 +136,8 @@ const ProfileDashboard = ({
 
   const handleTipClick = (index) => {
     const content = (
-      <div>
-        <div className="video-container-popup">
+      <div className="popup-container" style={popupStyle}>
+        <div className="video-container">
           <VideoPlayer url={exampleVideos[index]} />
         </div>
         <ul>
