@@ -1,0 +1,56 @@
+.skills-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  
+  .details-item {
+    width: 100%;
+  }
+  
+  .selected-skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .skill-item {
+    background-color: #f0f0f0;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+  }
+  
+  .skill-item:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .remove-btn {
+    margin-left: 5px;
+    color: red;
+    cursor: pointer;
+  }
+  
+  .add-skills {
+    width: 100%;
+  }
+  
+  .add-skills h3 {
+    margin-bottom: 10px;
+  }
+  
+  .add-skills select {
+    width: 100%;
+    min-height: 150px; /* Minimum height for better visibility */
+    max-height: 300px; /* Maximum height for better scrolling on smaller screens */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow-y: auto;
+  }
+  
+  .add-skills select option {
+    padding: 5px;
+  }
+  

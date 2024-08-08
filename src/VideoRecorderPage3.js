@@ -190,7 +190,10 @@ const VideoRecorderPage3 = () => {
         />
       </div>
       <div className="button-group">
-        <button onClick={uploadVideoToFirebase} disabled={isUploading}>
+        <button
+          onClick={uploadVideoToFirebase}
+          disabled={isUploading || !recordedVideo}
+        >
           {isUploading ? "Uploading..." : "Save Video"}
         </button>
         <button onClick={toggleProTips} className="see-pro-tips-button">
